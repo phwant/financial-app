@@ -2542,7 +2542,7 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   position: sticky;
   left: 0;
   z-index: 10;
-  background: var(--bg-color);
+  background: var(--glass-card);
   padding: 0 10px 0 14px;
 }
 
@@ -2715,7 +2715,7 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   position: sticky;
   left: 0;
   z-index: 10;
-  background: var(--bg-color);
+  background: var(--glass-card);
 }
 
 .annual-comparison-item {
@@ -2964,6 +2964,21 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.3px;
+}
+
+.annual-takeaway-scope {
+  display: block;
+  margin-top: 3px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.4;
+  color: var(--text-sub);
+  opacity: 0.82;
+}
+
+.annual-takeaway-scope[hidden] {
+  display: none;
 }
 
 .annual-takeaway-content {
@@ -3786,6 +3801,11 @@ body.modal-open {
   <div class="annual-takeaway-card" id="annualTakeawayCard">
     <div class="annual-takeaway-title">
       Annual Takeaway
+      <span
+        class="annual-takeaway-scope"
+        id="annualTakeawayScope"
+        hidden
+      ></span>
     </div>
     <div
       class="annual-takeaway-content"
@@ -8725,11 +8745,20 @@ function selectMonthlyTakeawayInsights(
   previousEntries
   ) {
   const container =
+  document.getElementById(
+    'annualTakeawayContent'
+  );
+  const scope =
     document.getElementById(
-      'annualTakeawayContent'
+      'annualTakeawayScope'
     );
   if (!container) {
-    return; }
+    return;
+  }
+  if (scope) {
+    scope.hidden = true;
+    scope.textContent = '';
+  }
   const entries =
     Array.isArray(currentEntries)
       ? currentEntries
@@ -8761,6 +8790,43 @@ function selectMonthlyTakeawayInsights(
       entries,
       selectedYear
     );
+  if (
+    scope &&
+    selectedYear === new Date().getFullYear() &&
+    currentPeriodEntries.length > 0
+  ) {
+    const latestDataMonth =
+      currentPeriodEntries.reduce(
+        (latest, item) => {
+          const date =
+            new Date(item.entry_date);
+          if (
+            Number.isNaN(
+              date.getTime()
+            )
+          ) {
+            return latest;
+          }
+          return Math.max(
+            latest,
+            date.getMonth() + 1
+          );
+        },
+        0
+      );
+    if (
+      latestDataMonth > 0 &&
+      latestDataMonth < 12
+    ) {
+      const latestMonthName =
+        months[
+          latestDataMonth - 1
+        ]?.name || '';
+      scope.textContent =
+        `Through ${latestMonthName} ${selectedYear}`;
+      scope.hidden = false;
+    }
+  }
   const previousPeriodEntries =
     getAnnualTakeawayPeriodEntries(
       previous,
@@ -9407,8 +9473,7 @@ function buildAnnualExpenseTrendData(entries) {
             months[index]?.name ||
             ''
           )
-            .slice(0, 3)
-            .toUpperCase(),
+            .slice(0, 3),
         amount,
         state,
         color:

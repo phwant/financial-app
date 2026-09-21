@@ -12249,7 +12249,6 @@ function openEntriesFromInsight() {
       if (!formDate.value) {
         formDate.value =
           `${realCurrentYear}-${String(realCurrentMonth).padStart(2, '0')}`;
-        }
       }
       const formDateInput =
         document.getElementById('formDate');
@@ -12273,7 +12272,7 @@ function openEntriesFromInsight() {
         'blur',
         ensureEntryDateValue
       );
-      }
+    }
     let modalScrollLocked = false;
     let modalScrollY = 0;
     function lockBackgroundScroll() {

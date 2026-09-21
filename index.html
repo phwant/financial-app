@@ -5356,20 +5356,6 @@ function renderEntriesPage(entries) {
       }
     );
   }
-    const menu =
-      document.getElementById(
-        'monthlyComparisonTypeMenu'
-      );
-    if (menu) {
-      menu.hidden = true; }
-    const months =
-      await fetchMonthlyComparisonMonths(
-        monthlyComparisonPeriod
-      );
-    renderMonthlyComparison(months);
-    }
-   );
-  });
   const annualComparisonTypeOptions =
     document.querySelectorAll(
       '#annualComparisonTypeMenu .monthly-comparison-dropdown-option'
@@ -12288,7 +12274,7 @@ function openEntriesFromInsight() {
         'blur',
         ensureEntryDateValue
       );
-    
+      }
     let modalScrollLocked = false;
     let modalScrollY = 0;
     function lockBackgroundScroll() {

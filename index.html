@@ -2390,14 +2390,21 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   z-index: 90;
 }
 
-.monthly-comparison-select {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
+.monthly-comparison-native-picker {
+  position: relative;
   width: max-content;
+}
+
+.monthly-comparison-select {
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  width: max-content;
+  min-width: 0;
+  height: 30px;
   min-height: 30px;
-  padding: 0 16px;
+  padding: 0 28px 0 16px;
+  margin: 0;
   border: 0;
   border-radius: 10px;
   background: transparent;
@@ -2406,16 +2413,31 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.3px;
+  line-height: 30px;
+  text-align: center;
+  text-align-last: center;
   white-space: nowrap;
+  outline: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-.monthly-comparison-select svg {
+.monthly-comparison-select-chevron {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  width: 13px;
+  height: 13px;
+  transform: translateY(-50%);
+  color: var(--text-sub);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.monthly-comparison-select-chevron svg {
   width: 13px;
   height: 13px;
   stroke-width: 2.5;
-  opacity: 0.7;
 }
 
 .monthly-comparison-select:active {
@@ -3500,90 +3522,44 @@ body.modal-open {
   </div>
   <div class="monthly-comparison-card" id="monthlyComparisonCard">
     <div class="monthly-comparison-controls">
-      <div class="monthly-comparison-dropdown">
-        <button
-          type="button"
+  <div class="monthly-comparison-dropdown">
+    <div class="monthly-comparison-native-picker">
+        <select
           class="monthly-comparison-select"
-          id="monthlyComparisonTypeBtn"
+          id="monthlyComparisonTypePicker"
           aria-label="Select comparison type"
-          >
-          <span id="monthlyComparisonTypeLabel">Expense</span>
-          <i data-lucide="chevron-down"></i>
-        </button>
-        <div
-          class="monthly-comparison-dropdown-menu"
-          id="monthlyComparisonTypeMenu"
-          hidden
-          >
-          <button
-            type="button"
-            class="monthly-comparison-dropdown-option"
-            data-type="Income"
-            >
-            Income
-          </button>
-          <button
-            type="button"
-            class="monthly-comparison-dropdown-option is-selected"
-            data-type="Expense"
-            >
-            Expense
-          </button>
-          <button
-            type="button"
-            class="monthly-comparison-dropdown-option"
-            data-type="Deduction"
-            >
-            Deduction
-          </button>
-        </div>
-      </div>
-      <div class="monthly-comparison-dropdown is-right">
-        <button
-          type="button"
-          class="monthly-comparison-select"
-          id="monthlyComparisonPeriodBtn"
-          aria-label="Select comparison period"
-          >
-          <span id="monthlyComparisonPeriodLabel">3 Months</span>
-          <i data-lucide="chevron-down"></i>
-        </button>
-        <div
-          class="monthly-comparison-dropdown-menu"
-          id="monthlyComparisonPeriodMenu"
-          hidden
-          >
-          <button
-            type="button"
-            class="monthly-comparison-dropdown-option is-selected"
-            data-period="3"
-            >
-            3 Months
-          </button>
-          <button
-            type="button"
-            class="monthly-comparison-dropdown-option"
-            data-period="6"
-            >
-            6 Months
-          </button>
-          <button
-            type="button"
-            class="monthly-comparison-dropdown-option"
-            data-period="9"
-            >
-            9 Months
-          </button>
-          <button
-            type="button"
-            class="monthly-comparison-dropdown-option"
-            data-period="12"
-            >
-            12 Months
-          </button>
-        </div>
+        >
+          <option value="Income">Income</option>
+          <option value="Expense" selected>Expense</option>
+          <option value="Deduction">Deduction</option>
+        </select>
+        <i
+          data-lucide="chevron-down"
+          class="monthly-comparison-select-chevron"
+          aria-hidden="true"
+        ></i>
       </div>
     </div>
+    <div class="monthly-comparison-dropdown is-right">
+      <div class="monthly-comparison-native-picker">
+        <select
+          class="monthly-comparison-select"
+          id="monthlyComparisonPeriodPicker"
+          aria-label="Select comparison period"
+        >
+          <option value="3" selected>3 Months</option>
+          <option value="6">6 Months</option>
+          <option value="9">9 Months</option>
+          <option value="12">12 Months</option>
+        </select>
+        <i
+          data-lucide="chevron-down"
+          class="monthly-comparison-select-chevron"
+          aria-hidden="true"
+        ></i>
+      </div>
+    </div>
+  </div>
     <div class="monthly-comparison-table-wrap">
   <div
     class="monthly-comparison-table"
@@ -5284,14 +5260,10 @@ function renderEntriesPage(entries) {
   let paymentHistoryEntries = [];
   let previousMonthEntries = [];
   let monthlyComparisonResizeObserver = null;
-  const monthlyComparisonTypeBtn =
-  document.getElementById('monthlyComparisonTypeBtn');
-  const monthlyComparisonTypeLabel =
-  document.getElementById('monthlyComparisonTypeLabel');
-  const monthlyComparisonPeriodBtn =
-  document.getElementById('monthlyComparisonPeriodBtn');
-  const monthlyComparisonPeriodLabel =
-  document.getElementById('monthlyComparisonPeriodLabel');
+  const monthlyComparisonTypePicker =
+  document.getElementById('monthlyComparisonTypePicker');
+  const monthlyComparisonPeriodPicker =
+  document.getElementById('monthlyComparisonPeriodPicker');
   const annualComparisonTypeBtn =
   document.getElementById('annualComparisonTypeBtn');
   const annualComparisonTypeLabel =
@@ -5304,214 +5276,54 @@ function renderEntriesPage(entries) {
   document.getElementById('annualComparisonTypeMenu');
   const annualComparisonYearMenu =
   document.getElementById('annualComparisonYearMenu');
-  if (monthlyComparisonPeriodBtn) {
-  monthlyComparisonPeriodBtn.addEventListener(
-    'click',
-    () => {
-      const menu =
-        document.getElementById(
-          'monthlyComparisonPeriodMenu'
-        );
-      if (!menu) {
-        return; }
-      menu.hidden = !menu.hidden;
-    }
-   );
-  }
-  if (annualComparisonYearBtn) {
-  annualComparisonYearBtn.addEventListener(
-    'click',
-    event => {
-      event.stopPropagation();
-      renderAnnualComparisonYearMenu();
-      updateAnnualComparisonYearLabel();
-      if (annualComparisonYearMenu) {
-        annualComparisonYearMenu.hidden =
-          !annualComparisonYearMenu.hidden;
-      }
-     }
-   );
-  }
-  if (monthlyComparisonTypeBtn) {
-  monthlyComparisonTypeBtn.addEventListener(
-    'click',
-    () => {
-      const menu =
-        document.getElementById(
-          'monthlyComparisonTypeMenu'
-        );
-      if (!menu) {
-        return; }
-      menu.hidden = !menu.hidden;
-    }
-   );
-  }
-  if (annualComparisonTypeBtn) {
-  annualComparisonTypeBtn.addEventListener(
-    'click',
-    event => {
-      event.stopPropagation();
-      if (!annualComparisonTypeMenu) {
-        return; }
-      annualComparisonTypeMenu.hidden =
-        !annualComparisonTypeMenu.hidden;
-    }
-   );
-  }
-  const monthlyComparisonPeriodOptions =
-  document.querySelectorAll(
-    '#monthlyComparisonPeriodMenu .monthly-comparison-dropdown-option'
-  );
-  monthlyComparisonPeriodOptions.forEach(option => {
-  option.addEventListener(
-    'click',
-    async () => {
-      const selectedPeriod =
-        Number(option.dataset.period);
-      if (![3, 6, 9, 12].includes(selectedPeriod)) {
-        return; }
-      monthlyComparisonPeriod =
-        selectedPeriod;
-      if (monthlyComparisonPeriodLabel) {
-        monthlyComparisonPeriodLabel.innerText =
-          `${selectedPeriod} Months`; }
-      monthlyComparisonPeriodOptions.forEach(
-        item => {
-          item.classList.toggle(
-            'is-selected',
-            item === option
-          );
+  if (monthlyComparisonTypePicker) {
+    monthlyComparisonTypePicker.value =
+      monthlyComparisonType;
+    monthlyComparisonTypePicker.addEventListener(
+      'change',
+      async event => {
+        const selectedType =
+          event.target.value;
+        if (
+          !['Income', 'Expense', 'Deduction']
+            .includes(selectedType)
+        ) {
+          return;
         }
-      );
-      const menu =
-        document.getElementById(
-          'monthlyComparisonPeriodMenu'
-        );
-      if (menu) {
-        menu.hidden = true; }
-      const months =
-        await fetchMonthlyComparisonMonths(
-          selectedPeriod
-        );
-      renderMonthlyComparison(months);
-    }
-   );
-  });
-  document.addEventListener('click', event => {
-  const target = event.target;
-  const typeDropdown =
-    document.querySelector(
-      '#monthlyComparisonTypeBtn'
-    )?.closest(
-      '.monthly-comparison-dropdown'
-    );
-  const periodDropdown =
-    document.querySelector(
-      '#monthlyComparisonPeriodBtn'
-    )?.closest(
-      '.monthly-comparison-dropdown'
-    );
-  const annualTypeDropdown =
-    document.querySelector(
-      '#annualComparisonTypeBtn'
-    )?.closest(
-      '.monthly-comparison-dropdown'
-    );
-  const annualYearDropdown =
-    document.querySelector(
-      '#annualComparisonYearBtn'
-    )?.closest(
-      '.monthly-comparison-dropdown'
-    );
-  if (
-    typeDropdown &&
-    !typeDropdown.contains(target)
-  ) {
-    const menu =
-      document.getElementById(
-        'monthlyComparisonTypeMenu'
-      );
-    if (menu) {
-      menu.hidden = true;
-    }
-  }
-  if (
-    periodDropdown &&
-    !periodDropdown.contains(target)
-  ) {
-    const menu =
-      document.getElementById(
-        'monthlyComparisonPeriodMenu'
-      );
-    if (menu) {
-      menu.hidden = true;
-    }
-  }
-  if (
-    annualTypeDropdown &&
-    !annualTypeDropdown.contains(target)
-  ) {
-    const menu =
-      document.getElementById(
-        'annualComparisonTypeMenu'
-      );
-    if (menu) {
-      menu.hidden = true;
-    }
-  }
-  if (
-    annualYearDropdown &&
-    !annualYearDropdown.contains(target)
-  ) {
-    const menu =
-      document.getElementById(
-        'annualComparisonYearMenu'
-      );
-    if (menu) {
-      menu.hidden = true;
-    }
-   }
-  });
-  const monthlyComparisonTypeOptions =
-  document.querySelectorAll(
-    '#monthlyComparisonTypeMenu .monthly-comparison-dropdown-option'
-  );
-  monthlyComparisonTypeOptions.forEach(option => {
-  option.addEventListener(
-    'click',
-    async () => {
-      const selectedType =
-        option.dataset.type;
-      if (!selectedType) {
-        return; }
-      monthlyComparisonType =
-        selectedType;
-      if (monthlyComparisonTypeLabel) {
-        monthlyComparisonTypeLabel.innerText =
+        monthlyComparisonType =
           selectedType;
-      }
-      monthlyComparisonTypeOptions.forEach(
-        item => {
-          item.classList.toggle(
-            'is-selected',
-            item === option
+        const months =
+          await fetchMonthlyComparisonMonths(
+            monthlyComparisonPeriod
           );
+        renderMonthlyComparison(months);
+      }
+    );
+  }
+  if (monthlyComparisonPeriodPicker) {
+    monthlyComparisonPeriodPicker.value =
+      String(monthlyComparisonPeriod);
+    monthlyComparisonPeriodPicker.addEventListener(
+      'change',
+      async event => {
+        const selectedPeriod =
+          Number(event.target.value);
+        if (
+          ![3, 6, 9, 12]
+            .includes(selectedPeriod)
+        ) {
+          return;
         }
-      );
-      const menu =
-        document.getElementById(
-          'monthlyComparisonTypeMenu'
-        );
-      if (menu) {
-        menu.hidden = true; }
-      const months =
-        await fetchMonthlyComparisonMonths(
-          monthlyComparisonPeriod
-        );
-      renderMonthlyComparison(months);
-    }
-   );
-  });
+        monthlyComparisonPeriod =
+          selectedPeriod;
+        const months =
+          await fetchMonthlyComparisonMonths(
+            selectedPeriod
+          );
+        renderMonthlyComparison(months);
+      }
+    );
+  }
   const annualComparisonTypeOptions =
     document.querySelectorAll(
       '#annualComparisonTypeMenu .monthly-comparison-dropdown-option'

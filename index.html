@@ -381,7 +381,7 @@
 
     .balance-card { 
       background: var(--balance-bg);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-radius: 28px; padding: 28px; min-height: 166px; height: 166px;
       display: flex; flex-direction: column; justify-content: center;
       border: 1px solid var(--glass-border); 
@@ -414,13 +414,7 @@
 
     /* Stats Grid Glass Cards */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 22px; }
-    .stat-card { 
-      background: var(--glass-card); 
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border-radius: 20px; padding: 16px 10px; 
-      border: 1px solid var(--glass-border); 
-      text-align: left; box-shadow: var(--glass-shadow);
-    }
+    .stat-card { background: var(--glass-card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; padding: 16px 10px; border: 1px solid var(--glass-border); text-align: left; box-shadow: var(--glass-shadow); }
     .stat-icon { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 0 8px; font-size: 15px; font-weight: bold; }
     .stat-icon svg { width: 18px; height: 18px; stroke-width: 2.2; }
     .stat-card.income .stat-icon { background: var(--income-bg); color: var(--income-color); }

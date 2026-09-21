@@ -4334,9 +4334,15 @@ body.modal-open {
   applyTheme(getPreferredTheme());
   updatePeriodUI();
   loadCustomItems().catch(error => {
-  console.error(
-    'Load custom items error:',
-    error
+    console.error(
+      'Load custom items error:',
+      error
+    );
+  });
+  loadLastUsedExpenseTypes().catch(error => {
+    console.error(
+      'Load last used expense types error:',
+      error
     );
   });
   document
@@ -11510,6 +11516,7 @@ function openEntriesFromInsight() {
       Deduction: []
     };
     let customItemExpenseTypeMap = {};
+    let lastUsedExpenseTypeMap = {};
     let customItemsLoaded = false;
     const entryItemOptions = {
     Income: [
@@ -11607,6 +11614,82 @@ function openEntriesFromInsight() {
         }
       });
       customItemsLoaded = true;
+    }
+    
+    async function loadLastUsedExpenseTypes() {
+      const { data, error } =
+        await supabaseClient
+          .from('financial_entries')
+          .select(
+            'id, title, expense_type, entry_date'
+          )
+          .eq(
+            'financial_type',
+            'Expense'
+          )
+          .not(
+            'expense_type',
+            'is',
+            null
+          )
+          .order(
+            'entry_date',
+            {
+              ascending: false
+            }
+          )
+          .order(
+            'id',
+            {
+              ascending: false
+            }
+          );
+      if (error) {
+        console.error(
+          'Load last used expense types error:',
+          error
+        );
+        lastUsedExpenseTypeMap = {};
+        return;
+      }
+      lastUsedExpenseTypeMap = {};
+      (data || []).forEach(entry => {
+        const name =
+          String(
+            entry.title || ''
+          ).trim();
+        const expenseType =
+          String(
+            entry.expense_type || ''
+          )
+            .trim()
+            .toUpperCase();
+        if (
+          !name ||
+          !['FIXED', 'VARIABLE']
+            .includes(expenseType)
+        ) {
+          return;
+        }
+        const key =
+          `Expense::${name}`;
+        if (
+          !lastUsedExpenseTypeMap[key]
+        ) {
+          lastUsedExpenseTypeMap[key] =
+            expenseType;
+        }
+      });
+    }
+    
+    function getRememberedExpenseType(item) {
+      const key =
+        `Expense::${item}`;
+      return (
+        lastUsedExpenseTypeMap[key] ||
+        customItemExpenseTypeMap[key] ||
+        ''
+      );
     }
   
     function getAllEntryItemNames(type) {
@@ -12140,9 +12223,17 @@ function openEntriesFromInsight() {
       expenseTypeGroup.hidden =
         !shouldShow;
       expenseTypePicker.required =
-        shouldShow;
+        shouldShow
       if (!shouldShow) {
         expenseTypePicker.value = '';
+        return;
+      }
+      if (isOther) {
+        return;
+      }
+      if (!expenseTypePicker.value) {
+        expenseTypePicker.value =
+          getRememberedExpenseType(item);
       }
     }
     
@@ -12220,9 +12311,23 @@ function openEntriesFromInsight() {
           event.target.value === '__add_new_item__'
         ) {
           event.target.value = '';
+          const expenseTypePicker =
+            document.getElementById(
+              'formExpenseType'
+            );
+          if (expenseTypePicker) {
+            expenseTypePicker.value = '';
+          }
           updateEntryNoteVisibility();
           openAddNewItemPanel();
           return;
+        }
+        const expenseTypePicker =
+          document.getElementById(
+            'formExpenseType'
+          );
+        if (expenseTypePicker) {
+          expenseTypePicker.value = '';
         }
         updateEntryNoteVisibility();
       });
@@ -12712,6 +12817,15 @@ function openEntriesFromInsight() {
           if (error) {
             throw error;
           }
+          if (
+            selectedType === 'Expense' &&
+            ['FIXED', 'VARIABLE']
+              .includes(databaseExpenseType)
+          ) {
+            lastUsedExpenseTypeMap[
+              `Expense::${selectedItem}`
+            ] = databaseExpenseType;
+          }
           closeModal();
           fetchData();
           return;
@@ -12723,6 +12837,15 @@ function openEntriesFromInsight() {
             .eq('id', rowIndex);
         if (error) {
           throw error;
+        }
+        if (
+          selectedType === 'Expense' &&
+          ['FIXED', 'VARIABLE']
+            .includes(databaseExpenseType)
+        ) {
+          lastUsedExpenseTypeMap[
+            `Expense::${selectedItem}`
+          ] = databaseExpenseType;
         }
         closeModal();
         fetchData();

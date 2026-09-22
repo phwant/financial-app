@@ -3901,7 +3901,6 @@ body.modal-open {
       <div
         class="form-group"
         id="formNoteGroup"
-        hidden
       >
         <label class="form-label">Note</label>
         <input
@@ -12266,13 +12265,7 @@ function openEntriesFromInsight() {
       ) {
         return;
       }
-      const isOther =
-        picker.value === 'อื่นๆ';
-      noteGroup.hidden =
-        !isOther;
-      if (!isOther) {
-        noteInput.value = '';
-      }
+      noteGroup.hidden = false;
       updateEntryExpenseTypeVisibility();
     }
     

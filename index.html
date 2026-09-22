@@ -2424,13 +2424,18 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   right: 9px;
   width: 13px;
   height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transform: translateY(-50%);
   color: var(--text-sub);
   opacity: 0.7;
   pointer-events: none;
+  line-height: 1;
 }
 
 .monthly-comparison-select-chevron svg {
+  display: block;
   width: 13px;
   height: 13px;
   stroke-width: 2.5;
@@ -3689,11 +3694,11 @@ body.modal-open {
           aria-label="Add comparison year"
         >
           <option value="">
-            +
+            2 Years
           </option>
         </select>
         <span class="monthly-comparison-select-chevron">
-          <i data-lucide="plus"></i>
+          <i data-lucide="chevron-down"></i>
         </span>
       </div>
     </div>
@@ -4565,20 +4570,16 @@ function populateAnnualComparisonAddYearPicker() {
     document.getElementById(
       'annualComparisonAddYearPicker'
     );
-
   if (!picker) {
     return;
   }
-
   const currentValue =
     picker.value;
-
   picker.innerHTML = `
     <option value="">
-      +
+      ${annualComparisonYears.length} Years
     </option>
   `;
-
   for (
     let year = 2025;
     year <= getAnnualComparisonMaxYear();
@@ -4586,27 +4587,23 @@ function populateAnnualComparisonAddYearPicker() {
   ) {
     const option =
       document.createElement('option');
-
     option.value = String(year);
     option.textContent = String(year);
-
     if (
       annualComparisonYears.includes(year) ||
       year === selectedYear
     ) {
       option.disabled = true;
     }
-
     picker.appendChild(option);
   }
-
   picker.value =
     annualComparisonYears.includes(
       Number(currentValue)
     )
       ? ''
       : currentValue;
-}
+  }
 
   function renderAnnualComparisonYearControls() {
     const header =
@@ -4729,30 +4726,9 @@ function populateAnnualComparisonAddYearPicker() {
     ) {
       return;
     }
-    const anchorYear =
-      selectedYear;
-    const isUntouchedDefault =
-      !annualComparisonCustomized &&
-      annualComparisonYears.length === 2 &&
-      annualComparisonYears.includes(
-        anchorYear - 1
-      ) &&
-      annualComparisonYears.includes(
-        anchorYear
-      );
-    if (
-      isUntouchedDefault &&
-      year === anchorYear + 1
-    ) {
-      annualComparisonYears = [
-        anchorYear,
-        year
-      ];
-    } else {
-      annualComparisonYears.push(
-        year
-      );
-    }
+    annualComparisonYears.push(
+      year
+    );
     annualComparisonYears.sort(
       (a, b) => a - b
     );

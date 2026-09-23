@@ -11774,7 +11774,11 @@ function openEntriesFromInsight() {
       }
       const items =
         sortEntryItems(
-          customItemsByType[selectedType] || []
+          getAllEntryItemNames(
+            selectedType
+          ).filter(
+            item => item !== 'อื่นๆ'
+          )
         );
       picker.innerHTML = `
         <option value="">
@@ -12105,6 +12109,96 @@ function openEntriesFromInsight() {
         );
     }
     
+    async function ensureBuiltInItemRecord(
+      type,
+      name
+    ) {
+      const key =
+        `${type}::${name}`;
+      const existing =
+        customItemRecordsByKey[key];
+      if (existing) {
+        return existing;
+      }
+      let icon =
+        iconMap[name] ||
+        'circle-help';
+      let expenseType = null;
+      if (type === 'Expense') {
+        expenseType =
+          getRememberedExpenseType(
+            name
+          ) || null;
+      }
+      const {
+        data: latestEntry,
+        error: latestEntryError
+      } = await supabaseClient
+        .from('financial_entries')
+        .select(
+          'icon, expense_type, entry_date, id'
+        )
+        .eq(
+          'financial_type',
+          type
+        )
+        .eq(
+          'title',
+          name
+        )
+        .order(
+          'entry_date',
+          {
+            ascending: false
+          }
+        )
+        .order(
+          'id',
+          {
+            ascending: false
+          }
+        )
+        .limit(1)
+        .maybeSingle();
+      if (latestEntryError) {
+        throw latestEntryError;
+      }
+      if (
+        latestEntry?.icon
+      ) {
+        icon =
+          latestEntry.icon;
+      }
+      if (
+        type === 'Expense' &&
+        latestEntry?.expense_type
+      ) {
+        expenseType =
+          latestEntry.expense_type;
+      }
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from('custom_items')
+        .insert([{
+          type,
+          name,
+          icon,
+          expense_type:
+            expenseType
+        }])
+        .select(
+          'id, type, name, icon, expense_type, created_at'
+        )
+        .single();
+      if (error) {
+        throw error;
+      }
+      await loadCustomItems();
+      return data;
+    }
+        
     async function handleAddNewItem() {
       const nameInput =
         document.getElementById(
@@ -12251,11 +12345,19 @@ function openEntriesFromInsight() {
           editingCustomItemOriginalName;
         const originalKey =
           `${originalType}::${originalName}`;
-        if (!editingCustomItemId) {
-          throw new Error(
-            'Missing custom item id.'
-          );
+        let itemRecord =
+          customItemRecordsByKey[
+            originalKey
+          ];
+        if (!itemRecord) {
+          itemRecord =
+            await ensureBuiltInItemRecord(
+              originalType,
+              originalName
+            );
         }
+        editingCustomItemId =
+          itemRecord.id;
         const duplicate =
           Object.values(
             customItemRecordsByKey

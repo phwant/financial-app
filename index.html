@@ -3955,7 +3955,6 @@ body.modal-open {
           <select
             class="form-control item-picker"
             id="customItemTypePreview"
-            disabled
           >
             <option value="">+ Add New Item</option>
           </select>
@@ -4316,6 +4315,57 @@ body.modal-open {
   ?.addEventListener(
     'click',
     closeAddNewItemPanel
+  );
+  document
+  .getElementById(
+    'customItemTypePreview'
+  )
+  ?.addEventListener(
+    'change',
+    event => {
+      const selectedItem =
+        event.target.value;
+      if (!selectedItem) {
+        customItemPanelMode =
+          'add';
+        editingCustomItemId = null;
+        editingCustomItemOriginalType = '';
+        editingCustomItemOriginalName = '';
+        document.getElementById(
+          'modalTitle'
+        ).innerText =
+          'Add New Item';
+        document.getElementById(
+          'customItemName'
+        ).value = '';
+        document.getElementById(
+          'customItemIcon'
+        ).value = '';
+        const expenseTypePicker =
+          document.getElementById(
+            'customItemExpenseType'
+          );
+        if (expenseTypePicker) {
+          expenseTypePicker.value =
+            '';
+        }
+        const addButton =
+          document.getElementById(
+            'addNewItemBtn'
+          );
+        if (addButton) {
+          addButton.innerText =
+            'ADD';
+        }
+        updateAddNewItemButtonState();
+        updateCustomIconPreview();
+        return;
+      }
+      openAddNewItemPanel(
+        'edit',
+        selectedItem
+      );
+    }
   );
   document
     .getElementById(
@@ -11499,41 +11549,48 @@ function openEntriesFromInsight() {
       Expense: [],
       Deduction: []
     };
+    let customItemIconMap = {};
     let customItemExpenseTypeMap = {};
+    let customItemRecordsByKey = {};
     let lastUsedExpenseTypeMap = {};
     let customItemsLoaded = false;
+    let customItemPanelMode = 'add';
+    let editingCustomItemId = null;
+    let editingCustomItemOriginalType = '';
+    let editingCustomItemOriginalName = '';
     const entryItemOptions = {
-    Income: [
-      'เงินเดือน',
-      'apple music',
-      'ยอดขายทะลุเป้าหมาย',
-      'อื่นๆ'
-    ],
-    Expense: [
-      '3BB',
-      'แม่',
-      'AIS Bill',
-      'ศรีสวัสดิ์',
-      'สยามชัย',
-      'แชร์',
-      'Spay later',
-      'SEasy',
-      'Tpay later',
-      'อื่นๆ'
-    ],
-    Deduction: [
-      'มาสาย',
-      'ลืมรูดบัตร',
-      'ออนไลน์ออกก่อนเกิน',
-      'ออนไลน์ออกก่อน',
-      'ไม่สแกนนิ้ว',
-      'ผิดกฎระเบียบ',
-      'ลาป่วย',
-      'ออมทรัพย์',
-      'ผ่อนสินค้า',
-      'อื่นๆ'
-    ]
-  };
+      Income: [
+        'เงินเดือน',
+        'apple music',
+        'ยอดขายทะลุเป้าหมาย',
+        'อื่นๆ'
+      ],
+      Expense: [
+        '3BB',
+        'แม่',
+        'AIS Bill',
+        'ศรีสวัสดิ์',
+        'สยามชัย',
+        'แชร์',
+        'Spay later',
+        'SEasy',
+        'Tpay later',
+        'อื่นๆ'
+      ],
+      Deduction: [
+        'มาสาย',
+        'ลืมรูดบัตร',
+        'ออนไลน์ออกก่อนเกิน',
+        'ออนไลน์ออกก่อน',
+        'ไม่สแกนนิ้ว',
+        'ผิดกฎระเบียบ',
+        'ลาป่วย',
+        'ออมทรัพย์',
+        'ผ่อนสินค้า',
+        'อื่นๆ'
+      ]
+    };
+    
     async function loadCustomItems() {
       const { data, error } =
         await supabaseClient
@@ -11559,6 +11616,7 @@ function openEntriesFromInsight() {
       };
       customItemIconMap = {};
       customItemExpenseTypeMap = {};
+      customItemRecordsByKey = {};
       (data || []).forEach(item => {
         if (
           !customItemsByType[item.type]
@@ -11572,13 +11630,22 @@ function openEntriesFromInsight() {
         if (!name) {
           return;
         }
+        const key =
+          `${item.type}::${name}`;
         customItemsByType[
           item.type
         ].push(name);
-        customItemIconMap[
-          `${item.type}::${name}`
-        ] =
+        customItemIconMap[key] =
           icon || 'circle-help';
+        customItemRecordsByKey[key] = {
+          id: item.id,
+          type: item.type,
+          name,
+          icon: icon || 'circle-help',
+          expense_type:
+            item.expense_type || null,
+          created_at: item.created_at
+        };
         const expenseType =
           String(
             item.expense_type || ''
@@ -11592,9 +11659,8 @@ function openEntriesFromInsight() {
             expenseType === 'VARIABLE'
           )
         ) {
-          customItemExpenseTypeMap[
-            `${item.type}::${name}`
-          ] = expenseType;
+          customItemExpenseTypeMap[key] =
+            expenseType;
         }
       });
       customItemsLoaded = true;
@@ -11698,7 +11764,41 @@ function openEntriesFromInsight() {
       return merged;
     }
     
-    function openAddNewItemPanel() {
+    function populateCustomItemManagerPicker() {
+      const picker =
+        document.getElementById(
+          'customItemTypePreview'
+        );
+      if (!picker) {
+        return;
+      }
+      const items =
+        sortEntryItems(
+          customItemsByType[selectedType] || []
+        );
+      picker.innerHTML = `
+        <option value="">
+          + Add New Item
+        </option>
+        ${items.map(item => `
+          <option value="${item}">
+            ${item}
+          </option>
+        `).join('')}
+      `;
+      picker.value =
+        customItemPanelMode === 'edit'
+          ? editingCustomItemOriginalName
+          : '';
+      requestAnimationFrame(() => {
+        lucide.createIcons();
+      });
+    }
+    
+    function openAddNewItemPanel(
+      mode = 'add',
+      itemName = ''
+    ) {
       const form =
         document.getElementById(
           'recordForm'
@@ -11731,13 +11831,28 @@ function openEntriesFromInsight() {
         document.getElementById(
           'customItemExpenseType'
         );
+      const actionButton =
+        document.getElementById(
+          'addNewItemBtn'
+        );
       if (
         !form ||
         !panel ||
-        !modalTitle
+        !modalTitle ||
+        !typePreview ||
+        !nameInput ||
+        !iconInput ||
+        !actionButton
       ) {
         return;
       }
+      customItemPanelMode =
+        mode === 'edit'
+          ? 'edit'
+          : 'add';
+      editingCustomItemId = null;
+      editingCustomItemOriginalType = '';
+      editingCustomItemOriginalName = '';
       const isExpense =
         selectedType === 'Expense';
       if (expenseTypeGroup) {
@@ -11747,18 +11862,51 @@ function openEntriesFromInsight() {
       if (expenseTypePicker) {
         expenseTypePicker.required =
           isExpense;
-        expenseTypePicker.value =
-          '';
+        expenseTypePicker.value = '';
       }
-      modalTitle.innerText =
-        'Add New Item';
-      if (typePreview) {
-        typePreview.innerHTML = `
-          <option value="">
-            + Add New Item
-          </option>
-        `;
-        typePreview.value = '';
+      if (
+        customItemPanelMode === 'edit'
+      ) {
+        const key =
+          `${selectedType}::${itemName}`;
+        const record =
+          customItemRecordsByKey[key];
+        if (!record) {
+          alert(
+            'This custom item could not be found.'
+          );
+          return;
+        }
+        editingCustomItemId =
+          record.id;
+        editingCustomItemOriginalType =
+          record.type;
+        editingCustomItemOriginalName =
+          record.name;
+        modalTitle.innerText =
+          'Edit Item';
+        nameInput.value =
+          record.name;
+        iconInput.value =
+          record.icon || '';
+        if (expenseTypePicker) {
+          expenseTypePicker.value =
+            record.expense_type || '';
+        }
+        populateCustomItemManagerPicker();
+        actionButton.innerText =
+          'SAVE';
+      } else {
+        modalTitle.innerText =
+          'Add New Item';
+        nameInput.value = '';
+        iconInput.value = '';
+        if (expenseTypePicker) {
+          expenseTypePicker.value = '';
+        }
+        populateCustomItemManagerPicker();
+        actionButton.innerText =
+          'ADD';
       }
       form.classList.add(
         'is-panel-hidden'
@@ -11770,14 +11918,11 @@ function openEntriesFromInsight() {
         'aria-hidden',
         'false'
       );
-      if (nameInput) {
-        nameInput.value = '';
-      }
-      if (iconInput) {
-        iconInput.value = '';
-      }
       updateAddNewItemButtonState();
       updateCustomIconPreview();
+      requestAnimationFrame(() => {
+        lucide.createIcons();
+      });
     }
     
     function closeAddNewItemPanel() {
@@ -11793,9 +11938,29 @@ function openEntriesFromInsight() {
         document.getElementById(
           'modalTitle'
         );
+      const actionButton =
+        document.getElementById(
+          'addNewItemBtn'
+        );
+      const nameInput =
+        document.getElementById(
+          'customItemName'
+        );
+      const iconInput =
+        document.getElementById(
+          'customItemIcon'
+        );
+      const expenseTypePicker =
+        document.getElementById(
+          'customItemExpenseType'
+        );
       if (!form || !panel) {
         return;
       }
+      customItemPanelMode = 'add';
+      editingCustomItemId = null;
+      editingCustomItemOriginalType = '';
+      editingCustomItemOriginalName = '';
       panel.classList.remove(
         'is-visible'
       );
@@ -11810,16 +11975,35 @@ function openEntriesFromInsight() {
         modalTitle.innerText =
           'ADD ENTRY';
       }
+      if (actionButton) {
+        actionButton.innerText =
+          'ADD';
+      }
+      if (nameInput) {
+        nameInput.value = '';
+      }
+      if (iconInput) {
+        iconInput.value = '';
+      }
+      if (expenseTypePicker) {
+        expenseTypePicker.value = '';
+      }
       populateEntryItems(
         selectedType
       );
+      updateAddNewItemButtonState();
+      updateCustomIconPreview();
     }
     
     function updateCustomIconPreview() {
       const input =
-        document.getElementById('customItemIcon');
+        document.getElementById(
+          'customItemIcon'
+        );
       const preview =
-        document.getElementById('customIconPreview');
+        document.getElementById(
+          'customIconPreview'
+        );
       if (!input || !preview) {
         return;
       }
@@ -11847,21 +12031,34 @@ function openEntriesFromInsight() {
       );
       lucide.createIcons();
     }
-    
     document
       .getElementById('customItemIcon')
-      ?.addEventListener('focus', () => {
-        document
-          .getElementById('customIconPreview')
-          ?.classList.add('is-active');
-      });
+      ?.addEventListener(
+        'focus',
+        () => {
+          document
+            .getElementById(
+              'customIconPreview'
+            )
+            ?.classList.add(
+              'is-active'
+            );
+        }
+      );
     document
       .getElementById('customItemIcon')
-      ?.addEventListener('blur', () => {
-        document
-          .getElementById('customIconPreview')
-          ?.classList.remove('is-active');
-      });
+      ?.addEventListener(
+        'blur',
+        () => {
+          document
+            .getElementById(
+              'customIconPreview'
+            )
+            ?.classList.remove(
+              'is-active'
+            );
+        }
+      );
     
     function updateAddNewItemButtonState() {
       const addButton =
@@ -11921,14 +12118,14 @@ function openEntriesFromInsight() {
         document.getElementById(
           'customItemExpenseType'
         );
-      const addButton =
+      const actionButton =
         document.getElementById(
           'addNewItemBtn'
         );
       if (
         !nameInput ||
         !iconInput ||
-        !addButton
+        !actionButton
       ) {
         return;
       }
@@ -11965,123 +12162,179 @@ function openEntriesFromInsight() {
         expenseTypePicker?.focus();
         return;
       }
-      const allItems =
-        getAllEntryItemNames(
-          selectedType
-        );
-      const duplicate =
-        allItems.some(
-          item =>
-            item.toLowerCase() ===
-            name.toLowerCase()
-        );
-      if (duplicate) {
-        alert(
-          'This item already exists.'
-        );
-        nameInput.focus();
-        return;
-      }
-      addButton.disabled = true;
-      addButton.innerText =
-        'ADDING...';
+      const isEdit =
+        customItemPanelMode === 'edit';
+      actionButton.disabled = true;
       try {
-        const {
-          data: existing,
-          error: checkError
-        } = await supabaseClient
-          .from('custom_items')
-          .select('id, name')
-          .eq(
-            'type',
-            selectedType
-          )
-          .ilike(
-            'name',
-            name
-          );
-        if (checkError) {
-          throw checkError;
-        }
-        if (
-          existing &&
-          existing.length > 0
-        ) {
-          alert(
-            'This item already exists.'
+        if (!isEdit) {
+          const allItems =
+            getAllEntryItemNames(
+              selectedType
+            );
+          const duplicate =
+            allItems.some(
+              item =>
+                item.toLowerCase() ===
+                name.toLowerCase()
+            );
+          if (duplicate) {
+            alert(
+              'This item already exists.'
+            );
+            nameInput.focus();
+            return;
+          }
+          actionButton.innerText =
+            'ADDING...';
+          const {
+            data: existing,
+            error: checkError
+          } = await supabaseClient
+            .from('custom_items')
+            .select('id, name')
+            .eq(
+              'type',
+              selectedType
+            )
+            .ilike(
+              'name',
+              name
+            );
+          if (checkError) {
+            throw checkError;
+          }
+          if (
+            existing &&
+            existing.length > 0
+          ) {
+            alert(
+              'This item already exists.'
+            );
+            nameInput.focus();
+            return;
+          }
+          const {
+            data: inserted,
+            error: insertError
+          } = await supabaseClient
+            .from('custom_items')
+            .insert([{
+              type:
+                selectedType,
+              name,
+              icon,
+              expense_type:
+                selectedType === 'Expense'
+                  ? expenseType
+                  : null
+            }])
+            .select(
+              'id, type, name, icon, expense_type, created_at'
+            )
+            .single();
+          if (insertError) {
+            throw insertError;
+          }
+          await loadCustomItems();
+          closeAddNewItemPanel();
+          populateEntryItems(
+            selectedType,
+            inserted.name
           );
           return;
         }
+        actionButton.innerText =
+          'SAVING...';
+        const originalType =
+          editingCustomItemOriginalType;
+        const originalName =
+          editingCustomItemOriginalName;
+        const originalKey =
+          `${originalType}::${originalName}`;
+        if (!editingCustomItemId) {
+          throw new Error(
+            'Missing custom item id.'
+          );
+        }
+        const duplicate =
+          Object.values(
+            customItemRecordsByKey
+          ).some(item =>
+            String(item.id) !==
+              String(editingCustomItemId) &&
+            item.type === originalType &&
+            item.name.toLowerCase() ===
+              name.toLowerCase()
+          );
+        if (duplicate) {
+          alert(
+            'This item already exists.'
+          );
+          nameInput.focus();
+          return;
+        }
         const {
-          data: inserted,
-          error: insertError
+          error: updateError
         } = await supabaseClient
           .from('custom_items')
-          .insert([{
-            type:
-              selectedType,
+          .update({
             name,
             icon,
             expense_type:
-              selectedType === 'Expense'
+              originalType === 'Expense'
                 ? expenseType
                 : null
-          }])
-          .select(
-            'id, type, name, icon, expense_type, created_at'
-            )
-          .single();
-        if (insertError) {
-          throw insertError;
+          })
+          .eq(
+            'id',
+            editingCustomItemId
+          );
+        if (updateError) {
+          throw updateError;
         }
-        if (
-          !customItemsByType[
-            selectedType
-          ]
-        ) {
-          customItemsByType[
-            selectedType
-          ] = [];
-        }
-        customItemsByType[
-          selectedType
-        ].push(
-          inserted.name
-        );
-        customItemIconMap[
-          `${inserted.type}::${inserted.name}`
-        ] =
-          inserted.icon;
-        if (
-          inserted.type === 'Expense' &&
-          (
-            inserted.expense_type === 'FIXED' ||
-            inserted.expense_type === 'VARIABLE'
+        const {
+          error: entriesError
+        } = await supabaseClient
+          .from('financial_entries')
+          .update({
+            title: name,
+            icon,
+            expense_type:
+              originalType === 'Expense'
+                ? expenseType
+                : null
+          })
+          .eq(
+            'financial_type',
+            originalType
           )
-        ) {
-          customItemExpenseTypeMap[
-            `Expense::${inserted.name}`
-          ] =
-            inserted.expense_type;
+          .eq(
+            'title',
+            originalName
+          );
+        if (entriesError) {
+          throw entriesError;
         }
+        await loadCustomItems();
         closeAddNewItemPanel();
-        populateEntryItems(
-          selectedType,
-          inserted.name
-        );
+        await fetchData();
       } catch (error) {
         console.error(
-          'Add custom item error:',
+          'Custom item save error:',
           error
         );
         alert(
-          'Error adding new item.'
+          isEdit
+            ? 'Error updating item.'
+            : 'Error adding new item.'
         );
       } finally {
-        addButton.disabled =
-          false;
-        addButton.innerText =
-          'ADD';
+        actionButton.disabled = false;
+        actionButton.innerText =
+          customItemPanelMode === 'edit'
+            ? 'SAVE'
+            : 'ADD';
+        updateAddNewItemButtonState();
       }
     }
     
@@ -12606,6 +12859,10 @@ function openEntriesFromInsight() {
         document.getElementById(
           'modalTitle'
         );
+      customItemPanelMode = 'add';
+      editingCustomItemId = null;
+      editingCustomItemOriginalType = '';
+      editingCustomItemOriginalName = '';
       if (modalTitle) {
         modalTitle.innerText =
           'ADD ENTRY';

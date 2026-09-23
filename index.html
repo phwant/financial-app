@@ -11555,6 +11555,7 @@ function openEntriesFromInsight() {
     let lastUsedExpenseTypeMap = {};
     let customItemsLoaded = false;
     let customItemPanelMode = 'add';
+    let customItemPanelType = '';
     let editingCustomItemId = null;
     let editingCustomItemOriginalType = '';
     let editingCustomItemOriginalName = '';
@@ -11769,12 +11770,14 @@ function openEntriesFromInsight() {
         document.getElementById(
           'customItemTypePreview'
         );
+        
       if (!picker) {
         return;
       }
       const items =
         sortEntryItems(
           getAllEntryItemNames(
+            customItemPanelType ||
             selectedType
           ).filter(
             item => item !== 'อื่นๆ'
@@ -11854,11 +11857,13 @@ function openEntriesFromInsight() {
         mode === 'edit'
           ? 'edit'
           : 'add';
+      customItemPanelType =
+        selectedType;
       editingCustomItemId = null;
       editingCustomItemOriginalType = '';
       editingCustomItemOriginalName = '';
       const isExpense =
-        selectedType === 'Expense';
+        customItemPanelType === 'Expense';
       if (expenseTypeGroup) {
         expenseTypeGroup.hidden =
           !isExpense;
@@ -11872,15 +11877,22 @@ function openEntriesFromInsight() {
         customItemPanelMode === 'edit'
       ) {
         const key =
-          `${selectedType}::${itemName}`;
+          `${customItemPanelType}::${itemName}`;
         const record =
-          customItemRecordsByKey[key];
-        if (!record) {
-          alert(
-            'This custom item could not be found.'
-          );
-          return;
-        }
+          customItemRecordsByKey[key] || {
+            id: null,
+            type: customItemPanelType,
+            name: itemName,
+            icon:
+              iconMap[itemName] ||
+              'circle-help',
+            expense_type:
+              customItemPanelType === 'Expense'
+                ? getRememberedExpenseType(
+                    itemName
+                  ) || ''
+                : null
+          };
         editingCustomItemId =
           record.id;
         editingCustomItemOriginalType =
@@ -11962,6 +11974,7 @@ function openEntriesFromInsight() {
         return;
       }
       customItemPanelMode = 'add';
+      customItemPanelType = '';
       editingCustomItemId = null;
       editingCustomItemOriginalType = '';
       editingCustomItemOriginalName = '';
@@ -12096,8 +12109,11 @@ function openEntriesFromInsight() {
         Boolean(
           iconInput.value.trim()
         );
+      const panelType =
+        customItemPanelType ||
+        selectedType;
       const hasExpenseType =
-        selectedType !== 'Expense' ||
+        panelType !== 'Expense' ||
         Boolean(
           expenseTypePicker?.value
         );
@@ -12241,12 +12257,15 @@ function openEntriesFromInsight() {
         iconInput.focus();
         return;
       }
+      const panelType =
+        customItemPanelType ||
+        selectedType;
       const expenseType =
-        selectedType === 'Expense'
+        panelType === 'Expense'
           ? expenseTypePicker?.value || ''
           : null;
       if (
-        selectedType === 'Expense' &&
+        panelType === 'Expense' &&
         !['FIXED', 'VARIABLE']
           .includes(expenseType)
       ) {
@@ -12263,7 +12282,7 @@ function openEntriesFromInsight() {
         if (!isEdit) {
           const allItems =
             getAllEntryItemNames(
-              selectedType
+              panelType
             );
           const duplicate =
             allItems.some(
@@ -12288,7 +12307,7 @@ function openEntriesFromInsight() {
             .select('id, name')
             .eq(
               'type',
-              selectedType
+              panelType
             )
             .ilike(
               'name',
@@ -12314,11 +12333,11 @@ function openEntriesFromInsight() {
             .from('custom_items')
             .insert([{
               type:
-                selectedType,
+                panelType,
               name,
               icon,
               expense_type:
-                selectedType === 'Expense'
+                panelType === 'Expense'
                   ? expenseType
                   : null
             }])
@@ -12332,7 +12351,7 @@ function openEntriesFromInsight() {
           await loadCustomItems();
           closeAddNewItemPanel();
           populateEntryItems(
-            selectedType,
+            panelType,
             inserted.name
           );
           return;

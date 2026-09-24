@@ -5316,36 +5316,6 @@ function renderEntriesPage(entries) {
     );
   }
   
-  function getExpenseBarColor(title) {
-  if (!title) return '#94A3B8';
-  if (expenseColorMap[title]) {
-    return expenseColorMap[title]; }
-  const usedColors = new Set(
-    Object.values(expenseColorMap)
-  );
-  const availableColor = expenseBarPalette.find(
-    color => !usedColors.has(color)
-  );
-  const assignedColor =
-    availableColor || '#94A3B8';
-  expenseColorMap[title] = assignedColor;
-  return assignedColor; }
-  const expenseTypeMap = {
-    Fixed: [
-      'แม่',
-      'ศรีสวัสดิ์',
-      'สยามชัย',
-      'แชร์',
-      '3BB'
-    ],
-    Variable: [
-      'Tpay later',
-      'SEasy',
-      'Spay later',
-      'AIS Bill'
-    ]
-  };
-  
   function getExpenseType(itemOrTitle) {
     if (
       itemOrTitle &&
@@ -6322,35 +6292,7 @@ function renderExpenseTypeSummary(entries) {
   `;
   lucide.createIcons();
   }
-  document
-  .getElementById('expenseBreakdownList')
-  .addEventListener('click', (event) => {
-    if (selectedExpenseType) return;
-    const item = event.target.closest('.expense-chart-item');
-    if (!item) return;
-    const title = item.dataset.expenseTitle;
-    if (selectedExpenseTitle === title) {
-      selectedExpenseTitle = null;
-    const track = document.querySelector('.expense-chart-track');
-      track.classList.remove('has-selection');
-      document
-        .querySelectorAll('.expense-chart-item')
-        .forEach(chartItem => {
-          chartItem.classList.remove('is-selected');
-        });
-      return; }
-    selectedExpenseTitle = title;
-    const track = document.querySelector('.expense-chart-track');
-    track.classList.add('has-selection');
-    document
-      .querySelectorAll('.expense-chart-item')
-      .forEach(chartItem => {
-        chartItem.classList.toggle(
-          'is-selected',
-          chartItem === item
-        );
-      });
-  });
+  
   function updateExpenseChartCompactState() {
   const bars = document.querySelectorAll(
     '#expenseBreakdownList .expense-chart-bar'
@@ -11290,9 +11232,6 @@ function openEntriesFromInsight() {
       placeholderView.style.display = 'none';
       insightsView.style.display = '';
     tabs[2]?.classList.add('active');
-    requestAnimationFrame(() => {
-      updateExpenseChartCompactState();
-    });
   }
   lucide.createIcons();
   requestAnimationFrame(() => {

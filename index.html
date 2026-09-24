@@ -1881,6 +1881,118 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   animation: upcomingDotPulse 3.5s ease-in-out infinite;
 }
 
+.expense-chart {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+.expense-chart-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.expense-bubble {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-sizing: border-box;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transform: translate(-50%, -50%);
+  transition:
+    left 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    top 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.25s ease;
+  overflow: hidden;
+}
+
+.expense-bubble::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 32% 28%,
+    rgba(255, 255, 255, 0.22),
+    rgba(255, 255, 255, 0.06) 42%,
+    rgba(0, 0, 0, 0.08) 100%
+  );
+  pointer-events: none;
+}
+
+.expense-bubble-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.expense-bubble-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expense-bubble-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.8;
+}
+
+.expense-bubble-name {
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.expense-bubble-amount {
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.expense-bubble.is-dimmed {
+  opacity: 0.28;
+}
+
+.expense-bubble.is-focused {
+  opacity: 1;
+  z-index: 5;
+}
+
+.expense-bubble.is-small .expense-bubble-name {
+  display: none;
+}
+
+.expense-bubble.is-small .expense-bubble-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.expense-bubble.is-small .expense-bubble-amount {
+  font-size: 9px;
+}
+
 .expense-type-summary {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -6186,6 +6298,160 @@ function renderExpenseTypeSummary(entries) {
   `;
   }
   
+  function renderExpenseBreakdown(entries) {
+    const container =
+      document.getElementById('expenseBreakdownList');
+    if (!container) return;
+    const expenses = (entries || [])
+      .filter(
+        item =>
+          item.financial_type === 'Expense'
+      )
+      .sort(
+        (a, b) =>
+          Number(b.amount || 0) -
+          Number(a.amount || 0)
+      );
+    if (expenses.length === 0) {
+      const isFuture =
+        isSelectedMonthFuture();
+      const selectedMonthInfo =
+        months.find(
+          item =>
+            item.m === selectedMonth
+        );
+      const selectedMonthName =
+        selectedMonthInfo
+          ? selectedMonthInfo.name
+          : '';
+      const selectedPeriodLabel =
+        `${selectedMonthName} ${selectedYear}`;
+      container.innerHTML = `
+        <div class="expense-chart-track">
+          <div class="expense-chart-empty-label">
+            <div class="expense-chart-empty-title">
+              ${
+                isFuture
+                  ? `no expense data yet for ${selectedPeriodLabel.toUpperCase()}`
+                  : 'no expense data'
+              }
+            </div>
+            <div class="expense-chart-empty-description">
+              ${
+                isFuture
+                  ? ''
+                  : `No expense records for ${selectedPeriodLabel}`
+              }
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    const maxAmount =
+      Math.max(
+        ...expenses.map(
+          item =>
+            Number(item.amount || 0)
+        )
+      );
+    const bubblePositions = [
+      [50, 50],
+      [24, 28],
+      [76, 28],
+      [20, 68],
+      [80, 68],
+      [35, 16],
+      [65, 16],
+      [34, 84],
+      [66, 84],
+      [12, 47],
+      [88, 47],
+      [50, 90]
+    ];
+    const getBubbleSize = amount => {
+      if (maxAmount <= 0) return 72;
+      const ratio =
+        Math.sqrt(amount / maxAmount);
+      return Math.round(
+        64 + ratio * 76
+      );
+    };
+    const getBubbleColor = item => {
+      const type =
+        getExpenseType(item);
+      if (type === 'Fixed') {
+        return '#A3CA7E';
+      }
+      if (type === 'Variable') {
+        return '#B0CBE7';
+      }
+      return '#F43F5E';
+    };
+    container.innerHTML = `
+      <div class="expense-chart-track">
+        ${expenses
+          .map((item, index) => {
+            const amount =
+              Number(item.amount || 0);
+            const size =
+              getBubbleSize(amount);
+            const [left, top] =
+              bubblePositions[
+                Math.min(
+                  index,
+                  bubblePositions.length - 1
+                )
+              ];
+            const color =
+              getBubbleColor(item);
+            const isSmall =
+              size < 92;
+            return `
+              <div
+                class="expense-bubble ${
+                  isSmall
+                    ? 'is-small'
+                    : ''
+                }"
+                data-expense-title="${item.title}"
+                style="
+                  width: ${size}px;
+                  height: ${size}px;
+                  left: ${left}%;
+                  top: ${top}%;
+                  background: ${color};
+                "
+              >
+                <div class="expense-bubble-content">
+                  <div class="expense-bubble-icon">
+                    <i
+                      data-lucide="${
+                        item.icon || 'circle'
+                      }"
+                    ></i>
+                  </div>
+                  <div class="expense-bubble-name">
+                    ${item.title}
+                  </div>
+                  <div class="expense-bubble-amount">
+                    ฿${amount.toLocaleString(
+                      'en-US',
+                      {
+                        minimumFractionDigits: 2
+                      }
+                    )}
+                  </div>
+                </div>
+              </div>
+            `;
+          })
+          .join('')}
+      </div>
+    `;
+    lucide.createIcons();
+  }
+  
   function selectExpenseType(type) {
   if (selectedExpenseType === type) {
     selectedExpenseType = null;
@@ -6195,7 +6461,6 @@ function renderExpenseTypeSummary(entries) {
   renderExpenseTypeSummary(currentEntries);
   renderExpenseBreakdown(currentEntries);
   renderTopSpending(currentEntries); }
-  
   
   function renderTopSpending(entries) {
   const container =

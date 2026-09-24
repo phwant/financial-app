@@ -1880,236 +1880,317 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   background: currentColor;
   animation: upcomingDotPulse 3.5s ease-in-out infinite;
 }
-
 .expense-chart {
   width: 100%;
-  height: 286px;
-  position: relative;
-  overflow: hidden;
-}
-
-.expense-chart-scroll {
-  position: absolute;
-  top: 0;
-  right: 12px;
-  bottom: 0;
-  left: 48px;
+  height: 180px;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  touch-action: auto;
-  overscroll-behavior-x: contain;
 }
-
-.expense-chart-scroll::-webkit-scrollbar {
+.expense-chart::-webkit-scrollbar {
   display: none;
 }
-
-.expense-chart-svg {
-  display: block;
-  width: 720px;
-  min-width: 720px;
+.expense-chart-track {
   height: 100%;
-  overflow: visible;
-  touch-action: auto;
-}
-
-.expense-chart-y-axis {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 48px;
-  height: 100%;
-  z-index: 3;
-  pointer-events: none;
-  background: transparent;
-}
-
-.expense-chart-grid-line {
-  stroke: rgba(100, 116, 139, 0.055);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-
-.expense-chart-line {
-  fill: none;
-  stroke: var(--text-sub);
-  stroke-width: 1.25;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.28;
-  vector-effect: non-scaling-stroke;
-}
-
-.expense-chart-axis-label-html {
-  color: var(--text-sub);
-  opacity: 0.72;
-  font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.expense-chart-item-label {
-  fill: var(--text-sub);
-  opacity: 0.82;
-  font-family: 'Inter', 'Noto Sans Thai', sans-serif;
-  font-size: 9px;
-  font-weight: 800;
-  text-anchor: middle;
-  dominant-baseline: middle;
-}
-
-.expense-chart-item-icon {
-  color: var(--text-sub);
-  opacity: 0.82;
-  pointer-events: none;
-}
-
-.expense-chart-point {
-  cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    opacity 0.18s ease;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.expense-chart-point-line-mask {
-  pointer-events: none;
-}
-
-.expense-chart-point-dot {
-  opacity: 1;
-  transition:
-    r 0.18s ease,
-    stroke-width 0.18s ease,
-    opacity 0.18s ease;
-}
-
-.expense-chart-point.is-dimmed
-.expense-chart-point-dot {
-  opacity: 0.40;
-}
-
-.expense-chart-point.is-selected
-.expense-chart-point-dot {
-  opacity: 1;
-  stroke: var(--bg-color);
-  stroke-width: 3;
-}
-
-.expense-chart-point.is-selected
-.expense-chart-point-ring {
-  opacity: 1;
-}
-
-.expense-chart-point-ring {
-  fill: none;
-  stroke-width: 2;
-  opacity: 0;
-  transition: opacity 0.18s ease;
-  vector-effect: non-scaling-stroke;
-}
-
-.expense-chart-tooltip {
-  position: absolute;
-  z-index: 20;
-  min-width: 0;
-  width: max-content;
-  max-width: calc(100% - 20px);
-  padding: 9px 12px 10px;
-  border-radius: 13px;
-  background: var(--glass-card);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  box-shadow: var(--glass-shadow);
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, 6px) scale(0.96);
-  transform-origin: center bottom;
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease;
-}
-
-.expense-chart-tooltip.is-visible {
-  opacity: 1;
-  transform: translate(-50%, 0) scale(1);
-}
-
-.expense-chart-tooltip.is-below {
-  transform-origin: center top;
-  transform: translate(-50%, -6px) scale(0.96);
-}
-
-.expense-chart-tooltip.is-below.is-visible {
-  transform: translate(-50%, 0) scale(1);
-}
-
-.expense-chart-tooltip-item {
-  max-width: min(220px, calc(100vw - 56px));
-  font-size: 9px;
-  line-height: 1.25;
-  font-weight: 800;
-  letter-spacing: 0.45px;
-  color: var(--text-sub);
-  text-align: center;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.expense-chart-tooltip-amount {
-  margin-top: 3px;
-  font-size: 13px;
-  line-height: 1.15;
-  font-weight: 900;
-  color: var(--text-main);
-  white-space: nowrap;
-  text-align: center;
-}
-
-/* Empty states */
-.expense-chart-empty {
-  min-height: 286px;
+  min-width: 100%;
   display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 18px;
+  padding: 28px 12px 0;
+  box-sizing: border-box;
+}
+.expense-chart-empty {
+  position: relative;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  padding: 0 12px;
 }
 
 .expense-chart-empty-label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px;
-  padding: 24px;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  text-align: center;
 }
 
 .expense-chart-empty-title {
   font-size: 11px;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: 0.9px;
+  line-height: 1.2;
   color: var(--text-sub);
+  opacity: 0.9;
 }
 
 .expense-chart-empty-description {
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.45;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.25px;
+  line-height: 1.3;
   color: var(--text-sub);
-  opacity: 0.78;
+  opacity: 0.65;
 }
 
 .expense-chart-future-message {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.45px;
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.65px;
+  line-height: 1.25;
   color: var(--text-sub);
-  opacity: 0.82;
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.expense-chart-item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 42px;
+  max-width: 56px;
+  height: 100%;
+  display: block;
+  flex-shrink: 0;
+}
+
+.expense-chart-item.future-placeholder {
+  pointer-events: none;
+}
+
+.future-placeholder-bar {
+  height: 65%;
+  background: var(--text-sub);
+  opacity: 0.15;
+  border-radius: 999px;
+}
+
+.expense-chart-bar-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 32px;
+  width: 30px;
+  height: calc(100% - 40px);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 0;
+}
+.expense-chart-bar {
+  position: relative;
+  width: 30px;
+  min-height: 4px;
+  border-radius: 999px;
+  transition: opacity 0.2s ease;
+}
+.expense-chart-bar.is-compact
+.expense-chart-selected-icon {
+  opacity: 0 !important;
+}
+
+.expense-chart-bar.is-tiny
+.expense-chart-dot {
+  opacity: 0 !important;
+}
+.expense-chart-icon {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  transform: translateX(-50%);
+  opacity: 1;
+  transition: opacity 0.15s ease;
+}
+
+.expense-chart-icon svg {
+  display: block;
+  width: 19px;
+  height: 19px;
+  margin: 0;
+}
+
+.expense-chart-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.expense-chart-percent {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--text-main);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  z-index: 4;
+}
+.expense-chart-dot {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-main);
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+  transition: opacity 0.2s ease;
+}
+.expense-chart-selected-icon {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  color: var(--text-main);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.15s ease;
+}
+
+.expense-chart-selected-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  stroke: currentColor;
+  stroke-width: 2.1;
+}
+.expense-chart-item.is-selected .expense-chart-selected-icon {
+  opacity: 0.9;
+}
+.expense-chart-item.is-selected .expense-chart-percent {
+  opacity: 0.9;
+}
+.expense-chart-item.is-selected .expense-chart-dot {
+  opacity: 0.9;
+}
+.expense-chart-track.has-selection
+.expense-chart-item:not(.is-selected)
+.expense-chart-bar {
+  opacity: 0.25;
+}
+.expense-chart-track.has-selection
+.expense-chart-item:not(.is-selected)
+.expense-chart-icon {
+  opacity: 0.25;
+}
+.expense-chart-track.has-selection
+.expense-chart-item.is-selected
+.expense-chart-bar {
+  opacity: 1;
+}
+.expense-chart-label {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  height: 24px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+.expense-chart-amount {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 12px;
+  color: var(--text-main);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.expense-chart-item.is-selected .expense-chart-icon {
+  opacity: 0;
+}
+.expense-chart-item.is-selected .expense-chart-amount {
+  opacity: 1;
+}
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed {
+  opacity: 1;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed
+.expense-chart-bar {
+  opacity: 0.25;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed
+.expense-chart-icon {
+  opacity: 0.25;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item:not(.is-type-dimmed)
+.expense-chart-bar {
+  opacity: 1;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed
+.expense-chart-bar {
+  opacity: 0.25;
+}
+.expense-chart-track.sub-mode
+.expense-chart-selected-icon {
+  display: none !important;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-percent {
+  opacity: 0.9;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed
+.expense-chart-percent {
+  opacity: 0;
 }
 
 .expense-type-summary {
@@ -6457,95 +6538,9 @@ function renderExpenseTypeSummary(entries) {
   renderExpenseBreakdown(currentEntries);
   renderTopSpending(currentEntries); }
   
-  let expenseTrendSelectedTitle = null;
-
-function closeExpenseTrendTooltip() {
-  expenseTrendSelectedTitle = null;
-
+  function renderExpenseBreakdown(entries) {
   const container =
-    document.getElementById(
-      'expenseBreakdownList'
-    );
-
-  if (!container) {
-    return;
-  }
-
-  const tooltip =
-    container.querySelector(
-      '#expenseTrendTooltip'
-    );
-
-  if (tooltip) {
-    tooltip.classList.remove(
-      'is-visible',
-      'is-below'
-    );
-  }
-
-  container
-    .querySelectorAll(
-      '.expense-chart-point'
-    )
-    .forEach(point => {
-      point.classList.remove(
-        'is-selected'
-      );
-    });
-}
-
-function formatExpenseTrendAmount(amount) {
-  return `฿${Number(
-    amount || 0
-  ).toLocaleString(
-    'en-US',
-    {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }
-  )}`;
-}
-
-function getExpenseTrendAxisMax(maxAmount) {
-  if (!maxAmount || maxAmount <= 0) {
-    return 100;
-  }
-
-  const magnitude =
-    Math.pow(
-      10,
-      Math.floor(
-        Math.log10(maxAmount)
-      )
-    );
-
-  const normalized =
-    maxAmount / magnitude;
-
-  let niceNormalized;
-
-  if (normalized <= 1) {
-    niceNormalized = 1;
-  } else if (normalized <= 2) {
-    niceNormalized = 2;
-  } else if (normalized <= 5) {
-    niceNormalized = 5;
-  } else {
-    niceNormalized = 10;
-  }
-
-  return niceNormalized * magnitude;
-}
-
-function renderExpenseBreakdown(entries) {
-  const container =
-    document.getElementById(
-      'expenseBreakdownList'
-    );
-  if (!container) {
-    return;
-  }
-  closeExpenseTrendTooltip();
+    document.getElementById('expenseBreakdownList');
   const expenses = (entries || [])
     .filter(
       item =>
@@ -6553,8 +6548,8 @@ function renderExpenseBreakdown(entries) {
     )
     .sort(
       (a, b) =>
-        Number(b.amount || 0) -
-        Number(a.amount || 0)
+        Number(b.amount) -
+        Number(a.amount)
     );
   if (expenses.length === 0) {
     const isFuture =
@@ -6570,26 +6565,53 @@ function renderExpenseBreakdown(entries) {
         : '';
     const selectedPeriodLabel =
       `${selectedMonthName} ${selectedYear}`;
-    expenseTrendSelectedTitle = null;
     selectedExpenseTitle = null;
+    if (isFuture) {
+      selectedExpenseType = null; }
     container.innerHTML = `
-      <div class="expense-chart-empty">
-        <div class="expense-chart-empty-label">
-          <div class="expense-chart-empty-title">
-            no expense data
-          </div>
-          <div class="expense-chart-empty-description">
-            ${
-              isFuture
-                ? `No expense records yet for ${selectedPeriodLabel}`
-                : `No expense records for ${selectedPeriodLabel}`
-            }
-          </div>
-        </div>
+      <div class="expense-chart-track expense-chart-empty">
+        ${
+          isFuture
+            ? `
+              ${Array.from(
+                { length: 6 },
+                () => `
+                  <div class="expense-chart-item future-placeholder">
+                    <div class="expense-chart-bar-wrap">
+                      <div class="expense-chart-bar future-placeholder-bar"></div>
+                    </div>
+                  </div>
+                `
+              ).join('')}
+
+              <div class="expense-chart-future-message">
+                no expense data yet for ${selectedPeriodLabel.toUpperCase()}
+              </div>
+            `
+            : `
+              <div class="expense-chart-empty-label">
+                <div class="expense-chart-empty-title">
+                  no expense data
+                </div>
+
+                <div class="expense-chart-empty-description">
+                  No expense records for ${selectedPeriodLabel}
+                </div>
+              </div>
+            `
+        }
       </div>
     `;
-    return;
-  }
+    return; }
+  if (selectedExpenseType) {
+    selectedExpenseTitle = null; }
+  const totalExpense =
+    expenses.reduce(
+      (sum, item) =>
+        sum +
+        Number(item.amount || 0),
+      0
+    );
   const contextualExpenses =
     selectedExpenseType
       ? expenses.filter(
@@ -6598,554 +6620,146 @@ function renderExpenseBreakdown(entries) {
             selectedExpenseType
         )
       : expenses;
-  const chartExpenses =
-    contextualExpenses.length > 0
-      ? contextualExpenses
-      : expenses;
+  const contextTotal =
+    selectedExpenseType
+      ? contextualExpenses.reduce(
+          (sum, item) =>
+            sum +
+            Number(item.amount || 0),
+          0
+        )
+      : totalExpense;
   const maxAmount =
     Math.max(
-      ...chartExpenses.map(
+      ...expenses.map(
         item =>
           Number(item.amount || 0)
-      ),
-      0
+      )
     );
-  const axisMax =
-    getExpenseTrendAxisMax(
-      maxAmount
-    );
-  const chartWidth = 720;
-  const chartHeight = 286;
-  const plotLeft = 8;
-  const plotRight = 704;
-  const plotTop = 22;
-  const plotBottom = 226;
-  const plotHeight =
-    plotBottom - plotTop;
-  const itemCount =
-    chartExpenses.length;
-  const xStep =
-    itemCount > 1
-      ? (
-          (plotRight - plotLeft) /
-          (itemCount - 1)
-        )
-      : 0;
-  const points =
-    chartExpenses.map(
-      (item, index) => {
-        const amount =
-          Number(
-            item.amount || 0
-          );
-        const x =
-          itemCount === 1
-            ? (
-                plotLeft +
-                plotRight
-              ) / 2
-            : plotLeft +
-              xStep * index;
-        const ratio =
-          axisMax > 0
-            ? amount / axisMax
-            : 0;
-        const y =
-          plotBottom -
-          (
-            Math.max(
-              0,
-              Math.min(
-                1,
-                ratio
-              )
-            ) *
-            plotHeight
-          );
-        return {
-          ...item,
-          amount,
-          x,
-          y
-        };
-      }
-    );
-  const gridCount = 4;
-  const gridLines =
-    Array.from(
-      {
-        length:
-          gridCount + 1
-      },
-      (_, index) => {
-        const ratio =
-          index / gridCount;
-        const y =
-          plotTop +
-          plotHeight * ratio;
-        return `
-          <line
-            class="expense-chart-grid-line"
-            x1="${plotLeft}"
-            y1="${y}"
-            x2="${plotRight}"
-            y2="${y}"
-          ></line>
-        `;
-      }
-    ).join('');
-  const axisLabels =
-    Array.from(
-      {
-        length:
-          gridCount + 1
-      },
-      (_, index) => {
-        const ratio =
-          index / gridCount;
-        const value =
-          axisMax *
-          (1 - ratio);
-        const y =
-          plotTop +
-          plotHeight * ratio;
-        return `
-          <div
-            class="expense-chart-axis-label-html"
-            style="
-              position: absolute;
-              top: ${y}px;
-              left: 10px;
-              right: auto;
-              transform: translateY(-50%);
-            "
-          >
-            ${formatExpenseTrendAmount(value)}
-          </div>
-        `;
-      }
-    ).join('');
-  let trendPath = '';
-  if (points.length >= 2) {
-    const pathParts = [];
-    for (
-      let i = 1;
-      i < points.length;
-      i++
-    ) {
-      const previous =
-        points[i - 1];
-      const current =
-        points[i];
-      const dx =
-        current.x -
-        previous.x;
-      const controlOffset =
-        dx * 0.38;
-      const cp1x =
-        previous.x +
-        controlOffset;
-      const cp2x =
-        current.x -
-        controlOffset;
-      pathParts.push(`
-        M ${previous.x} ${previous.y}
-        C
-        ${cp1x} ${previous.y},
-        ${cp2x} ${current.y},
-        ${current.x} ${current.y}
-      `);
-    }
-    trendPath = pathParts
-      .map(path => `
-        <path
-          class="expense-chart-line"
-          d="${path}"
-        ></path>
-      `)
-      .join('');
-  }
-  const iconLabels =
-    points.map(
-      point => `
-        <foreignObject
-          x="${point.x - 15}"
-          y="242"
-          width="30"
-          height="30"
-          class="expense-chart-item-icon"
-        >
-          <div
-            xmlns="http://www.w3.org/1999/xhtml"
-            style="
-              width:30px;
-              height:30px;
-              display:flex;
-              align-items:center;
-              justify-content:center;
-            "
-          >
-            <i
-              data-lucide="${
-                point.icon || 'circle'
-              }"
-              style="
-                width:18px;
-                height:18px;
-                stroke:currentColor;
-                stroke-width:2.1;
-              "
-            ></i>
-          </div>
-        </foreignObject>
-      `
-    ).join('');
-  const pointMarkup =
-    points.map(point => {
-      const itemType =
-        getExpenseType(point);
-      const isDimmed =
-        selectedExpenseType &&
-        itemType !==
-          selectedExpenseType;
-      return `
-        <g
-          class="
-            expense-chart-point
-            ${
-              isDimmed
-                ? 'is-dimmed'
-                : ''
-            }
-          "
-          data-expense-title="${String(
-            point.title
-          ).replace(
-            /"/g,
-            '&quot;'
-          )}"
-          data-expense-amount="${point.amount}"
-        >
-          <circle
-            class="expense-chart-point-line-mask"
-            cx="${point.x}"
-            cy="${point.y}"
-            r="6.5"
-            fill="var(--bg-color)"
-          ></circle>
-          <circle
-            class="expense-chart-point-ring"
-            cx="${point.x}"
-            cy="${point.y}"
-            r="9"
-            stroke="${
-              selectedExpenseType === 'Fixed'
-                ? '#A3CA7E'
-                : selectedExpenseType === 'Variable'
-                  ? '#B0CBE7'
-                  : 'var(--expense-color)'
-            }"
-          ></circle>
-          <circle
-            class="expense-chart-point-dot"
-            cx="${point.x}"
-            cy="${point.y}"
-            r="5.5"
-            fill="${
-              selectedExpenseType === 'Fixed'
-                ? '#A3CA7E'
-                : selectedExpenseType === 'Variable'
-                  ? '#B0CBE7'
-                  : 'var(--expense-color)'
-            }"
-            stroke="${
-              selectedExpenseType === 'Fixed'
-                ? '#A3CA7E'
-                : selectedExpenseType === 'Variable'
-                  ? '#B0CBE7'
-                  : 'var(--expense-color)'
-            }"
-          ></circle>
-        </g>
-      `;
-    }).join('');
   container.innerHTML = `
-    <div class="expense-chart-inner">
-      <div
-        class="expense-chart-y-axis"
-        id="expenseChartYAxis"
-      ></div>
-      <div class="expense-chart-scroll">
-        <svg
-          class="expense-chart-svg"
-          viewBox="
-            0 0
-            ${chartWidth}
-            ${chartHeight}
-          "
-          aria-label="Monthly expense breakdown"
-        >
-          ${gridLines}
-          ${trendPath}
-          ${pointMarkup}
-          ${iconLabels}
-        </svg>
-      </div>
-      <div
-        class="expense-chart-tooltip"
-        id="expenseTrendTooltip"
-      >
-        <div
-          class="expense-chart-tooltip-item"
-          id="expenseTrendTooltipItem"
-        ></div>
-        <div
-          class="expense-chart-tooltip-amount"
-          id="expenseTrendTooltipAmount"
-        ></div>
-      </div>
+    <div
+      class="expense-chart-track ${
+        selectedExpenseType
+          ? 'sub-mode'
+          : ''
+      }"
+    >
+      ${expenses
+        .map(item => {
+          const amount =
+            Number(
+              item.amount || 0
+            );
+          const height =
+            maxAmount > 0
+              ? (amount / maxAmount) * 93
+              : 0;
+         const itemType =
+            getExpenseType(item);
+          const percent =
+            selectedExpenseType
+              ? (
+                  itemType ===
+                    selectedExpenseType &&
+                  contextTotal > 0
+                    ? Math.round(
+                        (amount /
+                          contextTotal) *
+                          100
+                      )
+                    : 0
+                )
+              : (
+                  totalExpense > 0
+                    ? Math.round(
+                        (amount /
+                          totalExpense) *
+                          100
+                      )
+                    : 0
+                );
+          const normalColor =
+            getExpenseBarColor(
+              item.title
+            );
+          let barColor =
+            normalColor;
+          if (
+            selectedExpenseType
+          ) {
+            if (
+              itemType ===
+              'Fixed'
+            ) {
+              barColor =
+                '#A3CA7E';
+            } else if (
+              itemType ===
+              'Variable'
+            ) {
+              barColor =
+                '#B0CBE7';
+            } else {
+              barColor =
+                normalColor;
+            }
+          }
+          const isDimmed =
+            selectedExpenseType &&
+            itemType !==
+              selectedExpenseType;
+          return `
+            <div
+              class="expense-chart-item ${
+                isDimmed
+                  ? 'is-type-dimmed'
+                  : ''
+              }"
+              data-expense-title="${item.title}"
+            >
+              <div class="expense-chart-bar-wrap">
+                <div
+                  class="expense-chart-bar"
+                  style="
+                    height: ${height}%;
+                    background: ${barColor};
+                  "
+                >
+                  <div
+                    class="expense-chart-percent"
+                    style="
+                      background: ${barColor};
+                    "
+                  >
+                    ${percent}%
+                  </div>
+                  <div class="expense-chart-dot"></div>
+                  <div class="expense-chart-selected-icon">
+                    <i data-lucide="${item.icon || 'circle'}"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="expense-chart-label">
+                <div class="expense-chart-amount">
+                  ฿${amount.toLocaleString('en-US', {
+                    minimumFractionDigits: 2
+                  })}
+                </div>
+                <div class="expense-chart-icon">
+                  <i data-lucide="${item.icon || 'circle'}"></i>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .join('')}
     </div>
   `;
-  const yAxis =
-    container.querySelector(
-      '#expenseChartYAxis'
-    );
-  if (yAxis) {
-    yAxis.innerHTML =
-      axisLabels;
-  }
   lucide.createIcons();
-  const chart =
-    container.querySelector(
-      '.expense-chart-inner'
-    );
-  const svg =
-    container.querySelector(
-      '.expense-chart-svg'
-    );
-  const tooltip =
-    container.querySelector(
-      '#expenseTrendTooltip'
-    );
-  const scrollArea =
-    container.querySelector(
-      '.expense-chart-scroll'
-    );
-  if (
-    scrollArea
-  ) {
-    scrollArea.scrollLeft = 0;
-    scrollArea.addEventListener(
-      'scroll',
-      () => {
-        if (
-          expenseTrendSelectedTitle !== null
-        ) {
-          closeExpenseTrendTooltip();
-        }
-      },
-      {
-        passive: true
-      }
-    );
-  }
-  if (
-    !chart ||
-    !svg ||
-    !tooltip
-  ) {
-    return;
-  }
-
-  function showTooltip(
-    pointElement
-  ) {
-    const title =
-      pointElement.dataset
-        .expenseTitle || '';
-    const point =
-      points.find(
-        item =>
-          item.title ===
-          title
-      );
-    if (!point) {
-      return;
-    }
-    expenseTrendSelectedTitle =
-      title;
-    chart
-      .querySelectorAll(
-        '.expense-chart-point'
-      )
-      .forEach(item => {
-        item.classList.toggle(
-          'is-selected',
-          item ===
-            pointElement
-        );
-      });
-    const tooltipItem =
-      document.getElementById(
-        'expenseTrendTooltipItem'
-      );
-    const tooltipAmount =
-      document.getElementById(
-        'expenseTrendTooltipAmount'
-      );
-    if (tooltipItem) {
-      tooltipItem.innerText =
-        point.title;
-    }
-    if (tooltipAmount) {
-      tooltipAmount.innerText =
-        formatExpenseTrendAmount(
-          point.amount
-        );
-    }
-    const pointDot =
-      pointElement.querySelector(
-        '.expense-chart-point-dot'
-      );
-    if (!pointDot) {
-      return;
-    }
-    const pointRect =
-      pointDot.getBoundingClientRect();
-    const chartRect =
-      chart.getBoundingClientRect();
-    const pointX =
-      (
-        pointRect.left -
-        chartRect.left
-      ) +
-      (
-        pointRect.width / 2
-      );
-    const pointY =
-      (
-        pointRect.top -
-        chartRect.top
-      ) +
-      (
-        pointRect.height / 2
-      );
-    tooltip.classList.remove(
-      'is-below'
-    );
-    tooltip.style.left =
-      `${pointX}px`;
-    const pointClearance =
-      17;
-    tooltip.style.top =
-      `${Math.max(
-        8,
-        pointY -
-          pointClearance
-      )}px`;
-    requestAnimationFrame(
-      () => {
-        const tooltipRect =
-          tooltip.getBoundingClientRect();
-        const chartRectNow =
-          chart.getBoundingClientRect();
-        const tooltipHeight =
-          tooltipRect.height;
-        const tooltipGap =
-          8;
-        const preferredTop =
-          pointY -
-          9 -
-          tooltipGap -
-          tooltipHeight;
-        const spaceAbove =
-          pointY - 9;
-        if (
-          spaceAbove >=
-          tooltipHeight +
-            tooltipGap +
-            8
-        ) {
-          tooltip.classList.remove(
-            'is-below'
-          );
-          tooltip.style.top =
-            `${preferredTop}px`;
-        } else {
-          tooltip.classList.add(
-            'is-below'
-          );
-          tooltip.style.top =
-            `${
-              pointY +
-              9 +
-              tooltipGap
-            }px`;
-        }
-        const halfWidth =
-          tooltipRect.width /
-          2;
-        const minX =
-          halfWidth + 6;
-        const maxX =
-          chartRectNow.width -
-          halfWidth -
-          6;
-        const clampedX =
-          Math.max(
-            minX,
-            Math.min(
-              maxX,
-              pointX
-            )
-          );
-        tooltip.style.left =
-          `${clampedX}px`;
-        tooltip.classList.add(
-          'is-visible'
-        );
-      }
-    );
-  }
-  svg.addEventListener(
-    'click',
-    event => {
-      const pointElement =
-        event.target.closest(
-          '.expense-chart-point'
-        );
-      if (!pointElement) {
-        closeExpenseTrendTooltip();
-        return;
-      }
-      event.stopPropagation();
-      if (
-        expenseTrendSelectedTitle ===
-        pointElement.dataset
-          .expenseTitle
-      ) {
-        closeExpenseTrendTooltip();
-        return;
-      }
-      showTooltip(
-        pointElement
-      );
-    }
-  );
-  chart.addEventListener(
-    'click',
-    event => {
-      if (
-        event.target.closest(
-          '.expense-chart-point'
-        )
-      ) {
-        return;
-      }
-      closeExpenseTrendTooltip();
-    }
-  );
-}
+  requestAnimationFrame(() => {
+    updateExpenseChartCompactState();
+  });
+ }
   
   function renderTopSpending(entries) {
   const container =
@@ -7242,7 +6856,51 @@ function renderExpenseBreakdown(entries) {
   `;
   lucide.createIcons();
   }
-  
+  document
+  .getElementById('expenseBreakdownList')
+  .addEventListener('click', (event) => {
+    if (selectedExpenseType) return;
+    const item = event.target.closest('.expense-chart-item');
+    if (!item) return;
+    const title = item.dataset.expenseTitle;
+    if (selectedExpenseTitle === title) {
+      selectedExpenseTitle = null;
+    const track = document.querySelector('.expense-chart-track');
+      track.classList.remove('has-selection');
+      document
+        .querySelectorAll('.expense-chart-item')
+        .forEach(chartItem => {
+          chartItem.classList.remove('is-selected');
+        });
+      return; }
+    selectedExpenseTitle = title;
+    const track = document.querySelector('.expense-chart-track');
+    track.classList.add('has-selection');
+    document
+      .querySelectorAll('.expense-chart-item')
+      .forEach(chartItem => {
+        chartItem.classList.toggle(
+          'is-selected',
+          chartItem === item
+        );
+      });
+  });
+  function updateExpenseChartCompactState() {
+  const bars = document.querySelectorAll(
+    '#expenseBreakdownList .expense-chart-bar'
+  );
+  bars.forEach(bar => {
+    const height = bar.getBoundingClientRect().height;
+    bar.classList.toggle(
+      'is-compact',
+      height < 32
+    );
+    bar.classList.toggle(
+      'is-tiny',
+      height < 24
+    );
+   });
+  }
   function buildFinancialStory(
   currentEntries,
   previousEntries

@@ -1896,8 +1896,6 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 
 .expense-bubble-item {
   position: absolute;
-  left: var(--bubble-x);
-  top: var(--bubble-y);
   width: var(--bubble-size);
   height: var(--bubble-size);
   transform: translate(-50%, -50%);
@@ -6411,26 +6409,245 @@ function renderExpenseTypeSummary(entries) {
           Number(item.amount || 0)
       )
     );
+  const layoutExpenseBubbles = () => {
+  const track = container.querySelector(
+    '.expense-bubble-field'
+  );
 
-  /*
-   * Deterministic bubble positions.
-   * Position is purely visual for now.
-   * No physics / movement / center swap yet.
-   */
-  const bubblePositions = [
-    [50, 50],
-    [25, 27],
-    [75, 27],
-    [25, 73],
-    [75, 73],
-    [50, 18],
-    [50, 82],
-    [16, 50],
-    [84, 50],
-    [32, 18],
-    [68, 18],
-    [32, 82]
-  ];
+  if (!track) return;
+
+  const items = Array.from(
+    track.querySelectorAll(
+      '.expense-bubble-item'
+    )
+  );
+
+  if (items.length === 0) return;
+
+  const trackWidth =
+    track.clientWidth;
+
+  const trackHeight =
+    track.clientHeight;
+
+  if (
+    trackWidth <= 0 ||
+    trackHeight <= 0
+  ) {
+    return;
+  }
+
+  const centerX =
+    trackWidth / 2;
+
+  const centerY =
+    trackHeight / 2;
+
+  const placed = [];
+
+  const gap = 8;
+
+  const getRadius = item =>
+    item.offsetWidth / 2;
+
+  const overlaps = (
+    x,
+    y,
+    radius
+  ) => {
+    return placed.some(
+      bubble => {
+        const dx =
+          x - bubble.x;
+
+        const dy =
+          y - bubble.y;
+
+        const distance =
+          Math.sqrt(
+            dx * dx +
+            dy * dy
+          );
+
+        return (
+          distance <
+          radius +
+            bubble.radius +
+            gap
+        );
+      }
+    );
+  };
+
+  const fitsInside = (
+    x,
+    y,
+    radius
+  ) => {
+    return (
+      x - radius >= 0 &&
+      x + radius <= trackWidth &&
+      y - radius >= 0 &&
+      y + radius <= trackHeight
+    );
+  };
+  const firstItem =
+    items[0];
+
+  const firstRadius =
+    getRadius(firstItem);
+
+  let firstX = centerX;
+  let firstY = centerY;
+  firstX = Math.max(
+    firstRadius,
+    Math.min(
+      trackWidth - firstRadius,
+      firstX
+    )
+  );
+
+  firstY = Math.max(
+    firstRadius,
+    Math.min(
+      trackHeight - firstRadius,
+      firstY
+    )
+  );
+
+  firstItem.style.left =
+    `${firstX}px`;
+
+  firstItem.style.top =
+    `${firstY}px`;
+
+  placed.push({
+    x: firstX,
+    y: firstY,
+    radius: firstRadius
+  });
+  items
+    .slice(1)
+    .forEach(
+      (item, index) => {
+        const radius =
+          getRadius(item);
+        let found = false;
+        for (
+          let distance = 70;
+          distance <= 420 &&
+          !found;
+          distance += 8
+        ) {
+          const angle =
+            (
+              index *
+                137.5
+            ) *
+            Math.PI /
+            180;
+
+          const x =
+            centerX +
+            Math.cos(angle) *
+              distance;
+
+          const y =
+            centerY +
+            Math.sin(angle) *
+              distance;
+
+          if (
+            fitsInside(
+              x,
+              y,
+              radius
+            ) &&
+            !overlaps(
+              x,
+              y,
+              radius
+            )
+          ) {
+            item.style.left =
+              `${x}px`;
+
+            item.style.top =
+              `${y}px`;
+
+            placed.push({
+              x,
+              y,
+              radius
+            });
+
+            found = true;
+          }
+        }
+        if (!found) {
+          const fallbackAngles = [
+            0,
+            45,
+            90,
+            135,
+            180,
+            225,
+            270,
+            315
+          ];
+
+          for (
+            const degrees of
+              fallbackAngles
+          ) {
+            const angle =
+              degrees *
+              Math.PI /
+              180;
+
+            const distance =
+              Math.min(
+                trackWidth,
+                trackHeight
+              ) *
+              0.35;
+
+            const x =
+              centerX +
+              Math.cos(angle) *
+                distance;
+
+            const y =
+              centerY +
+              Math.sin(angle) *
+                distance;
+
+            if (
+              fitsInside(
+                x,
+                y,
+                radius
+              )
+            ) {
+              item.style.left =
+                `${x}px`;
+
+              item.style.top =
+                `${y}px`;
+
+              placed.push({
+                x,
+                y,
+                radius
+              });
+
+              break;
+            }
+          }
+        }
+      }
+    );
+};
 
   const getBubbleSize = amount => {
     if (maxAmount <= 0) {
@@ -6602,24 +6819,25 @@ function renderExpenseTypeSummary(entries) {
     </div>
   `;
 
-  lucide.createIcons();
+    lucide.createIcons();
 
-  requestAnimationFrame(() => {
-    const track =
-      container.querySelector(
-        '.expense-chart-track'
-      );
+requestAnimationFrame(() => {
+  layoutExpenseBubbles();
 
-    if (
-      selectedExpenseTitle &&
-      track
-    ) {
-      track.classList.add(
-        'has-selection'
-      );
-    }
-  });
-}
+  const track =
+    container.querySelector(
+      '.expense-chart-track'
+    );
+
+  if (
+    selectedExpenseTitle &&
+    track
+  ) {
+    track.classList.add(
+      'has-selection'
+    );
+  }
+});
   
   function renderTopSpending(entries) {
   const container =

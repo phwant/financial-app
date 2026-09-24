@@ -109,15 +109,16 @@
       transform: translateY(0) scale(1);
     }
     
-    .pull-refresh-indicator.refreshing svg {
-      animation: pullRefreshSpin 0.8s linear infinite;
-    }
-    
-    .pull-refresh-indicator svg {
+    .safari-loader {
       width: 18px;
       height: 18px;
-      color: var(--text-sub);
-      stroke-width: 2.2;
+      border: 2px solid rgba(100, 116, 139, 0.25);
+      border-top-color: var(--text-sub);
+      border-radius: 50%;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader {
+      animation: pullRefreshSpin 0.8s linear infinite;
     }
     
     @keyframes pullRefreshSpin {
@@ -3151,7 +3152,7 @@ body.modal-open {
     id="pullRefreshIndicator"
     aria-hidden="true"
   >
-    <i data-lucide="refresh-cw"></i>
+    <div class="safari-loader"></div>
   </div>
 <div class="hero-section">
   <header class="app-header">

@@ -110,26 +110,142 @@
     }
     
     .safari-loader {
+      position: relative;
       width: 18px;
       height: 18px;
-      border: 2px solid rgba(100, 116, 139, 0.25);
-      border-top-color: var(--text-sub);
-      border-radius: 50%;
     }
     
-    .pull-refresh-indicator.refreshing .safari-loader {
-      animation: pullRefreshSpin 0.8s linear infinite;
+    .safari-loader span {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 5px;
+      margin-left: -1px;
+      border-radius: 999px;
+      background: var(--text-sub);
+      transform-origin: 50% 9px;
+      opacity: 0.18;
     }
     
-    @keyframes pullRefreshSpin {
-      from {
-        transform: rotate(0deg);
+    .safari-loader span:nth-child(1) {
+      transform: rotate(0deg);
+    }
+    
+    .safari-loader span:nth-child(2) {
+      transform: rotate(30deg);
+    }
+    
+    .safari-loader span:nth-child(3) {
+      transform: rotate(60deg);
+    }
+    
+    .safari-loader span:nth-child(4) {
+      transform: rotate(90deg);
+    }
+    
+    .safari-loader span:nth-child(5) {
+      transform: rotate(120deg);
+    }
+    
+    .safari-loader span:nth-child(6) {
+      transform: rotate(150deg);
+    }
+    
+    .safari-loader span:nth-child(7) {
+      transform: rotate(180deg);
+    }
+    
+    .safari-loader span:nth-child(8) {
+      transform: rotate(210deg);
+    }
+    
+    .safari-loader span:nth-child(9) {
+      transform: rotate(240deg);
+    }
+    
+    .safari-loader span:nth-child(10) {
+      transform: rotate(270deg);
+    }
+    
+    .safari-loader span:nth-child(11) {
+      transform: rotate(300deg);
+    }
+    
+    .safari-loader span:nth-child(12) {
+      transform: rotate(330deg);
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span {
+      animation: safariLoaderFade 1s linear infinite;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(1) {
+      animation-delay: 0s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(2) {
+      animation-delay: -0.083s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(3) {
+      animation-delay: -0.166s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(4) {
+      animation-delay: -0.249s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(5) {
+      animation-delay: -0.332s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(6) {
+      animation-delay: -0.415s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(7) {
+      animation-delay: -0.498s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(8) {
+      animation-delay: -0.581s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(9) {
+      animation-delay: -0.664s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(10) {
+      animation-delay: -0.747s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(11) {
+      animation-delay: -0.830s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(12) {
+      animation-delay: -0.913s;
+    }
+    
+    @keyframes safariLoaderFade {
+      0% {
+        opacity: 1;
       }
-      to {
-        transform: rotate(360deg);
+    
+      8% {
+        opacity: 1;
+      }
+    
+      35% {
+        opacity: 0.18;
+      }
+    
+      100% {
+        opacity: 0.18;
       }
     }
-
+    
     html,
     body{
     margin: 0;
@@ -3152,7 +3268,20 @@ body.modal-open {
     id="pullRefreshIndicator"
     aria-hidden="true"
   >
-    <div class="safari-loader"></div>
+    <div class="safari-loader" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </div>
 <div class="hero-section">
   <header class="app-header">

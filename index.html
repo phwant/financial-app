@@ -2258,43 +2258,6 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   opacity: 0.65;
 }
 
-[data-theme="dark"] .expense-chart-item {
-  background:
-    linear-gradient(
-      145deg,
-      color-mix(
-        in srgb,
-        var(--bubble-accent) 38%,
-        rgba(255, 255, 255, 0.015)
-      ),
-      color-mix(
-        in srgb,
-        var(--bubble-accent) 15%,
-        transparent
-      )
-    );
-
-  border-color:
-    rgba(255, 255, 255, 0.10);
-
-  box-shadow:
-    0 10px 28px rgba(0, 0, 0, 0.28);
-}
-
-[data-theme="dark"]
-.expense-chart-item::before {
-  opacity: 0.35;
-}
-
-[data-theme="dark"]
-.expense-chart-item.is-selected {
-  border-color: var(--text-main);
-
-  box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.34),
-    0 0 0 2px rgba(255, 255, 255, 0.08);
-}
-
 .expense-type-summary {
   display: grid;
   grid-template-columns: 1fr 1fr;

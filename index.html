@@ -79,6 +79,55 @@
       font-family: 'Inter', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif; 
       -webkit-tap-highlight-color: transparent; 
     }
+    
+    .pull-refresh-indicator {
+      position: fixed;
+      top: env(safe-area-inset-top);
+      left: 50%;
+      width: 34px;
+      height: 34px;
+      margin-top: 8px;
+      margin-left: -17px;
+      border-radius: 50%;
+      background: var(--glass-card);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      transform: translateY(-48px) scale(0.85);
+      pointer-events: none;
+      transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+    }
+    
+    .pull-refresh-indicator.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    
+    .pull-refresh-indicator.refreshing svg {
+      animation: pullRefreshSpin 0.8s linear infinite;
+    }
+    
+    .pull-refresh-indicator svg {
+      width: 18px;
+      height: 18px;
+      color: var(--text-sub);
+      stroke-width: 2.2;
+    }
+    
+    @keyframes pullRefreshSpin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
 
     html,
     body{
@@ -3097,6 +3146,13 @@ body.modal-open {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
+  <div
+    class="pull-refresh-indicator"
+    id="pullRefreshIndicator"
+    aria-hidden="true"
+  >
+    <i data-lucide="refresh-cw"></i>
+  </div>
 <div class="hero-section">
   <header class="app-header">
     <div class="header-left">
@@ -10573,6 +10629,147 @@ function openAnnualTopSpendingMonth(month) {
     lucide.createIcons();
   }
  }
+
+  let pullRefreshStartY = 0;
+  let pullRefreshDistance = 0;
+  let pullRefreshTracking = false;
+  let pullRefreshRefreshing = false;
+  const PULL_REFRESH_TRIGGER = 72;
+  
+  function updatePullRefreshIndicator(distance) {
+    const indicator = document.getElementById(
+      'pullRefreshIndicator'
+    );
+    if (!indicator) {
+      return;
+    }
+    const progress = Math.min(
+      distance / PULL_REFRESH_TRIGGER,
+      1
+    );
+    indicator.style.opacity = String(
+      0.25 + (progress * 0.75)
+    );
+    indicator.style.transform =
+      `translateY(${Math.min(distance, 72) - 48}px) scale(${0.85 + (progress * 0.15)})`;
+    indicator.classList.toggle(
+      'active',
+      distance > 0
+    );
+  }
+  
+  async function performPullRefresh() {
+    if (pullRefreshRefreshing) {
+      return;
+    }
+    pullRefreshRefreshing = true;
+    const indicator = document.getElementById(
+      'pullRefreshIndicator'
+    );
+    if (indicator) {
+      indicator.classList.add(
+        'active',
+        'refreshing'
+      );
+      indicator.style.opacity = '1';
+      indicator.style.transform =
+        'translateY(0) scale(1)';
+    }
+    try {
+      await fetchData();
+    } finally {
+      if (indicator) {
+        indicator.classList.remove(
+          'refreshing'
+        );
+        indicator.style.opacity = '0';
+        indicator.style.transform =
+          'translateY(-48px) scale(0.85)';
+        setTimeout(() => {
+          indicator.classList.remove(
+            'active'
+          );
+        }, 200);
+      }
+      pullRefreshRefreshing = false;
+    }
+  }
+  document.addEventListener(
+    'touchstart',
+    event => {
+      if (
+        pullRefreshRefreshing ||
+        window.scrollY > 0 ||
+        event.touches.length !== 1
+      ) {
+        return;
+      }
+      pullRefreshStartY =
+        event.touches[0].clientY;
+      pullRefreshDistance = 0;
+      pullRefreshTracking = true;
+    },
+    { passive: true }
+  );
+  document.addEventListener(
+    'touchmove',
+    event => {
+      if (
+        !pullRefreshTracking ||
+        pullRefreshRefreshing ||
+        event.touches.length !== 1
+      ) {
+        return;
+      }
+      if (window.scrollY > 0) {
+        pullRefreshTracking = false;
+        return;
+      }
+      const currentY =
+        event.touches[0].clientY;
+      pullRefreshDistance =
+        Math.max(
+          0,
+          (currentY - pullRefreshStartY) * 0.55
+        );
+      if (pullRefreshDistance > 0) {
+        updatePullRefreshIndicator(
+          pullRefreshDistance
+        );
+      }
+    },
+    { passive: true }
+  );
+  document.addEventListener(
+    'touchend',
+    () => {
+      if (!pullRefreshTracking) {
+        return;
+      }
+      pullRefreshTracking = false;
+      if (
+        pullRefreshDistance >=
+        PULL_REFRESH_TRIGGER
+      ) {
+        pullRefreshDistance = 0;
+        performPullRefresh();
+        return;
+      }
+      const indicator = document.getElementById(
+        'pullRefreshIndicator'
+      );
+      if (indicator) {
+        indicator.classList.remove(
+          'active'
+        );
+        indicator.style.opacity = '0';
+        indicator.style.transform =
+          'translateY(-48px) scale(0.85)';
+      }
+      pullRefreshDistance = 0;
+    },
+    { passive: true }
+  );
   
   async function fetchData() {
   const requestId = ++fetchRequestId;

@@ -1907,28 +1907,50 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: var(--bubble-size);
   height: var(--bubble-size);
+
   flex: none;
   border-radius: 50%;
+
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+
   background:
     linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.13),
-      rgba(255, 255, 255, 0.035)
+      color-mix(
+        in srgb,
+        var(--bubble-accent) 30%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--bubble-accent) 12%,
+        transparent
+      )
     );
-  border: 1px solid rgba(255, 255, 255, 0.16);
+
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(--bubble-accent) 58%,
+      rgba(255, 255, 255, 0.20)
+    );
+
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
+
   box-shadow:
     0 8px 22px rgba(0, 0, 0, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+
   transform:
     translate(-50%, -50%)
     scale(1);
+
   transition:
     transform 0.22s ease,
     opacity 0.22s ease,
@@ -1939,16 +1961,21 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 
 .expense-chart-item::before {
   content: "";
+
   position: absolute;
   inset: 5px;
+
   border-radius: 50%;
+
   pointer-events: none;
-  opacity: 0.9;
+
+  opacity: 0.85;
+
   background:
     radial-gradient(
-      circle at 30% 24%,
-      rgba(255, 255, 255, 0.12),
-      transparent 42%
+      circle at 30% 23%,
+      rgba(255, 255, 255, 0.20),
+      transparent 43%
     );
 }
 
@@ -1959,67 +1986,88 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 }
 
 .expense-chart-item.is-fixed {
-  border-color: rgba(163, 202, 126, 0.48);
-  box-shadow:
-    0 8px 22px rgba(0, 0, 0, 0.10),
-    0 0 0 1px rgba(163, 202, 126, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  border-color:
+    color-mix(
+      in srgb,
+      #A3CA7E 68%,
+      rgba(255, 255, 255, 0.18)
+    );
 }
 
 .expense-chart-item.is-variable {
-  border-color: rgba(176, 203, 231, 0.48);
-  box-shadow:
-    0 8px 22px rgba(0, 0, 0, 0.10),
-    0 0 0 1px rgba(176, 203, 231, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  border-color:
+    color-mix(
+      in srgb,
+      #B0CBE7 68%,
+      rgba(255, 255, 255, 0.18)
+    );
 }
 
 .expense-chart-item.is-other {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color:
+    color-mix(
+      in srgb,
+      var(--bubble-accent) 58%,
+      rgba(255, 255, 255, 0.20)
+    );
 }
 
 .expense-chart-bubble-content {
   position: relative;
   z-index: 2;
+
   width: 72%;
   height: 72%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   text-align: center;
+
   overflow: hidden;
 }
 
 .expense-chart-bubble-icon {
   width: 23px;
   height: 23px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   margin-bottom: 5px;
+
   color: var(--text-main);
-  opacity: 0.92;
+
+  opacity: 0.94;
+
   flex-shrink: 0;
 }
 
 .expense-chart-bubble-icon svg {
   width: 20px;
   height: 20px;
+
   stroke: currentColor;
   stroke-width: 2;
 }
 
 .expense-chart-bubble-name {
   max-width: 100%;
+
   font-size: 10px;
   line-height: 1.15;
   font-weight: 800;
   letter-spacing: 0.1px;
+
   color: var(--text-main);
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
   margin-bottom: 3px;
 }
 
@@ -2027,7 +2075,9 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   font-size: 10px;
   line-height: 1.1;
   font-weight: 800;
+
   color: var(--text-main);
+
   white-space: nowrap;
 }
 
@@ -2050,6 +2100,7 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 .expense-chart-bubble-icon {
   width: 20px;
   height: 20px;
+
   margin-bottom: 3px;
 }
 
@@ -2066,26 +2117,41 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 
 .expense-chart-percent {
   position: absolute;
+
   top: 9px;
   right: 9px;
+
   z-index: 4;
+
   min-width: 23px;
   height: 18px;
+
   padding: 0 5px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   border-radius: 999px;
+
   background: var(--glass-card);
-  border: 1px solid var(--glass-border);
+
+  border: 1px solid
+    var(--glass-border);
+
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+
   color: var(--text-main);
+
   font-size: 8px;
   font-weight: 800;
   line-height: 1;
+
   opacity: 0;
+
   pointer-events: none;
+
   transition:
     opacity 0.2s ease,
     transform 0.2s ease;
@@ -2105,7 +2171,7 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   box-shadow:
     0 10px 28px rgba(0, 0, 0, 0.16),
     0 0 0 2px rgba(255, 255, 255, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 
   transform:
     translate(-50%, -50%)
@@ -2140,26 +2206,38 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 
 .expense-chart-item.future-placeholder {
   pointer-events: none;
+
   width: 62px;
   height: 62px;
+
   background: var(--text-sub);
+
   border-color: transparent;
+
   opacity: 0.10;
+
   box-shadow: none;
 }
 
 .expense-chart-future-message {
   position: absolute;
+
   left: 12px;
   right: 12px;
   bottom: 5px;
+
   text-align: center;
+
   font-size: 10px;
   font-weight: 700;
+
   letter-spacing: 0.65px;
   line-height: 1.25;
+
   color: var(--text-sub);
+
   opacity: 0.65;
+
   pointer-events: none;
 }
 
@@ -2174,26 +2252,35 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   gap: 6px;
+
   width: 100%;
+
   text-align: center;
 }
 
 .expense-chart-empty-title {
   font-size: 11px;
   font-weight: 800;
+
   letter-spacing: 0.9px;
   line-height: 1.2;
+
   color: var(--text-sub);
+
   opacity: 0.9;
 }
 
 .expense-chart-empty-description {
   font-size: 10px;
   font-weight: 500;
+
   letter-spacing: 0.25px;
   line-height: 1.3;
+
   color: var(--text-sub);
+
   opacity: 0.65;
 }
 
@@ -2201,28 +2288,36 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   background:
     linear-gradient(
       145deg,
-      rgba(255, 255, 255, 0.075),
-      rgba(255, 255, 255, 0.025)
+      color-mix(
+        in srgb,
+        var(--bubble-accent) 34%,
+        rgba(255, 255, 255, 0.015)
+      ),
+      color-mix(
+        in srgb,
+        var(--bubble-accent) 13%,
+        transparent
+      )
     );
-  border-color: rgba(255, 255, 255, 0.14);
+
+  border-color:
+    color-mix(
+      in srgb,
+      var(--bubble-accent) 55%,
+      rgba(255, 255, 255, 0.12)
+    );
+
   box-shadow:
     0 10px 28px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
 }
 
-[data-theme="dark"] .expense-chart-item.is-fixed {
-  border-color: rgba(163, 202, 126, 0.42);
-}
-
-[data-theme="dark"] .expense-chart-item.is-variable {
-  border-color: rgba(176, 203, 231, 0.42);
-}
-
-[data-theme="dark"] .expense-chart-item.is-selected {
+[data-theme="dark"]
+.expense-chart-item.is-selected {
   box-shadow:
     0 12px 32px rgba(0, 0, 0, 0.34),
     0 0 0 2px rgba(255, 255, 255, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .expense-type-summary {
@@ -6571,300 +6666,677 @@ function renderExpenseTypeSummary(entries) {
   renderTopSpending(currentEntries); }
   
   function renderExpenseBreakdown(entries) {
-    const container =
-      document.getElementById('expenseBreakdownList');
-    const expenses = (entries || [])
-      .filter(
+  const container =
+    document.getElementById(
+      'expenseBreakdownList'
+    );
+
+  const expenses = (entries || [])
+    .filter(
+      item =>
+        item.financial_type === 'Expense'
+    )
+    .sort(
+      (a, b) =>
+        Number(b.amount) -
+        Number(a.amount)
+    );
+
+  if (expenses.length === 0) {
+    const isFuture =
+      isSelectedMonthFuture();
+
+    const selectedMonthInfo =
+      months.find(
         item =>
-          item.financial_type === 'Expense'
-      )
-      .sort(
-        (a, b) =>
-          Number(b.amount) -
-          Number(a.amount)
+          item.m === selectedMonth
       );
-    if (expenses.length === 0) {
-      const isFuture =
-        isSelectedMonthFuture();
-      const selectedMonthInfo =
-        months.find(
+
+    const selectedMonthName =
+      selectedMonthInfo
+        ? selectedMonthInfo.name
+        : '';
+
+    const selectedPeriodLabel =
+      `${selectedMonthName} ${selectedYear}`;
+
+    selectedExpenseTitle = null;
+
+    if (isFuture) {
+      selectedExpenseType = null;
+    }
+
+    container.innerHTML = `
+      <div
+        class="expense-chart-track expense-chart-empty"
+      >
+        ${
+          isFuture
+            ? `
+              <div
+                class="expense-chart-item future-placeholder"
+                style="left: 17%; top: 31%;"
+              ></div>
+
+              <div
+                class="expense-chart-item future-placeholder"
+                style="left: 38%; top: 23%;"
+              ></div>
+
+              <div
+                class="expense-chart-item future-placeholder"
+                style="left: 62%; top: 28%;"
+              ></div>
+
+              <div
+                class="expense-chart-item future-placeholder"
+                style="left: 81%; top: 40%;"
+              ></div>
+
+              <div
+                class="expense-chart-item future-placeholder"
+                style="left: 27%; top: 65%;"
+              ></div>
+
+              <div
+                class="expense-chart-item future-placeholder"
+                style="left: 68%; top: 67%;"
+              ></div>
+
+              <div
+                class="expense-chart-future-message"
+              >
+                no expense data yet for ${selectedPeriodLabel.toUpperCase()}
+              </div>
+            `
+            : `
+              <div
+                class="expense-chart-empty-label"
+              >
+                <div
+                  class="expense-chart-empty-title"
+                >
+                  no expense data
+                </div>
+
+                <div
+                  class="expense-chart-empty-description"
+                >
+                  No expense records for ${selectedPeriodLabel}
+                </div>
+              </div>
+            `
+        }
+      </div>
+    `;
+
+    return;
+  }
+
+  if (selectedExpenseType) {
+    selectedExpenseTitle = null;
+  }
+
+  const totalExpense =
+    expenses.reduce(
+      (sum, item) =>
+        sum +
+        Number(item.amount || 0),
+      0
+    );
+
+  const contextualExpenses =
+    selectedExpenseType
+      ? expenses.filter(
           item =>
-            item.m === selectedMonth
-        );
-      const selectedMonthName =
-        selectedMonthInfo
-          ? selectedMonthInfo.name
-          : '';
-      const selectedPeriodLabel =
-        `${selectedMonthName} ${selectedYear}`;
-      selectedExpenseTitle = null;
-      if (isFuture) {
-        selectedExpenseType = null;
-      }
-      container.innerHTML = `
-        <div class="expense-chart-track expense-chart-empty">
-          ${
-            isFuture
-              ? `
-                <div
-                  class="expense-chart-item future-placeholder"
-                  style="left: 17%; top: 31%;"
-                ></div>
-                <div
-                  class="expense-chart-item future-placeholder"
-                  style="left: 38%; top: 23%;"
-                ></div>
-                <div
-                  class="expense-chart-item future-placeholder"
-                  style="left: 62%; top: 28%;"
-                ></div>
-                <div
-                  class="expense-chart-item future-placeholder"
-                  style="left: 81%; top: 40%;"
-                ></div>
-                <div
-                  class="expense-chart-item future-placeholder"
-                  style="left: 27%; top: 65%;"
-                ></div>
-                <div
-                  class="expense-chart-item future-placeholder"
-                  style="left: 68%; top: 67%;"
-                ></div>
-                <div class="expense-chart-future-message">
-                  no expense data yet for ${selectedPeriodLabel.toUpperCase()}
-                </div>
-              `
-              : `
-                <div class="expense-chart-empty-label">
-                  <div class="expense-chart-empty-title">
-                    no expense data
-                  </div>
-                  <div class="expense-chart-empty-description">
-                    No expense records for ${selectedPeriodLabel}
-                  </div>
-                </div>
-              `
-          }
-        </div>
-      `;
-      return;
-    }
-    if (selectedExpenseType) {
-      selectedExpenseTitle = null;
-    }
-    const totalExpense =
-      expenses.reduce(
-        (sum, item) =>
-          sum +
-          Number(item.amount || 0),
-        0
-      );
-    const contextualExpenses =
-      selectedExpenseType
-        ? expenses.filter(
-            item =>
-              getExpenseType(item) ===
-              selectedExpenseType
-          )
-        : expenses;
-    const contextTotal =
-      selectedExpenseType
-        ? contextualExpenses.reduce(
-            (sum, item) =>
-              sum +
-              Number(item.amount || 0),
-            0
-          )
-        : totalExpense;
-    const amounts = expenses.map(
+            getExpenseType(item) ===
+            selectedExpenseType
+        )
+      : expenses;
+
+  const contextTotal =
+    selectedExpenseType
+      ? contextualExpenses.reduce(
+          (sum, item) =>
+            sum +
+            Number(item.amount || 0),
+          0
+        )
+      : totalExpense;
+
+  const amounts =
+    expenses.map(
       item =>
         Number(item.amount || 0)
     );
-    const minAmount =
-      Math.min(...amounts);
-    const maxAmount =
-      Math.max(...amounts);
-    const bubblePositions = [
-      [18, 28],
-      [38, 20],
-      [61, 25],
-      [82, 35],
-      [27, 57],
-      [50, 49],
-      [74, 58],
-      [14, 73],
-      [38, 78],
-      [62, 78],
-      [84, 75],
-      [51, 28]
-    ];
-    const getBubbleSize = amount => {
-      if (maxAmount <= 0) {
-        return 78;
+
+  const minAmount =
+    Math.min(...amounts);
+
+  const maxAmount =
+    Math.max(...amounts);
+
+  const getBubbleSize = amount => {
+    if (maxAmount <= 0) {
+      return 64;
+    }
+
+    if (maxAmount === minAmount) {
+      return 78;
+    }
+
+    const ratio =
+      (amount - minAmount) /
+      (maxAmount - minAmount);
+
+    return Math.round(
+      58 +
+      Math.sqrt(ratio) * 48
+    );
+  };
+
+  const chartWidth =
+    container.clientWidth || 360;
+
+  const chartHeight = 270;
+
+  const centerX =
+    chartWidth / 2;
+
+  const centerY =
+    chartHeight / 2;
+
+  const bubbles =
+    expenses.map(
+      (item, index) => ({
+        item,
+        index,
+        amount:
+          Number(item.amount || 0),
+        size:
+          getBubbleSize(
+            Number(item.amount || 0)
+          ),
+        x: centerX,
+        y: centerY
+      })
+    );
+  bubbles[0].x = centerX;
+  bubbles[0].y = centerY;
+  const overlaps = (
+    candidate,
+    placed
+  ) => {
+    const minDistance =
+      (
+        candidate.size +
+        placed.size
+      ) / 2 + 7;
+
+    const dx =
+      candidate.x -
+      placed.x;
+
+    const dy =
+      candidate.y -
+      placed.y;
+
+    return (
+      Math.sqrt(
+        dx * dx +
+        dy * dy
+      ) < minDistance
+    );
+  };
+
+  const insideChart = bubble => {
+    const radius =
+      bubble.size / 2 + 4;
+
+    return (
+      bubble.x >= radius &&
+      bubble.x <=
+        chartWidth - radius &&
+      bubble.y >= radius &&
+      bubble.y <=
+        chartHeight - radius
+    );
+  };
+
+  const placed = [
+    bubbles[0]
+  ];
+
+  for (
+    let i = 1;
+    i < bubbles.length;
+    i++
+  ) {
+    const bubble =
+      bubbles[i];
+
+    let found = false;
+
+    const baseAngle =
+      ((i - 1) /
+        Math.max(
+          1,
+          bubbles.length - 1
+        )) *
+      Math.PI *
+      2;
+
+    const angleStep =
+      Math.PI / 18;
+
+    const ringStep = 15;
+
+    for (
+      let radius = 48;
+      radius <= 230 &&
+      !found;
+      radius += ringStep
+    ) {
+      const candidates = [];
+
+      for (
+        let step = 0;
+        step < 36;
+        step++
+      ) {
+        const angle =
+          baseAngle +
+          step *
+          angleStep;
+
+        candidates.push({
+          x:
+            centerX +
+            Math.cos(angle) *
+              radius,
+
+          y:
+            centerY +
+            Math.sin(angle) *
+              radius
+        });
       }
-      if (maxAmount === minAmount) {
-        return 86;
-      }
-      const ratio =
-        (amount - minAmount) /
-        (maxAmount - minAmount);
-      return Math.round(
-        68 + Math.sqrt(ratio) * 42
+
+      /*
+       * Prefer positions that are
+       * closer to the center first.
+       */
+      candidates.sort(
+        (a, b) => {
+          const da =
+            Math.abs(
+              Math.atan2(
+                a.y - centerY,
+                a.x - centerX
+              ) -
+                baseAngle
+            );
+
+          const db =
+            Math.abs(
+              Math.atan2(
+                b.y - centerY,
+                b.x - centerX
+              ) -
+                baseAngle
+            );
+
+          return da - db;
+        }
       );
-    };
-    container.innerHTML = `
-      <div
-        class="expense-chart-track ${
+
+      for (
+        const candidate
+        of candidates
+      ) {
+        const testBubble = {
+          ...bubble,
+          x: candidate.x,
+          y: candidate.y
+        };
+
+        if (
+          !insideChart(
+            testBubble
+          )
+        ) {
+          continue;
+        }
+
+        let collision =
+          false;
+
+        for (
+          const existing
+          of placed
+        ) {
+          if (
+            overlaps(
+              testBubble,
+              existing
+            )
+          ) {
+            collision = true;
+            break;
+          }
+        }
+
+        if (!collision) {
+          bubble.x =
+            candidate.x;
+
+          bubble.y =
+            candidate.y;
+
+          placed.push(
+            bubble
+          );
+
+          found = true;
+
+          break;
+        }
+      }
+    }
+
+    if (!found) {
+      let bestCandidate = null;
+      let bestScore = -Infinity;
+
+      for (
+        let step = 0;
+        step < 180;
+        step++
+      ) {
+        const angle =
+          step *
+          (Math.PI * 2 / 180);
+
+        const radius =
+          205;
+
+        const candidate = {
+          x:
+            centerX +
+            Math.cos(angle) *
+              radius,
+
+          y:
+            centerY +
+            Math.sin(angle) *
+              radius
+        };
+
+        const testBubble = {
+          ...bubble,
+          x: candidate.x,
+          y: candidate.y
+        };
+
+        if (
+          !insideChart(
+            testBubble
+          )
+        ) {
+          continue;
+        }
+
+        let nearestDistance =
+          Infinity;
+
+        for (
+          const existing
+          of placed
+        ) {
+          const dx =
+            testBubble.x -
+            existing.x;
+
+          const dy =
+            testBubble.y -
+            existing.y;
+
+          const distance =
+            Math.sqrt(
+              dx * dx +
+              dy * dy
+            ) -
+            (
+              testBubble.size +
+              existing.size
+            ) /
+              2;
+
+          nearestDistance =
+            Math.min(
+              nearestDistance,
+              distance
+            );
+        }
+
+        if (
+          nearestDistance >
+          bestScore
+        ) {
+          bestScore =
+            nearestDistance;
+
+          bestCandidate =
+            candidate;
+        }
+      }
+
+      if (bestCandidate) {
+        bubble.x =
+          bestCandidate.x;
+
+        bubble.y =
+          bestCandidate.y;
+
+        placed.push(
+          bubble
+        );
+      }
+    }
+  }
+
+  const getLeftPercent =
+    x =>
+      (x / chartWidth) *
+      100;
+
+  const getTopPercent =
+    y =>
+      (y / chartHeight) *
+      100;
+
+  container.innerHTML = `
+    <div
+      class="
+        expense-chart-track
+        ${
           selectedExpenseType
             ? 'sub-mode'
             : ''
-        }"
-      >
-        ${expenses
-          .map((item, index) => {
-            const amount =
-              Number(
-                item.amount || 0
-              );
-            const itemType =
-              getExpenseType(item);
-            const percent =
-              selectedExpenseType
-                ? (
-                    itemType ===
-                      selectedExpenseType &&
-                    contextTotal > 0
-                      ? Math.round(
-                          (amount /
-                            contextTotal) *
-                            100
-                        )
-                      : 0
-                  )
-                : (
-                    totalExpense > 0
-                      ? Math.round(
-                          (amount /
-                            totalExpense) *
-                            100
-                        )
-                      : 0
-                  );
-            const normalColor =
-              getExpenseBarColor(
-                item.title
-              );
-            let accentColor =
-              normalColor;
+        }
+      "
+    >
+      ${bubbles
+        .map(bubble => {
+          const item =
+            bubble.item;
+
+          const amount =
+            bubble.amount;
+
+          const itemType =
+            getExpenseType(item);
+
+          const percent =
+            selectedExpenseType
+              ? (
+                  itemType ===
+                    selectedExpenseType &&
+                  contextTotal > 0
+                    ? Math.round(
+                        (amount /
+                          contextTotal) *
+                          100
+                      )
+                    : 0
+                )
+              : (
+                  totalExpense > 0
+                    ? Math.round(
+                        (amount /
+                          totalExpense) *
+                          100
+                      )
+                    : 0
+                );
+
+          const normalColor =
+            getExpenseBarColor(
+              item.title
+            );
+
+          let accentColor =
+            normalColor;
+
+          if (
+            selectedExpenseType
+          ) {
             if (
-              selectedExpenseType
+              itemType ===
+              'Fixed'
             ) {
-              if (
-                itemType ===
-                'Fixed'
-              ) {
-                accentColor =
-                  '#A3CA7E';
-              } else if (
-                itemType ===
-                'Variable'
-              ) {
-                accentColor =
-                  '#B0CBE7';
-              }
+              accentColor =
+                '#A3CA7E';
+            } else if (
+              itemType ===
+              'Variable'
+            ) {
+              accentColor =
+                '#B0CBE7';
             }
-            const isDimmed =
-              selectedExpenseType &&
-              itemType !==
-                selectedExpenseType;
-            const bubbleSize =
-              getBubbleSize(amount);
-            let sizeClass = '';
-            if (bubbleSize < 78) {
-              sizeClass = 'is-small';
-            }
-            if (bubbleSize < 70) {
-              sizeClass = 'is-small is-tiny';
-            }
-            const position =
-              bubblePositions[
-                index %
-                  bubblePositions.length
-              ];
-            const left =
-              position[0];
-            const top =
-              position[1];
-            const typeClass =
-              itemType === 'Fixed'
-                ? 'is-fixed'
-                : itemType === 'Variable'
-                  ? 'is-variable'
-                  : 'is-other';
-            return `
+          }
+
+          const isDimmed =
+            selectedExpenseType &&
+            itemType !==
+              selectedExpenseType;
+
+          let sizeClass = '';
+
+          if (
+            bubble.size < 78
+          ) {
+            sizeClass =
+              'is-small';
+          }
+
+          if (
+            bubble.size < 68
+          ) {
+            sizeClass =
+              'is-small is-tiny';
+          }
+
+          const typeClass =
+            itemType === 'Fixed'
+              ? 'is-fixed'
+              : itemType ===
+                  'Variable'
+                ? 'is-variable'
+                : 'is-other';
+
+          return `
+            <div
+              class="
+                expense-chart-item
+                ${sizeClass}
+                ${typeClass}
+                ${
+                  isDimmed
+                    ? 'is-type-dimmed'
+                    : ''
+                }
+              "
+              data-expense-title="${item.title}"
+              style="
+                --bubble-size: ${bubble.size}px;
+                --bubble-accent: ${accentColor};
+                left: ${getLeftPercent(
+                  bubble.x
+                )}%;
+                top: ${getTopPercent(
+                  bubble.y
+                )}%;
+              "
+            >
               <div
                 class="
-                  expense-chart-item
-                  ${sizeClass}
-                  ${typeClass}
-                  ${
-                    isDimmed
-                      ? 'is-type-dimmed'
-                      : ''
-                  }
-                "
-                data-expense-title="${item.title}"
-                style="
-                  --bubble-size: ${bubbleSize}px;
-                  --bubble-accent: ${accentColor};
-                  left: ${left}%;
-                  top: ${top}%;
+                  expense-chart-bubble-content
                 "
               >
                 <div
-                  class="expense-chart-bubble-content"
-                >
-                  <div
-                    class="expense-chart-bubble-icon"
-                    style="color: ${accentColor};"
-                  >
-                    <i
-                      data-lucide="${item.icon || 'circle'}"
-                    ></i>
-                  </div>
-                  <div
-                    class="expense-chart-bubble-name"
-                    title="${item.title}"
-                  >
-                    ${item.title}
-                  </div>
-                  <div
-                    class="expense-chart-bubble-amount"
-                  >
-                    ฿${amount.toLocaleString(
-                      'en-US',
-                      {
-                        minimumFractionDigits: 2
-                      }
-                    )}
-                  </div>
-                </div>
-                <div
-                  class="expense-chart-percent"
-                  style="
-                    border-color: ${accentColor};
+                  class="
+                    expense-chart-bubble-icon
                   "
                 >
-                  ${percent}%
+                  <i
+                    data-lucide="${
+                      item.icon ||
+                      'circle'
+                    }"
+                  ></i>
+                </div>
+
+                <div
+                  class="
+                    expense-chart-bubble-name
+                  "
+                  title="${item.title}"
+                >
+                  ${item.title}
+                </div>
+
+                <div
+                  class="
+                    expense-chart-bubble-amount
+                  "
+                >
+                  ฿${amount.toLocaleString(
+                    'en-US',
+                    {
+                      minimumFractionDigits: 2
+                    }
+                  )}
                 </div>
               </div>
-            `;
-          })
-          .join('')}
-      </div>
-    `;
-    lucide.createIcons();
-  }
+              <div
+                class="
+                  expense-chart-percent
+                "
+                style="
+                  border-color: ${accentColor};
+                "
+              >
+                ${percent}%
+              </div>
+            </div>
+          `;
+        })
+        .join('')}
+    </div>
+  `;
+  lucide.createIcons();
+}
   
   function renderTopSpending(entries) {
   const container =

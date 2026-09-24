@@ -5086,6 +5086,21 @@ function changeMonth(delta) {
   }
   selectedYear = newYear;
   selectedMonth = newMonth;
+  if (insightsViewMode === 'month') {
+    monthlyComparisonPeriod = 3;
+    const monthlyComparisonPeriodPicker =
+      document.getElementById(
+        'monthlyComparisonPeriodPicker'
+      );
+    if (monthlyComparisonPeriodPicker) {
+      monthlyComparisonPeriodPicker.value = '3';
+    }
+    const expenseChart =
+      document.querySelector('.expense-chart');
+    if (expenseChart) {
+      expenseChart.scrollLeft = 0;
+    }
+  }
   if (isContextEntries) {
     insightContext.year = selectedYear;
     insightContext.month = selectedMonth;

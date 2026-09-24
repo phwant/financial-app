@@ -1919,21 +1919,28 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   -webkit-tap-highlight-color: transparent;
 
   background:
-    rgba(
-      var(--bubble-r),
-      var(--bubble-g),
-      var(--bubble-b),
-      0.20
+    linear-gradient(
+      145deg,
+      color-mix(
+        in srgb,
+        var(--bubble-accent) 42%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--bubble-accent) 18%,
+        transparent
+      )
     );
 
   border: 1px solid
-    rgba(255, 255, 255, 0.12);
+    rgba(15, 23, 42, 0.10);
 
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
 
   box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.08);
+    0 8px 22px rgba(0, 0, 0, 0.10);
 
   transform:
     translate(-50%, -50%)
@@ -1957,16 +1964,27 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 
   pointer-events: none;
 
-  opacity: 0.28;
+  opacity: 0.55;
 
   background:
-    rgba(255, 255, 255, 0.06);
+    radial-gradient(
+      circle at 30% 23%,
+      rgba(255, 255, 255, 0.18),
+      transparent 43%
+    );
 }
 
 .expense-chart-item:active {
   transform:
     translate(-50%, -50%)
     scale(0.96);
+}
+
+.expense-chart-item.is-fixed,
+.expense-chart-item.is-variable,
+.expense-chart-item.is-other {
+  border-color:
+    rgba(15, 23, 42, 0.10);
 }
 
 .expense-chart-bubble-content {
@@ -1987,14 +2005,14 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 }
 
 .expense-chart-bubble-icon {
-  width: 21px;
-  height: 21px;
+  width: 23px;
+  height: 23px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 
   color: var(--text-main);
 
@@ -2004,8 +2022,8 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 }
 
 .expense-chart-bubble-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 
   stroke: currentColor;
   stroke-width: 2;
@@ -2014,7 +2032,7 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 .expense-chart-bubble-name {
   max-width: 100%;
 
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.15;
   font-weight: 800;
   letter-spacing: 0.1px;
@@ -2025,11 +2043,11 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   overflow: hidden;
   text-overflow: ellipsis;
 
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .expense-chart-bubble-amount {
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.1;
   font-weight: 800;
 
@@ -2045,31 +2063,199 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 
 .expense-chart-item.is-small
 .expense-chart-bubble-icon {
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .expense-chart-item.is-small
 .expense-chart-bubble-amount {
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .expense-chart-item.is-tiny
 .expense-chart-bubble-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .expense-chart-item.is-tiny
 .expense-chart-bubble-icon svg {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
 }
 
 .expense-chart-item.is-tiny
 .expense-chart-bubble-amount {
   font-size: 8px;
+}
+
+.expense-chart-percent {
+  position: absolute;
+
+  top: 9px;
+  right: 9px;
+
+  z-index: 4;
+
+  min-width: 23px;
+  height: 18px;
+
+  padding: 0 5px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 999px;
+
+  background: var(--glass-card);
+
+  border: 1px solid
+    var(--glass-border);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  color: var(--text-main);
+
+  font-size: 8px;
+  font-weight: 800;
+  line-height: 1;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.expense-chart-item.is-selected
+.expense-chart-percent,
+.expense-chart-track.sub-mode
+.expense-chart-item:not(.is-type-dimmed)
+.expense-chart-percent {
+  opacity: 0.92;
+}
+
+.expense-chart-item.is-selected {
+  border-color: var(--text-main);
+
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.16),
+    0 0 0 2px rgba(255, 255, 255, 0.10);
+
+  transform:
+    translate(-50%, -50%)
+    scale(1.06);
+
+  z-index: 10;
+}
+
+.expense-chart-track.has-selection
+.expense-chart-item:not(.is-selected) {
+  opacity: 0.25;
+  filter: saturate(0.65);
+}
+
+.expense-chart-track.has-selection
+.expense-chart-item.is-selected {
+  opacity: 1;
+  filter: none;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed {
+  opacity: 0.24;
+  filter: saturate(0.55);
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item:not(.is-type-dimmed) {
+  opacity: 1;
+  filter: none;
+}
+
+.expense-chart-item.future-placeholder {
+  pointer-events: none;
+
+  width: 62px;
+  height: 62px;
+
+  background: var(--text-sub);
+
+  border-color: transparent;
+
+  opacity: 0.10;
+
+  box-shadow: none;
+}
+
+.expense-chart-future-message {
+  position: absolute;
+
+  left: 12px;
+  right: 12px;
+  bottom: 5px;
+
+  text-align: center;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.65px;
+  line-height: 1.25;
+
+  color: var(--text-sub);
+
+  opacity: 0.65;
+
+  pointer-events: none;
+}
+
+.expense-chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expense-chart-empty-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  width: 100%;
+
+  text-align: center;
+}
+
+.expense-chart-empty-title {
+  font-size: 11px;
+  font-weight: 800;
+
+  letter-spacing: 0.9px;
+  line-height: 1.2;
+
+  color: var(--text-sub);
+
+  opacity: 0.9;
+}
+
+.expense-chart-empty-description {
+  font-size: 10px;
+  font-weight: 500;
+
+  letter-spacing: 0.25px;
+  line-height: 1.3;
+
+  color: var(--text-sub);
+
+  opacity: 0.65;
 }
 
 .expense-type-summary {
@@ -6681,10 +6867,10 @@ function renderExpenseTypeSummary(entries) {
     const angleStep =
       Math.PI / 18;
 
-    const ringStep = 19;
+    const ringStep = 15;
 
     for (
-      let radius = 56;
+      let radius = 48;
       radius <= 230 &&
       !found;
       radius += ringStep
@@ -6956,17 +7142,6 @@ function renderExpenseTypeSummary(entries) {
             getExpenseBarColor(
               item.title
             );
-          
-          const hex = normalColor.replace('#', '');
-          
-          const colorR =
-            parseInt(hex.substring(0, 2), 16);
-          
-          const colorG =
-            parseInt(hex.substring(2, 4), 16);
-          
-          const colorB =
-            parseInt(hex.substring(4, 6), 16);
 
           let accentColor =
             normalColor;
@@ -7033,9 +7208,7 @@ function renderExpenseTypeSummary(entries) {
               data-expense-title="${item.title}"
               style="
                 --bubble-size: ${bubble.size}px;
-                --bubble-r: ${colorR};
-                --bubble-g: ${colorG};
-                --bubble-b: ${colorB};
+                --bubble-accent: ${accentColor};
                 left: ${getLeftPercent(
                   bubble.x
                 )}%;
@@ -7076,14 +7249,11 @@ function renderExpenseTypeSummary(entries) {
                     expense-chart-bubble-amount
                   "
                 >
-                  ${amount.toLocaleString(
+                  ฿${amount.toLocaleString(
                     'en-US',
                     {
-                      minimumFractionDigits:
-                        Number.isInteger(amount)
-                          ? 0
-                          : 2,
-                      maximumFractionDigits: 2
+                      minimumFractionDigits: 2
+                    }
                   )}
                 </div>
               </div>

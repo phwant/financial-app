@@ -6293,22 +6293,6 @@ function renderExpenseTypeSummary(entries) {
   lucide.createIcons();
   }
   
-  function updateExpenseChartCompactState() {
-  const bars = document.querySelectorAll(
-    '#expenseBreakdownList .expense-chart-bar'
-  );
-  bars.forEach(bar => {
-    const height = bar.getBoundingClientRect().height;
-    bar.classList.toggle(
-      'is-compact',
-      height < 32
-    );
-    bar.classList.toggle(
-      'is-tiny',
-      height < 24
-    );
-   });
-  }
   function buildFinancialStory(
   currentEntries,
   previousEntries

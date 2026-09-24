@@ -107,21 +107,21 @@
     
     .safari-loader {
       position: relative;
-      width: 35px;
-      height: 35px;
+      width: 42px;
+      height: 42px;
     }
     
     .safari-loader span {
       position: absolute;
       top: 0;
       left: 50%;
-      width: 2.5px;
-      height: 7px;
-      margin-left: -1.25px;
+      width: 3px;
+      height: 9px;
+      margin-left: -1px;
       border-radius: 999px;
       background: var(--text-sub);
-      transform-origin: 50% 12px;
-      opacity: 0.18;
+      transform-origin: 50% 21px;
+      opacity: 0.28;
     }
     
     .safari-loader span:nth-child(1) {
@@ -157,7 +157,7 @@
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span {
-      animation: safariLoaderFade 4s linear infinite;
+      animation: safariLoaderFade 1s linear infinite;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(1) {
@@ -165,31 +165,31 @@
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(2) {
-      animation-delay: -0.5s;
+      animation-delay: -0.125s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(3) {
-      animation-delay: -1s;
+      animation-delay: -0.25s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(4) {
-      animation-delay: -1.5s;
+      animation-delay: -0.375s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(5) {
-      animation-delay: -2s;
+      animation-delay: -0.5s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(6) {
-      animation-delay: -2.5s;
+      animation-delay: -0.625s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(7) {
-      animation-delay: -3s;
+      animation-delay: -0.75s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(8) {
-      animation-delay: -3.5s;
+      animation-delay: -0.875s;
     }
     
     @keyframes safariLoaderFade {
@@ -198,11 +198,11 @@
       }
     
       12.5% {
-        opacity: 0.18;
+        opacity: 0.28;
       }
     
       100% {
-        opacity: 0.18;
+        opacity: 0.28;
       }
     }
     

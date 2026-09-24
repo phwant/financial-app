@@ -107,20 +107,20 @@
     
     .safari-loader {
       position: relative;
-      width: 25px;
-      height: 25px;
+      width: 35px;
+      height: 35px;
     }
     
     .safari-loader span {
       position: absolute;
       top: 0;
       left: 50%;
-      width: 2px;
-      height: 5px;
-      margin-left: -1px;
+      width: 2.5px;
+      height: 7px;
+      margin-left: -1.25px;
       border-radius: 999px;
       background: var(--text-sub);
-      transform-origin: 50% 9px;
+      transform-origin: 50% 12px;
       opacity: 0.18;
     }
     
@@ -157,7 +157,7 @@
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span {
-      animation: safariLoaderFade 1s linear infinite;
+      animation: safariLoaderFade 4s linear infinite;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(1) {
@@ -165,31 +165,31 @@
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(2) {
-      animation-delay: -0.125s;
-    }
-    
-    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(3) {
-      animation-delay: -0.25s;
-    }
-    
-    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(4) {
-      animation-delay: -0.375s;
-    }
-    
-    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(5) {
       animation-delay: -0.5s;
     }
     
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(3) {
+      animation-delay: -1s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(4) {
+      animation-delay: -1.5s;
+    }
+    
+    .pull-refresh-indicator.refreshing .safari-loader span:nth-child(5) {
+      animation-delay: -2s;
+    }
+    
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(6) {
-      animation-delay: -0.625s;
+      animation-delay: -2.5s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(7) {
-      animation-delay: -0.75s;
+      animation-delay: -3s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(8) {
-      animation-delay: -0.875s;
+      animation-delay: -3.5s;
     }
     
     @keyframes safariLoaderFade {
@@ -197,7 +197,7 @@
         opacity: 1;
       }
     
-      35% {
+      12.5% {
         opacity: 0.18;
       }
     

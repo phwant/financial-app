@@ -88,10 +88,6 @@
       height: 34px;
       margin-top: 8px;
       margin-left: -17px;
-      border-radius: 50%;
-      background: var(--glass-card);
-      border: 1px solid var(--glass-border);
-      box-shadow: var(--glass-shadow);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -111,8 +107,8 @@
     
     .safari-loader {
       position: relative;
-      width: 22px;
-      height: 22px;
+      width: 25px;
+      height: 25px;
     }
     
     .safari-loader span {
@@ -133,33 +129,32 @@
     }
     
     .safari-loader span:nth-child(2) {
-      transform: rotate(30deg);
+      transform: rotate(45deg);
     }
     
     .safari-loader span:nth-child(3) {
-      transform: rotate(60deg);
-    }
-    
-    .safari-loader span:nth-child(4) {
       transform: rotate(90deg);
     }
     
+    .safari-loader span:nth-child(4) {
+      transform: rotate(135deg);
+    }
+    
     .safari-loader span:nth-child(5) {
-      transform: rotate(120deg);
-    }
-    
-    .safari-loader span:nth-child(6) {
-      transform: rotate(150deg);
-    }
-    
-    .safari-loader span:nth-child(7) {
       transform: rotate(180deg);
     }
     
-    .safari-loader span:nth-child(8) {
-      transform: rotate(210deg);
+    .safari-loader span:nth-child(6) {
+      transform: rotate(225deg);
     }
     
+    .safari-loader span:nth-child(7) {
+      transform: rotate(270deg);
+    }
+    
+    .safari-loader span:nth-child(8) {
+      transform: rotate(315deg);
+    }
     
     .pull-refresh-indicator.refreshing .safari-loader span {
       animation: safariLoaderFade 1s linear infinite;
@@ -170,39 +165,35 @@
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(2) {
-      animation-delay: -0.083s;
+      animation-delay: -0.125s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(3) {
-      animation-delay: -0.166s;
+      animation-delay: -0.25s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(4) {
-      animation-delay: -0.249s;
+      animation-delay: -0.375s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(5) {
-      animation-delay: -0.332s;
+      animation-delay: -0.5s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(6) {
-      animation-delay: -0.415s;
+      animation-delay: -0.625s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(7) {
-      animation-delay: -0.498s;
+      animation-delay: -0.75s;
     }
     
     .pull-refresh-indicator.refreshing .safari-loader span:nth-child(8) {
-      animation-delay: -0.581s;
+      animation-delay: -0.875s;
     }
     
     @keyframes safariLoaderFade {
       0% {
-        opacity: 1;
-      }
-    
-      8% {
         opacity: 1;
       }
     
@@ -213,7 +204,6 @@
       100% {
         opacity: 0.18;
       }
-    }
     
     html,
     body{

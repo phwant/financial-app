@@ -1880,75 +1880,317 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   background: currentColor;
   animation: upcomingDotPulse 3.5s ease-in-out infinite;
 }
-
 .expense-chart {
-  position: relative;
   width: 100%;
-  height: 240px;
-  overflow: hidden;
+  height: 180px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
-
+.expense-chart::-webkit-scrollbar {
+  display: none;
+}
 .expense-chart-track {
-  position: relative;
-  width: 100%;
   height: 100%;
-}
-
-.expense-bubble-item {
-  position: absolute;
-  width: var(--bubble-size);
-  height: var(--bubble-size);
-  transform: translate(-50%, -50%);
-  z-index: 1;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.expense-bubble {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
+  min-width: 100%;
   display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  gap: 18px;
+  padding: 28px 12px 0;
+  box-sizing: border-box;
+}
+.expense-chart-empty {
+  position: relative;
   align-items: center;
   justify-content: center;
+  padding: 0 12px;
+}
+
+.expense-chart-empty-label {
+  display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
   text-align: center;
-  cursor: pointer;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.expense-chart-empty-title {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  line-height: 1.2;
+  color: var(--text-sub);
+  opacity: 0.9;
+}
+
+.expense-chart-empty-description {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.25px;
+  line-height: 1.3;
+  color: var(--text-sub);
+  opacity: 0.65;
+}
+
+.expense-chart-future-message {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 0;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.65px;
+  line-height: 1.25;
+  color: var(--text-sub);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.expense-chart-item {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 42px;
+  max-width: 56px;
+  height: 100%;
+  display: block;
+  flex-shrink: 0;
+}
+
+.expense-chart-item.future-placeholder {
+  pointer-events: none;
+}
+
+.future-placeholder-bar {
+  height: 65%;
+  background: var(--text-sub);
+  opacity: 0.15;
+  border-radius: 999px;
+}
+
+.expense-chart-bar-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 32px;
+  width: 30px;
+  height: calc(100% - 40px);
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 0;
+}
+.expense-chart-bar {
+  position: relative;
+  width: 30px;
+  min-height: 4px;
+  border-radius: 999px;
+  transition: opacity 0.2s ease;
+}
+.expense-chart-bar.is-compact
+.expense-chart-selected-icon {
+  opacity: 0 !important;
+}
+
+.expense-chart-bar.is-tiny
+.expense-chart-dot {
+  opacity: 0 !important;
+}
+.expense-chart-icon {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  transform: translateX(-50%);
+  opacity: 1;
+  transition: opacity 0.15s ease;
+}
+
+.expense-chart-icon svg {
+  display: block;
+  width: 19px;
+  height: 19px;
+  margin: 0;
+}
+
+.expense-chart-icon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.expense-chart-percent {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: var(--text-main);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
   transition:
-    opacity 180ms ease,
-    transform 180ms ease;
+    opacity 0.2s ease,
+    transform 0.2s ease;
+  z-index: 4;
+}
+.expense-chart-dot {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-main);
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+  transition: opacity 0.2s ease;
+}
+.expense-chart-selected-icon {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  color: var(--text-main);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.15s ease;
 }
 
-.expense-bubble-icon {
-  flex: 0 0 auto;
+.expense-chart-selected-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  stroke: currentColor;
+  stroke-width: 2.1;
 }
-
-.expense-bubble-name {
-  max-width: 80%;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.expense-chart-item.is-selected .expense-chart-selected-icon {
+  opacity: 0.9;
+}
+.expense-chart-item.is-selected .expense-chart-percent {
+  opacity: 0.9;
+}
+.expense-chart-item.is-selected .expense-chart-dot {
+  opacity: 0.9;
+}
+.expense-chart-track.has-selection
+.expense-chart-item:not(.is-selected)
+.expense-chart-bar {
+  opacity: 0.25;
+}
+.expense-chart-track.has-selection
+.expense-chart-item:not(.is-selected)
+.expense-chart-icon {
+  opacity: 0.25;
+}
+.expense-chart-track.has-selection
+.expense-chart-item.is-selected
+.expense-chart-bar {
+  opacity: 1;
+}
+.expense-chart-label {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 100%;
+  height: 24px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+.expense-chart-amount {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: max-content;
+  display: flex;
+  align-items: center;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 12px;
+  color: var(--text-main);
   white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.15s ease;
 }
-
-.expense-bubble-amount {
-  white-space: nowrap;
+.expense-chart-item.is-selected .expense-chart-icon {
+  opacity: 0;
 }
-
-.expense-bubble.is-selected {
+.expense-chart-item.is-selected .expense-chart-amount {
+  opacity: 1;
+}
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed {
   opacity: 1;
 }
 
-.expense-chart-track.has-selection
-.expense-bubble-item:not(.is-selected) {
-  opacity: 0.28;
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed
+.expense-chart-bar {
+  opacity: 0.25;
 }
 
 .expense-chart-track.sub-mode
-.expense-bubble-item.is-type-dimmed {
-  opacity: 0.28;
+.expense-chart-item.is-type-dimmed
+.expense-chart-icon {
+  opacity: 0.25;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item:not(.is-type-dimmed)
+.expense-chart-bar {
+  opacity: 1;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed
+.expense-chart-bar {
+  opacity: 0.25;
+}
+.expense-chart-track.sub-mode
+.expense-chart-selected-icon {
+  display: none !important;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-percent {
+  opacity: 0.9;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed
+.expense-chart-percent {
+  opacity: 0;
 }
 
 .expense-type-summary {
@@ -6299,7 +6541,6 @@ function renderExpenseTypeSummary(entries) {
   function renderExpenseBreakdown(entries) {
   const container =
     document.getElementById('expenseBreakdownList');
-
   const expenses = (entries || [])
     .filter(
       item =>
@@ -6310,31 +6551,23 @@ function renderExpenseTypeSummary(entries) {
         Number(b.amount) -
         Number(a.amount)
     );
-
   if (expenses.length === 0) {
     const isFuture =
       isSelectedMonthFuture();
-
     const selectedMonthInfo =
       months.find(
         item =>
           item.m === selectedMonth
       );
-
     const selectedMonthName =
       selectedMonthInfo
         ? selectedMonthInfo.name
         : '';
-
     const selectedPeriodLabel =
       `${selectedMonthName} ${selectedYear}`;
-
     selectedExpenseTitle = null;
-
     if (isFuture) {
-      selectedExpenseType = null;
-    }
-
+      selectedExpenseType = null; }
     container.innerHTML = `
       <div class="expense-chart-track expense-chart-empty">
         ${
@@ -6344,7 +6577,9 @@ function renderExpenseTypeSummary(entries) {
                 { length: 6 },
                 () => `
                   <div class="expense-chart-item future-placeholder">
-                    <div class="expense-bubble future-placeholder-bubble"></div>
+                    <div class="expense-chart-bar-wrap">
+                      <div class="expense-chart-bar future-placeholder-bar"></div>
+                    </div>
                   </div>
                 `
               ).join('')}
@@ -6367,14 +6602,9 @@ function renderExpenseTypeSummary(entries) {
         }
       </div>
     `;
-
-    return;
-  }
-
+    return; }
   if (selectedExpenseType) {
-    selectedExpenseTitle = null;
-  }
-
+    selectedExpenseTitle = null; }
   const totalExpense =
     expenses.reduce(
       (sum, item) =>
@@ -6382,7 +6612,6 @@ function renderExpenseTypeSummary(entries) {
         Number(item.amount || 0),
       0
     );
-
   const contextualExpenses =
     selectedExpenseType
       ? expenses.filter(
@@ -6391,7 +6620,6 @@ function renderExpenseTypeSummary(entries) {
             selectedExpenseType
         )
       : expenses;
-
   const contextTotal =
     selectedExpenseType
       ? contextualExpenses.reduce(
@@ -6401,7 +6629,6 @@ function renderExpenseTypeSummary(entries) {
           0
         )
       : totalExpense;
-
   const maxAmount =
     Math.max(
       ...expenses.map(
@@ -6409,279 +6636,26 @@ function renderExpenseTypeSummary(entries) {
           Number(item.amount || 0)
       )
     );
-  const layoutExpenseBubbles = () => {
-  const track = container.querySelector(
-    '.expense-bubble-field'
-  );
-
-  if (!track) return;
-
-  const items = Array.from(
-    track.querySelectorAll(
-      '.expense-bubble-item'
-    )
-  );
-
-  if (items.length === 0) return;
-
-  const trackWidth =
-    track.clientWidth;
-
-  const trackHeight =
-    track.clientHeight;
-
-  if (
-    trackWidth <= 0 ||
-    trackHeight <= 0
-  ) {
-    return;
-  }
-
-  const centerX =
-    trackWidth / 2;
-
-  const centerY =
-    trackHeight / 2;
-
-  const placed = [];
-
-  const gap = 8;
-
-  const getRadius = item =>
-    item.offsetWidth / 2;
-
-  const overlaps = (
-    x,
-    y,
-    radius
-  ) => {
-    return placed.some(
-      bubble => {
-        const dx =
-          x - bubble.x;
-
-        const dy =
-          y - bubble.y;
-
-        const distance =
-          Math.sqrt(
-            dx * dx +
-            dy * dy
-          );
-
-        return (
-          distance <
-          radius +
-            bubble.radius +
-            gap
-        );
-      }
-    );
-  };
-
-  const fitsInside = (
-    x,
-    y,
-    radius
-  ) => {
-    return (
-      x - radius >= 0 &&
-      x + radius <= trackWidth &&
-      y - radius >= 0 &&
-      y + radius <= trackHeight
-    );
-  };
-  const firstItem =
-    items[0];
-
-  const firstRadius =
-    getRadius(firstItem);
-
-  let firstX = centerX;
-  let firstY = centerY;
-  firstX = Math.max(
-    firstRadius,
-    Math.min(
-      trackWidth - firstRadius,
-      firstX
-    )
-  );
-
-  firstY = Math.max(
-    firstRadius,
-    Math.min(
-      trackHeight - firstRadius,
-      firstY
-    )
-  );
-
-  firstItem.style.left =
-    `${firstX}px`;
-
-  firstItem.style.top =
-    `${firstY}px`;
-
-  placed.push({
-    x: firstX,
-    y: firstY,
-    radius: firstRadius
-  });
-  items
-    .slice(1)
-    .forEach(
-      (item, index) => {
-        const radius =
-          getRadius(item);
-        let found = false;
-        for (
-          let distance = 70;
-          distance <= 420 &&
-          !found;
-          distance += 8
-        ) {
-          const angle =
-            (
-              index *
-                137.5
-            ) *
-            Math.PI /
-            180;
-
-          const x =
-            centerX +
-            Math.cos(angle) *
-              distance;
-
-          const y =
-            centerY +
-            Math.sin(angle) *
-              distance;
-
-          if (
-            fitsInside(
-              x,
-              y,
-              radius
-            ) &&
-            !overlaps(
-              x,
-              y,
-              radius
-            )
-          ) {
-            item.style.left =
-              `${x}px`;
-
-            item.style.top =
-              `${y}px`;
-
-            placed.push({
-              x,
-              y,
-              radius
-            });
-
-            found = true;
-          }
-        }
-        if (!found) {
-          const fallbackAngles = [
-            0,
-            45,
-            90,
-            135,
-            180,
-            225,
-            270,
-            315
-          ];
-
-          for (
-            const degrees of
-              fallbackAngles
-          ) {
-            const angle =
-              degrees *
-              Math.PI /
-              180;
-
-            const distance =
-              Math.min(
-                trackWidth,
-                trackHeight
-              ) *
-              0.35;
-
-            const x =
-              centerX +
-              Math.cos(angle) *
-                distance;
-
-            const y =
-              centerY +
-              Math.sin(angle) *
-                distance;
-
-            if (
-              fitsInside(
-                x,
-                y,
-                radius
-              )
-            ) {
-              item.style.left =
-                `${x}px`;
-
-              item.style.top =
-                `${y}px`;
-
-              placed.push({
-                x,
-                y,
-                radius
-              });
-
-              break;
-            }
-          }
-        }
-      }
-    );
-};
-  }
-  const getBubbleSize = amount => {
-    if (maxAmount <= 0) {
-      return 72;
-    }
-
-    const ratio =
-      Math.sqrt(
-        amount / maxAmount
-      );
-
-    return Math.round(
-      64 + ratio * 76
-    );
-  };
-
   container.innerHTML = `
     <div
-      class="expense-chart-track expense-bubble-field ${
+      class="expense-chart-track ${
         selectedExpenseType
           ? 'sub-mode'
           : ''
       }"
     >
       ${expenses
-        .map((item, index) => {
+        .map(item => {
           const amount =
             Number(
               item.amount || 0
             );
-
-          const itemType =
+          const height =
+            maxAmount > 0
+              ? (amount / maxAmount) * 93
+              : 0;
+         const itemType =
             getExpenseType(item);
-
           const percent =
             selectedExpenseType
               ? (
@@ -6704,112 +6678,75 @@ function renderExpenseTypeSummary(entries) {
                       )
                     : 0
                 );
-
           const normalColor =
             getExpenseBarColor(
               item.title
             );
-
-          let bubbleColor =
+          let barColor =
             normalColor;
-
-          if (selectedExpenseType) {
+          if (
+            selectedExpenseType
+          ) {
             if (
               itemType ===
               'Fixed'
             ) {
-              bubbleColor =
+              barColor =
                 '#A3CA7E';
             } else if (
               itemType ===
               'Variable'
             ) {
-              bubbleColor =
+              barColor =
                 '#B0CBE7';
+            } else {
+              barColor =
+                normalColor;
             }
           }
-
           const isDimmed =
             selectedExpenseType &&
             itemType !==
               selectedExpenseType;
-
-          const isSelected =
-            selectedExpenseTitle ===
-            item.title;
-
-          const position =
-            bubblePositions[
-              index %
-                bubblePositions.length
-            ];
-
-          const size =
-            getBubbleSize(
-              amount
-            );
-
-          const showName =
-            size >= 105;
-
           return `
             <div
-              class="expense-chart-item expense-bubble-item ${
+              class="expense-chart-item ${
                 isDimmed
                   ? 'is-type-dimmed'
                   : ''
-              } ${
-                isSelected
-                  ? 'is-selected'
-                  : ''
               }"
               data-expense-title="${item.title}"
-              style="
-                --bubble-x: ${position[0]}%;
-                --bubble-y: ${position[1]}%;
-                --bubble-size: ${size}px;
-                --bubble-color: ${bubbleColor};
-              "
             >
-              <div
-                class="expense-bubble"
-                style="
-                  width: ${size}px;
-                  height: ${size}px;
-                  background: ${bubbleColor};
-                "
-              >
-                <div class="expense-bubble-content">
-
-                  <div class="expense-bubble-icon">
-                    <i
-                      data-lucide="${item.icon || 'circle'}"
-                    ></i>
-                  </div>
-
-                  ${
-                    showName
-                      ? `
-                        <div class="expense-bubble-name">
-                          ${item.title}
-                        </div>
-                      `
-                      : ''
-                  }
-
-                  <div class="expense-bubble-amount">
-                    ฿${amount.toLocaleString(
-                      'en-US',
-                      {
-                        minimumFractionDigits: 2
-                      }
-                    )}
-                  </div>
-
-                  <div class="expense-bubble-percent">
+              <div class="expense-chart-bar-wrap">
+                <div
+                  class="expense-chart-bar"
+                  style="
+                    height: ${height}%;
+                    background: ${barColor};
+                  "
+                >
+                  <div
+                    class="expense-chart-percent"
+                    style="
+                      background: ${barColor};
+                    "
+                  >
                     ${percent}%
                   </div>
-
+                  <div class="expense-chart-dot"></div>
+                  <div class="expense-chart-selected-icon">
+                    <i data-lucide="${item.icon || 'circle'}"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="expense-chart-label">
+                <div class="expense-chart-amount">
+                  ฿${amount.toLocaleString('en-US', {
+                    minimumFractionDigits: 2
+                  })}
+                </div>
+                <div class="expense-chart-icon">
+                  <i data-lucide="${item.icon || 'circle'}"></i>
                 </div>
               </div>
             </div>
@@ -6818,26 +6755,11 @@ function renderExpenseTypeSummary(entries) {
         .join('')}
     </div>
   `;
-
-    lucide.createIcons();
-
-requestAnimationFrame(() => {
-  layoutExpenseBubbles();
-
-  const track =
-    container.querySelector(
-      '.expense-chart-track'
-    );
-
-  if (
-    selectedExpenseTitle &&
-    track
-  ) {
-    track.classList.add(
-      'has-selection'
-    );
-  }
-});
+  lucide.createIcons();
+  requestAnimationFrame(() => {
+    updateExpenseChartCompactState();
+  });
+ }
   
   function renderTopSpending(entries) {
   const container =

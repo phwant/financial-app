@@ -2068,50 +2068,56 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   font-size: 7px;
 }
 
-.expense-chart-percent {
-  position: absolute;
-  top: 9px;
-  right: 9px;
-  z-index: 4;
-  min-width: 23px;
-  height: 18px;
-  padding: 0 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: var(--glass-card);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  color: var(--text-main);
-  font-size: 8px;
+.expense-chart-bubble-percent {
+  display: none;
+  font-size: 9px;
+  line-height: 1.1;
   font-weight: 800;
-  line-height: 1;
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
-}
-
-.expense-chart-item.is-selected
-.expense-chart-percent,
-.expense-chart-track.sub-mode
-.expense-chart-item:not(.is-type-dimmed)
-.expense-chart-percent {
-  opacity: 0.92;
+  color: var(--text-main);
+  white-space: nowrap;
 }
 
 .expense-chart-item.is-selected {
-  border-color: var(--text-main);
+  border-color: var(--bubble-accent);
   box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.11),
-    0 0 0 2px rgba(255, 255, 255, 0.10);
+    0 0 0 1px
+      color-mix(
+        in srgb,
+        var(--bubble-accent) 55%,
+        transparent
+      ),
+    0 0 8px
+      color-mix(
+        in srgb,
+        var(--bubble-accent) 38%,
+        transparent
+      ),
+    0 6px 18px
+      rgba(0, 0, 0, 0.09);
   transform:
     translate(-50%, -50%)
     scale(1.06);
   z-index: 10;
+}
+
+.expense-chart-item.is-selected
+.expense-chart-bubble-amount {
+  display: none;
+}
+
+.expense-chart-item.is-selected
+.expense-chart-bubble-percent {
+  display: block;
+}
+
+.expense-chart-item.is-small
+.expense-chart-bubble-percent {
+  font-size: 8px;
+}
+
+.expense-chart-item.is-tiny
+.expense-chart-bubble-percent {
+  font-size: 7px;
 }
 
 .expense-chart-track.has-selection
@@ -2139,13 +2145,44 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 }
 
 .expense-chart-item.future-placeholder {
+  position: absolute;
   pointer-events: none;
-  width: 62px;
-  height: 62px;
+  border-radius: 50%;
   background: var(--text-sub);
-  border-color: transparent;
+  border: 0;
   opacity: 0.10;
   box-shadow: none;
+  transform: translate(-50%, -50%);
+}
+
+.expense-chart-item.future-placeholder.future-main {
+  width: 92px;
+  height: 92px;
+}
+
+.expense-chart-item.future-placeholder.future-1 {
+  width: 72px;
+  height: 72px;
+}
+
+.expense-chart-item.future-placeholder.future-2 {
+  width: 64px;
+  height: 64px;
+}
+
+.expense-chart-item.future-placeholder.future-3 {
+  width: 56px;
+  height: 56px;
+}
+
+.expense-chart-item.future-placeholder.future-4 {
+  width: 50px;
+  height: 50px;
+}
+
+.expense-chart-item.future-placeholder.future-5 {
+  width: 44px;
+  height: 44px;
 }
 
 .expense-chart-future-message {
@@ -6591,35 +6628,29 @@ function renderExpenseTypeSummary(entries) {
           isFuture
             ? `
               <div
-                class="expense-chart-item future-placeholder"
-                style="left: 17%; top: 31%;"
-              ></div>
-
-              <div
-                class="expense-chart-item future-placeholder"
-                style="left: 38%; top: 23%;"
-              ></div>
-
-              <div
-                class="expense-chart-item future-placeholder"
-                style="left: 62%; top: 28%;"
-              ></div>
-
-              <div
-                class="expense-chart-item future-placeholder"
-                style="left: 81%; top: 40%;"
-              ></div>
-
-              <div
-                class="expense-chart-item future-placeholder"
-                style="left: 27%; top: 65%;"
-              ></div>
-
-              <div
-                class="expense-chart-item future-placeholder"
-                style="left: 68%; top: 67%;"
-              ></div>
-
+                  class="expense-chart-item future-placeholder future-1"
+                  style="left: 28%; top: 29%;"
+                ></div>
+                <div
+                  class="expense-chart-item future-placeholder future-2"
+                  style="left: 72%; top: 29%;"
+                ></div>
+                <div
+                  class="expense-chart-item future-placeholder future-main"
+                  style="left: 50%; top: 51%;"
+                ></div>
+                <div
+                  class="expense-chart-item future-placeholder future-3"
+                  style="left: 22%; top: 68%;"
+                ></div>
+                <div
+                  class="expense-chart-item future-placeholder future-4"
+                  style="left: 50%; top: 78%;"
+                ></div>
+                <div
+                  class="expense-chart-item future-placeholder future-5"
+                  style="left: 78%; top: 68%;"
+                ></div>
               <div
                 class="expense-chart-future-message"
               >
@@ -7195,16 +7226,13 @@ function renderExpenseTypeSummary(entries) {
                         maximumFractionDigits: 2
                       })}
                 </div>
-              </div>
-              <div
-                class="
-                  expense-chart-percent
-                "
-                style="
-                  border-color: ${accentColor};
-                "
-              >
-                ${percent}%
+                <div
+                  class="
+                    expense-chart-bubble-percent
+                  "
+                >
+                  ${percent}%
+                </div>
               </div>
             </div>
           `;

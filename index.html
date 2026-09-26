@@ -2080,16 +2080,16 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 .expense-chart-item.is-selected {
   border-color: var(--bubble-accent);
   box-shadow:
-    0 0 0 1px
+    0 0 12px
       color-mix(
         in srgb,
         var(--bubble-accent) 55%,
         transparent
       ),
-    0 0 8px
+    0 0 24px
       color-mix(
         in srgb,
-        var(--bubble-accent) 38%,
+        var(--bubble-accent) 28%,
         transparent
       ),
     0 6px 18px
@@ -6628,20 +6628,20 @@ function renderExpenseTypeSummary(entries) {
           isFuture
             ? `
               <div
+                  class="expense-chart-item future-placeholder future-main"
+                  style="left: 50%; top: 50%;"
+                ></div>
+                <div
                   class="expense-chart-item future-placeholder future-1"
-                  style="left: 28%; top: 29%;"
+                  style="left: 27%; top: 27%;"
                 ></div>
                 <div
                   class="expense-chart-item future-placeholder future-2"
-                  style="left: 72%; top: 29%;"
-                ></div>
-                <div
-                  class="expense-chart-item future-placeholder future-main"
-                  style="left: 50%; top: 51%;"
+                  style="left: 73%; top: 27%;"
                 ></div>
                 <div
                   class="expense-chart-item future-placeholder future-3"
-                  style="left: 22%; top: 68%;"
+                  style="left: 22%; top: 69%;"
                 ></div>
                 <div
                   class="expense-chart-item future-placeholder future-4"
@@ -6649,7 +6649,7 @@ function renderExpenseTypeSummary(entries) {
                 ></div>
                 <div
                   class="expense-chart-item future-placeholder future-5"
-                  style="left: 78%; top: 68%;"
+                  style="left: 78%; top: 69%;"
                 ></div>
               <div
                 class="expense-chart-future-message"
@@ -7341,7 +7341,6 @@ function renderExpenseTypeSummary(entries) {
   document
   .getElementById('expenseBreakdownList')
   .addEventListener('click', (event) => {
-    if (selectedExpenseType) return;
     const item = event.target.closest('.expense-chart-item');
     if (!item) return;
     const title = item.dataset.expenseTitle;

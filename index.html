@@ -1951,6 +1951,8 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
     translate(-50%, -50%)
     scale(1);
   transition:
+    left 0.22s ease,
+    top 0.22s ease,
     transform 0.22s ease,
     opacity 0.22s ease,
     filter 0.22s ease,
@@ -2120,13 +2122,13 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   font-size: 7px;
 }
 
-.expense-chart-track.has-selection
+.expense-chart-track.has-selection:not(.sub-mode)
 .expense-chart-item:not(.is-selected) {
   opacity: 0.25;
   filter: saturate(0.65);
 }
 
-.expense-chart-track.has-selection
+.expense-chart-track.has-selection:not(.sub-mode)
 .expense-chart-item.is-selected {
   opacity: 1;
   filter: none;
@@ -2142,6 +2144,12 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 .expense-chart-item:not(.is-type-dimmed) {
   opacity: 1;
   filter: none;
+}
+
+.expense-chart-track.sub-mode
+.expense-chart-item.is-type-dimmed {
+  pointer-events: none;
+  cursor: default;
 }
 
 .expense-chart-item.future-placeholder {
@@ -7176,6 +7184,13 @@ function renderExpenseTypeSummary(entries) {
                 }
               "
               data-expense-title="${item.title}"
+              data-bubble-index="${bubble.index}"
+              data-normal-left="${getLeftPercent(
+                bubble.x
+              )}"
+              data-normal-top="${getTopPercent(
+                bubble.y
+              )}"
               style="
                 --bubble-size: ${bubble.size}px;
                 --bubble-accent: ${accentColor};
@@ -7340,25 +7355,110 @@ function renderExpenseTypeSummary(entries) {
   }
   document
   .getElementById('expenseBreakdownList')
-  .addEventListener('click', (event) => {
-    const item = event.target.closest('.expense-chart-item');
-    if (!item) return;
-    const title = item.dataset.expenseTitle;
-    if (selectedExpenseTitle === title) {
+  .addEventListener('click', event => {
+    const item =
+      event.target.closest(
+        '.expense-chart-item'
+      );
+    if (!item) {
+      return;
+    }
+    const title =
+      item.dataset.expenseTitle;
+    if (!title) {
+      return;
+    }
+    if (selectedExpenseType) {
+      const isAllowedType =
+        selectedExpenseType === 'Fixed'
+          ? item.classList.contains(
+              'is-fixed'
+            )
+          : item.classList.contains(
+              'is-variable'
+            );
+      if (!isAllowedType) {
+        return;
+      }
+    }
+    const track =
+      item.closest(
+        '.expense-chart-track'
+      );
+    if (!track) {
+      return;
+    }
+    if (
+      item.classList.contains(
+        'is-selected'
+      )
+    ) {
       selectedExpenseTitle = null;
-    const track = document.querySelector('.expense-chart-track');
-      track.classList.remove('has-selection');
-      document
-        .querySelectorAll('.expense-chart-item')
+      track.classList.remove(
+        'has-selection'
+      );
+      track
+        .querySelectorAll(
+          '.expense-chart-item'
+        )
         .forEach(chartItem => {
-          chartItem.classList.remove('is-selected');
+          chartItem.classList.remove(
+            'is-selected'
+          );
+          const normalLeft =
+            chartItem.dataset.normalLeft;
+          const normalTop =
+            chartItem.dataset.normalTop;
+          if (
+            normalLeft !== undefined
+          ) {
+            chartItem.style.left =
+              `${normalLeft}%`;
+          }
+          if (
+            normalTop !== undefined
+          ) {
+            chartItem.style.top =
+              `${normalTop}%`;
+          }
         });
-      return; }
-    selectedExpenseTitle = title;
-    const track = document.querySelector('.expense-chart-track');
-    track.classList.add('has-selection');
-    document
-      .querySelectorAll('.expense-chart-item')
+      return;
+    }
+    const currentCenter =
+      track.querySelector(
+        '.expense-chart-item.is-selected'
+      ) ||
+      track.querySelector(
+        '.expense-chart-item[data-bubble-index="0"]'
+      );
+    if (!currentCenter) {
+      return;
+    }
+    const centerLeft =
+      currentCenter.style.left;
+    const centerTop =
+      currentCenter.style.top;
+    const itemLeft =
+      item.style.left;
+    const itemTop =
+      item.style.top;
+    currentCenter.style.left =
+      itemLeft;
+    currentCenter.style.top =
+      itemTop;
+    item.style.left =
+      centerLeft;
+    item.style.top =
+      centerTop;
+    selectedExpenseTitle =
+      title;
+    track.classList.add(
+      'has-selection'
+    );
+    track
+      .querySelectorAll(
+        '.expense-chart-item'
+      )
       .forEach(chartItem => {
         chartItem.classList.toggle(
           'is-selected',

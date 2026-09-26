@@ -2081,6 +2081,11 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 
 .expense-chart-item.is-selected {
   border-color: var(--bubble-accent);
+    background: color-mix(
+    in srgb,
+    var(--bubble-accent) 28%,
+    rgba(255, 255, 255, 0.10)
+  );
   box-shadow:
     0 0 12px
       color-mix(
@@ -2100,6 +2105,14 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
     translate(-50%, -50%)
     scale(1.06);
   z-index: 10;
+}
+
+[data-theme="dark"] .expense-chart-item.is-selected {
+  background: color-mix(
+    in srgb,
+    var(--bubble-accent) 40%,
+    rgba(255, 255, 255, 0.38)
+  );
 }
 
 .expense-chart-item.is-selected
@@ -2364,7 +2377,7 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   grid-template-columns: 23px minmax(0, 1fr) auto;
   align-items: center;
   column-gap: 9px;
-  min-height: 30px;
+  min-height: 34px;
 }
 
 .annual-top-spending-section
@@ -2373,32 +2386,14 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   min-height: 44px;
 }
 
-.annual-top-spending-month-btn {
-  width: 100%;
-  min-height: 44px;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  border-radius: 10px;
-}
-
-.annual-top-spending-month-btn:active {
-  transform: scale(0.985);
-  opacity: 0.72;
-}
-
 .top-spending-rank {
+  display: flex;
+  align-items: center;
+  min-height: 1.2em;
   font-size: 11px;
   font-weight: 800;
   color: var(--text-sub);
-  line-height: 1;
+  line-height: 1.2;
   text-align: left;
 }
 
@@ -2410,14 +2405,18 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   font-size: 13px;
   font-weight: 700;
   color: var(--text-main);
+  line-height: 1.2;
 }
 
 .top-spending-amount {
+  display: flex;
+  align-items: center;
   font-size: 13px;
   font-weight: 800;
   color: var(--text-main);
   white-space: nowrap;
   text-align: right;
+  line-height: 1.2;
 }
 
 .top-spending-view-all {

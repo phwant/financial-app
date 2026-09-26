@@ -7191,6 +7191,8 @@ function renderExpenseTypeSummary(entries) {
               data-normal-top="${getTopPercent(
                 bubble.y
               )}"
+              data-normal-size="${bubble.size}"
+              data-normal-size-class="${sizeClass}"
               style="
                 --bubble-size: ${bubble.size}px;
                 --bubble-accent: ${accentColor};
@@ -7409,6 +7411,11 @@ function renderExpenseTypeSummary(entries) {
             chartItem.dataset.normalLeft;
           const normalTop =
             chartItem.dataset.normalTop;
+          const normalSize =
+            chartItem.dataset.normalSize;
+          const normalSizeClass =
+            chartItem.dataset
+              .normalSizeClass || '';
           if (
             normalLeft !== undefined
           ) {
@@ -7420,6 +7427,32 @@ function renderExpenseTypeSummary(entries) {
           ) {
             chartItem.style.top =
               `${normalTop}%`;
+          }
+          if (
+            normalSize !== undefined
+          ) {
+            chartItem.style
+              .setProperty(
+                '--bubble-size',
+                `${normalSize}px`
+              );
+          }
+          chartItem.classList.remove(
+            'is-small',
+            'is-tiny'
+          );
+          if (
+            normalSizeClass
+          ) {
+            normalSizeClass
+              .split(' ')
+              .forEach(className => {
+                if (className) {
+                  chartItem.classList.add(
+                    className
+                  );
+                }
+              });
           }
         });
       return;
@@ -7442,6 +7475,36 @@ function renderExpenseTypeSummary(entries) {
       item.style.left;
     const itemTop =
       item.style.top;
+    const centerSize =
+      currentCenter.style
+        .getPropertyValue(
+          '--bubble-size'
+        );
+    const itemSize =
+      item.style
+        .getPropertyValue(
+          '--bubble-size'
+        );
+    const centerSizeClass =
+      currentCenter.classList.contains(
+        'is-tiny'
+      )
+        ? 'is-small is-tiny'
+        : currentCenter.classList.contains(
+            'is-small'
+          )
+          ? 'is-small'
+          : '';
+    const itemSizeClass =
+      item.classList.contains(
+        'is-tiny'
+      )
+        ? 'is-small is-tiny'
+        : item.classList.contains(
+            'is-small'
+          )
+          ? 'is-small'
+          : '';
     currentCenter.style.left =
       itemLeft;
     currentCenter.style.top =
@@ -7450,6 +7513,46 @@ function renderExpenseTypeSummary(entries) {
       centerLeft;
     item.style.top =
       centerTop;
+    currentCenter.style
+      .setProperty(
+        '--bubble-size',
+        itemSize
+      );
+    item.style
+      .setProperty(
+        '--bubble-size',
+        centerSize
+      );
+    currentCenter.classList.remove(
+      'is-small',
+      'is-tiny'
+    );
+    item.classList.remove(
+      'is-small',
+      'is-tiny'
+    );
+    if (itemSizeClass) {
+      itemSizeClass
+        .split(' ')
+        .forEach(className => {
+          if (className) {
+            currentCenter.classList.add(
+              className
+            );
+          }
+        });
+    }
+    if (centerSizeClass) {
+      centerSizeClass
+        .split(' ')
+        .forEach(className => {
+          if (className) {
+            item.classList.add(
+              className
+            );
+          }
+        });
+    }
     selectedExpenseTitle =
       title;
     track.classList.add(

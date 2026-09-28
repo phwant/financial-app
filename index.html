@@ -5388,46 +5388,56 @@ function changeInsightsPeriod(delta) {
       </div>
       <div class="entry-group-divider"></div>
       <div class="entry-group-items">
-        ${items.map(item => `
-          <div
-            class="entry-row"
-            onclick='openModal("edit", ${JSON.stringify({
-              rowIndex: item.id,
-              rawDate: item.entry_date,
-              title: item.title,
-              note: item.note || '',
-              amount: Number(item.amount),
-              type: item.financial_type.toLowerCase(),
-              financialType: item.financial_type,
-              expenseType: item.expense_type || null,
-              icon: item.icon
-            })})'
-          >
-            <div class="entry-left">
-              <div class="entry-badge ${typeClass}">
-                <i data-lucide="${item.icon || 'circle'}"></i>
-              </div>
-              <div class="entry-info">
-                <div class="entry-title">
-                  ${item.title}
+        ${items.map(item => {
+          const note = item.note?.trim() || '';
+          const isOther = item.title === 'อื่นๆ' && note;
+          const displayTitle = isOther
+            ? note
+            : item.title;
+          const displayType = isOther
+            ? `${type} • อื่นๆ`
+            : `${type}${note ? ` • ${note}` : ''}`;
+          return `
+            <div
+              class="entry-row"
+              onclick='openModal("edit", ${JSON.stringify({
+                rowIndex: item.id,
+                rawDate: item.entry_date,
+                title: item.title,
+                note: item.note || '',
+                amount: Number(item.amount),
+                type: item.financial_type.toLowerCase(),
+                financialType: item.financial_type,
+                expenseType: item.expense_type || null,
+                icon: item.icon
+              })})'
+            >
+              <div class="entry-left">
+                <div class="entry-badge ${typeClass}">
+                  <i data-lucide="${item.icon || 'circle'}"></i>
                 </div>
-                <div class="entry-type">
-                   ${type}${item.note?.trim() ? ` • ${item.note.trim()}` : ''}
-                 </div>
+                <div class="entry-info">
+                  <div class="entry-title">
+                    ${displayTitle}
+                  </div>
+                  <div class="entry-type">
+                    ${displayType}
+                  </div>
+                </div>
+              </div>
+              <div class="entry-right">
+                <div class="entry-amount ${typeClass}">
+                  ฿${Number(item.amount).toLocaleString(
+                    'en-US',
+                    {
+                      minimumFractionDigits: 2
+                    }
+                  )}
+                </div>
               </div>
             </div>
-            <div class="entry-right">
-              <div class="entry-amount ${typeClass}">
-                ฿${Number(item.amount).toLocaleString(
-                  'en-US',
-                  {
-                    minimumFractionDigits: 2
-                  }
-                )}
-              </div>
-            </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     </div>
   `;
@@ -7089,13 +7099,16 @@ function renderExpenseTypeSummary(entries) {
         .map(bubble => {
           const item =
             bubble.item;
-
           const amount =
             bubble.amount;
-
+          const note =
+            item.note?.trim() || '';
+          const bubbleLabel =
+            item.title === 'อื่นๆ' && note
+              ? note
+              : item.title;
           const itemType =
             getExpenseType(item);
-
           const percent =
             selectedExpenseType
               ? (
@@ -7229,11 +7242,10 @@ function renderExpenseTypeSummary(entries) {
                   class="
                     expense-chart-bubble-name
                   "
-                  title="${item.title}"
+                  title="${bubbleLabel}"
                 >
-                  ${item.title}
+                  ${bubbleLabel}
                 </div>
-
                 <div
                   class="
                     expense-chart-bubble-amount
@@ -11362,42 +11374,53 @@ function openAnnualTopSpendingMonth(month) {
   if (state === 'data') {
     content = `
       <div class="highlight-card-content">
-        ${highlights.map(item => `
-          <div
-            class="highlight-item"
-            onclick='openModal("edit", ${JSON.stringify({
-              rowIndex: item.id,
-              rawDate: item.entry_date,
-              title: item.title,
-               note: item.note || '',
-              amount: Number(item.amount),
-              type: item.financial_type.toLowerCase(),
-              financialType: item.financial_type,
-              icon: item.icon
-            })})'
-          >
-            <div class="entry-left">
-              <div class="entry-badge ${item.financial_type.toLowerCase()}">
-                <i data-lucide="${item.icon || 'circle'}"></i>
-              </div>
-              <div>
-                <div class="entry-title">
-                  ${item.title}
+        ${highlights.map(item => {
+          const note = item.note?.trim() || '';
+          const isOther = item.title === 'อื่นๆ' && note;
+          const displayTitle = isOther
+            ? note
+            : item.title;
+          const displayType = isOther
+            ? `${item.financial_type} • อื่นๆ`
+            : item.financial_type;
+          return `
+            <div
+              class="highlight-item"
+              onclick='openModal("edit", ${JSON.stringify({
+                rowIndex: item.id,
+                rawDate: item.entry_date,
+                title: item.title,
+                note: item.note || '',
+                amount: Number(item.amount),
+                type: item.financial_type.toLowerCase(),
+                financialType: item.financial_type,
+                expenseType: item.expense_type || null,
+                icon: item.icon
+              })})'
+            >
+              <div class="entry-left">
+                <div class="entry-badge ${item.financial_type.toLowerCase()}">
+                  <i data-lucide="${item.icon || 'circle'}"></i>
                 </div>
-                <div class="entry-date">
-                  ${item.financial_type}
+                <div>
+                  <div class="entry-title">
+                    ${displayTitle}
+                  </div>
+                  <div class="entry-date">
+                    ${displayType}
+                  </div>
+                </div>
+              </div>
+              <div class="entry-right">
+                <div class="entry-amount ${item.financial_type.toLowerCase()}">
+                  ฿${Number(item.amount).toLocaleString('en-US', {
+                    minimumFractionDigits: 2
+                  })}
                 </div>
               </div>
             </div>
-            <div class="entry-right">
-              <div class="entry-amount ${item.financial_type.toLowerCase()}">
-                ฿${Number(item.amount).toLocaleString('en-US', {
-                  minimumFractionDigits: 2
-                })}
-              </div>
-            </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('')}
       </div>
     `;
   }

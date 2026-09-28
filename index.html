@@ -2419,10 +2419,8 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
 }
 
 .top-spending-name {
-  display: flex;
-  align-items: center;
   min-width: 0;
-  height: 18px;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2439,6 +2437,7 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   font-size: 13px;
   font-weight: 800;
   color: var(--text-main);
+  flex-shrink: 0;
   white-space: nowrap;
   text-align: right;
   line-height: 18px;

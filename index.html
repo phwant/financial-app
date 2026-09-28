@@ -2995,6 +2995,15 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   text-overflow: ellipsis;
 }
 
+.annual-comparison-item-text {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .annual-comparison-value {
   display: flex;
   align-items: center;
@@ -6480,7 +6489,9 @@ function renderAnnualComparison(
             "
           >
             <div class="annual-comparison-item">
-              ${row.title}
+              <span class="annual-comparison-item-text">
+                ${row.title}
+              </span>
             </div>
             ${values.join('')}
           </div>

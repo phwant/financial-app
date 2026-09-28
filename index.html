@@ -2424,12 +2424,25 @@ background: linear-gradient( 90deg, transparent, rgba(255, 255, 255, 0.08), tran
   min-width: 0;
   height: 18px;
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
   font-weight: 700;
   color: var(--text-main);
   line-height: 18px;
+}
+
+.top-spending-name-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 0 1 auto;
+}
+
+.top-spending-other {
+  flex: 0 0 auto;
+  margin-left: 4px;
+  white-space: nowrap;
 }
 
 .top-spending-amount {
@@ -7383,8 +7396,11 @@ function renderExpenseTypeSummary(entries) {
         <div class="top-spending-name">
           ${
             item.title === 'อื่นๆ' && item.note
-              ? `${item.note} (อื่นๆ)`
-              : item.title
+              ? `
+                <span class="top-spending-name-text">${item.note}</span>
+                <span class="top-spending-other">(อื่นๆ)</span>
+              `
+              : `<span class="top-spending-name-text">${item.title}</span>`
           }
         </div>
         <div class="top-spending-amount">

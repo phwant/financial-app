@@ -7381,7 +7381,11 @@ function renderExpenseTypeSummary(entries) {
           ${String(index + 1).padStart(2, '0')}
         </div>
         <div class="top-spending-name">
-          ${item.title}
+          ${
+            item.title === 'อื่นๆ' && item.note
+              ? `${item.note} (อื่นๆ)`
+              : item.title
+          }
         </div>
         <div class="top-spending-amount">
           ฿${Number(item.amount || 0).toLocaleString('en-US', {

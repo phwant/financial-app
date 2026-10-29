@@ -11800,7 +11800,14 @@ function openAnnualTopSpendingMonth(month) {
         'translateY(0) scale(1)';
     }
     try {
-      await fetchData();
+      if (
+        currentTab === 'insights' &&
+        insightsViewMode === 'year'
+      ) {
+        await fetchAnnualData();
+      } else {
+        await fetchData();
+      }
     } finally {
       if (indicator) {
         indicator.classList.remove(
@@ -12219,11 +12226,11 @@ async function copyPreviousMonthEntries() {
     const expenseMoM = calculateMoM(totalExpense, previousExpense);
     const balanceMoM = calculateMoM(balance, previousBalance);
     const deductionMoM = calculateMoM(totalDeduction, previousDeduction);
-    const isFuture = isSelectedMonthFuture();
+    const isFuture =
+      isSelectedMonthFuture() &&
+      entries.length === 0;
     resetInsightsSummaryState();
-    applyInsightsSummaryFutureState(
-      isFuture
-      );
+    applyInsightsSummaryFutureState(isFuture);
     lastFetchTime = Date.now();
     // 8. Remove updating state
     document.getElementById('balanceAmount').classList.remove('updating');
@@ -12364,56 +12371,67 @@ async function copyPreviousMonthEntries() {
    totalIncome > 0
     ? `${Math.round(savingsRate)}%`
     : 'N/A';
-function renderMoM(elementId, currentValue, previousValue, isFuture) {
-  const element = document.getElementById(elementId);
-  const currentHasData =
-    currentValue !== null &&
-    currentValue !== undefined &&
-    isFinite(currentValue) &&
-    currentValue !== 0;
-  const previousHasData =
-    previousValue !== null &&
-    previousValue !== undefined &&
-    isFinite(previousValue) &&
-    previousValue !== 0;
+    
+function renderMoM(
+  elementId,
+  currentValue,
+  previousValue,
+  isFuture,
+  currentHasData,
+  previousHasData
+) {
+  const element =
+    document.getElementById(elementId);
+  if (!element) return;
   // เดือนอนาคตที่ยังไม่มีข้อมูล
   if (isFuture && !currentHasData) {
     element.innerText = '';
-    element.className = 'monthly-summary-mom neutral';
-    return; }
-  // เดือนนี้ไม่มีข้อมูล
+    element.className =
+      'monthly-summary-mom neutral';
+    return;
+  }
+  // เดือนนี้ไม่มีรายการจริง
   if (!currentHasData) {
     element.innerText = 'no data';
-    element.className = 'monthly-summary-mom neutral';
-    return; }
-  // เดือนก่อนหน้าไม่มีข้อมูล
-  if (!previousHasData) {
+    element.className =
+      'monthly-summary-mom neutral';
+    return;
+  }
+  // เดือนก่อนหน้าไม่มีรายการ
+  // หรือยอดเป็นศูนย์จนไม่สามารถคำนวณ % ได้
+  if (!previousHasData || previousValue === 0) {
     element.innerText = 'no prev. data';
-    element.className = 'monthly-summary-mom neutral';
-    return; }
-  const difference = currentValue - previousValue;
-  const percent =
-    previousValue !== 0
-      ? Math.round((difference / Math.abs(previousValue)) * 100)
-      : 0;
-  // ต่างกันไม่เกิน ฿500 = ถือว่าเท่าเดิม & Deduction ต่างกันไม่เกิน ฿100 = ถือว่าเท่าเดิม
+    element.className =
+      'monthly-summary-mom neutral';
+    return;
+  }
+  const difference =
+    currentValue - previousValue;
+  const percent = Math.round(
+    (difference / Math.abs(previousValue)) * 100
+  );
+  // ต่างกันไม่เกิน ฿500 หรือ ฿100 สำหรับ Deduction
   const threshold =
-  elementId === 'insightsDeductionMoM'
-    ? 100
-    : 500;
+    elementId === 'insightsDeductionMoM'
+      ? 100
+      : 500;
   if (Math.abs(difference) <= threshold) {
-  element.innerText =
-    `→ ${Math.abs(percent)}% vs last month`;
-  element.className = 'monthly-summary-mom neutral';
-  return; }
+    element.innerText =
+      `→ ${Math.abs(percent)}% vs last month`;
+    element.className =
+      'monthly-summary-mom neutral';
+    return;
+  }
   if (difference > 0) {
     element.innerText =
       `↑ ${Math.abs(percent)}% vs last month`;
-    element.className = 'monthly-summary-mom up';
+    element.className =
+      'monthly-summary-mom up';
   } else {
     element.innerText =
       `↓ ${Math.abs(percent)}% vs last month`;
-    element.className = 'monthly-summary-mom down';
+    element.className =
+      'monthly-summary-mom down';
   }
 }
 
@@ -12476,12 +12494,59 @@ function renderMoM(elementId, currentValue, previousValue, isFuture) {
     '→ 0% vs last month';
   element.className =
     'monthly-summary-mom neutral';}
-    
-renderMoM( 'insightsIncomeMoM', totalIncome, previousIncome, isFuture );
-renderMoM( 'insightsExpenseMoM', totalExpense, previousExpense, isFuture );
-renderMoM( 'insightsDeductionMoM', totalDeduction, previousDeduction, isFuture );
-renderMoM( 'insightsBalanceMoM', balance, previousBalance, isFuture );
-renderSavingsRateMoM( savingsRate, previousSavingsRate, isFuture );
+  renderMoM(
+    'insightsIncomeMoM',
+    totalIncome,
+    previousIncome,
+    isFuture,
+    entries.some(item =>
+      item.financial_type === 'Income'
+    ),
+    previous.some(item =>
+      item.financial_type === 'Income'
+    )
+  );
+  renderMoM(
+    'insightsExpenseMoM',
+    totalExpense,
+    previousExpense,
+    isFuture,
+    entries.some(item =>
+      item.financial_type === 'Expense'
+    ),
+    previous.some(item =>
+      item.financial_type === 'Expense'
+    )
+  );
+  renderMoM(
+    'insightsDeductionMoM',
+    totalDeduction,
+    previousDeduction,
+    isFuture,
+    entries.some(item =>
+      item.financial_type === 'Deduction'
+    ),
+    previous.some(item =>
+      item.financial_type === 'Deduction'
+    )
+  );
+  renderMoM(
+    'insightsBalanceMoM',
+    balance,
+    previousBalance,
+    isFuture,
+    entries.length > 0,
+    previous.length > 0
+  );
+  renderSavingsRateMoM(
+    savingsRate,
+    previousSavingsRate,
+    isFuture,
+    entries.some(item =>
+      item.financial_type === 'Income'
+    )
+  );
+  
     // 14. Select Highlights
 const highlightCandidates = []; entries.forEach(function(currentItem) {
 const previousItem = previous.find(function(item) { return ( item.financial_type === currentItem.financial_type && item.title === currentItem.title  );

@@ -1454,8 +1454,10 @@ body:has(#entryModal.active) .floating-add-button {
 .entries-bulk-actions { display: flex; align-items: center; gap: 12px; width: 96%; margin: 18px auto 28px; }
 .entries-bulk-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 0 16px;
   border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.entries-bulk-cancel { flex: 1; border: 1px solid rgba(100, 116, 139, 0.3); background: transparent; color: var(--text-main); }
-.entries-bulk-delete { flex: 1.4; border: 1px solid rgba(244, 63, 94, 0.25); background: rgba(244, 63, 94, 0.10); color: #F43F5E; }
+.entries-bulk-cancel,
+.entries-bulk-delete { flex: 1 1 0; min-width: 0; border: 1px solid rgba(100, 116, 139, 0.3); }
+.entries-bulk-cancel { background: transparent; color: var(--text-main); }
+.entries-bulk-delete { border-color: rgba(244, 63, 94, 0.25); background: rgba(244, 63, 94, 0.10); color: #F43F5E; }
 .entries-bulk-delete svg { width: 16px; height: 16px; }
 .entries-bulk-delete:disabled { opacity: 0.4; cursor: not-allowed; }
 .entries-loading { width: 100%; }
@@ -5263,6 +5265,10 @@ function changeMonth(delta) {
   ) {
     pushInsightEntriesHistory();
   }
+  if (isBulkDeleteMode) {
+    isBulkDeleteMode = false;
+    selectedEntryIds.clear();
+  }
   selectedYear = newYear;
   selectedMonth = newMonth;
   if (insightsViewMode === 'month') {
@@ -5611,6 +5617,14 @@ function renderEntriesPage(entries) {
       entryGroupTitle = 'Expense';
     }
   }
+  if (
+    filteredEntries.length === 0 &&
+    isBulkDeleteMode &&
+    !bulkDeleteInProgress
+  ) {
+    isBulkDeleteMode = false;
+    selectedEntryIds.clear();
+  }
   const visibleIds = new Set(
     filteredEntries.map(item => String(item.id))
   );
@@ -5624,6 +5638,7 @@ function renderEntriesPage(entries) {
   const bulkHint =
     document.getElementById('entriesBulkHint');
   if (toggleButton) {
+    toggleButton.hidden = filteredEntries.length === 0;
     toggleButton.textContent =
       isBulkDeleteMode ? 'Done' : 'Edit';
   }
@@ -5760,7 +5775,7 @@ function renderEntriesPage(entries) {
         idsToDelete.length === 1 ? 'entry' : 'entries'
       } from ${
         months[selectedMonth - 1].name
-      } ${selectedYear}?\n\nThis action cannot be undone.`
+      } ${selectedYear}?`
     );
     if (!confirmed) return;
     const startDate =

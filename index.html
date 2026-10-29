@@ -1164,8 +1164,8 @@ body:has(#entryModal.active) .floating-add-button {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 100%;
-  max-width: 280px;
+  width: auto;
+  max-width: 240px;
   min-height: 42px;
   padding: 0 16px;
   border: 1px solid rgba(114, 152, 199, 0.45);
@@ -1440,6 +1440,24 @@ body:has(#entryModal.active) .floating-add-button {
 .entry-type { min-width: 0; font-size: 10px; font-weight: 700; color: var(--text-sub); line-height: 1.2; letter-spacing: 0.3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .entry-right { flex-shrink: 0; margin-left: 14px; display: flex; align-items: center; }
 .entry-amount { font-size: 14px; font-weight: 800; white-space: nowrap; }
+.entries-bulk-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 96%; margin: 0 auto 8px; min-height: 36px; }
+.entries-bulk-hint { color: var(--text-sub); font-size: 11px; font-weight: 600; }
+.entries-bulk-hint[hidden] { display: none; }
+.entries-bulk-toggle { margin-left: auto; min-width: 58px; padding: 7px 14px; border: 1px solid rgba(114, 152, 199, 0.35); border-radius: 999px; background: rgba(114, 152, 199, 0.09);
+  color: var(--blue-grey); font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.entry-select-circle { display: none; position: absolute; left: 0; top: 50%; transform: translateY(-50%); align-items: center; justify-content: center;
+  width: 21px; height: 21px; border: 1.5px solid var(--text-sub); border-radius: 50%; color: #fff; background: transparent; box-sizing: border-box; }
+.entry-select-circle svg { width: 13px; height: 13px; stroke-width: 3; }
+.entry-row.bulk-delete-mode .entry-select-circle { display: flex; }
+.entry-row.bulk-delete-mode .entry-left { margin-left: 28px; }
+.entry-row.bulk-selected .entry-select-circle { border-color: var(--blue-grey); background: var(--blue-grey); }
+.entries-bulk-actions { display: flex; align-items: center; gap: 12px; width: 96%; margin: 18px auto 28px; }
+.entries-bulk-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 0 16px;
+  border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.entries-bulk-cancel { flex: 1; border: 1px solid rgba(100, 116, 139, 0.3); background: transparent; color: var(--text-main); }
+.entries-bulk-delete { flex: 1.4; border: 1px solid rgba(244, 63, 94, 0.25); background: rgba(244, 63, 94, 0.10); color: #F43F5E; }
+.entries-bulk-delete svg { width: 16px; height: 16px; }
+.entries-bulk-delete:disabled { opacity: 0.4; cursor: not-allowed; }
 .entries-loading { width: 100%; }
 .entries-skeleton-group { margin-bottom: 24px; }
 .entries-skeleton-header { display: flex; justify-content: space-between; align-items: center; margin: 0 2% 10px; }
@@ -3542,19 +3560,6 @@ body.modal-open {
     <i data-lucide="history"></i>
   </button>
    </section>
-      <div
-      class="copy-previous-month-wrap"
-      id="copyPreviousMonthWrap"
-      hidden>
-      <button
-        class="copy-previous-month-btn"
-        id="copyPreviousMonthBtn"
-        type="button"
-        onclick="copyPreviousMonthEntries()">
-        <i data-lucide="copy"></i>
-        <span>Copy Previous Month</span>
-      </button>
-    </div>
       <div class="entries-filter" id="entriesFilter">
         <button class="entries-filter-btn active" type="button" data-filter="all" onclick="setEntryFilter('all')">
           <span>All Entries</span>
@@ -3567,6 +3572,19 @@ body.modal-open {
         </button>
         <button class="entries-filter-btn" type="button" data-filter="deduction" onclick="setEntryFilter('deduction')">
           <span>Deduction</span>
+        </button>
+      </div>
+      <div
+        class="copy-previous-month-wrap"
+        id="copyPreviousMonthWrap"
+        hidden>
+        <button
+          class="copy-previous-month-btn"
+          id="copyPreviousMonthBtn"
+          type="button"
+          onclick="copyPreviousMonthEntries()">
+          <i data-lucide="copy"></i>
+          <span>Copy Previous Month</span>
         </button>
       </div>
       <div class="entries-expense-filter" id="entriesExpenseFilter" hidden>
@@ -3592,6 +3610,21 @@ body.modal-open {
     <span>Variable</span>
   </button>
     </div>
+     <div class="entries-bulk-toolbar" id="entriesBulkToolbar">
+        <div
+          class="entries-bulk-hint"
+          id="entriesBulkHint"
+          hidden>
+          Select entries to delete
+        </div>
+        <button
+          class="entries-bulk-toggle"
+          id="entriesBulkToggle"
+          type="button"
+          onclick="toggleBulkDeleteMode()">
+          Edit
+        </button>
+      </div>
       <div class="entries-list" id="entriesList">
         <div class="loading-state">no entries yet</div>
       </div>
@@ -5491,21 +5524,32 @@ function changeInsightsPeriod(delta) {
           const displayType = isOther
             ? `${type} • อื่นๆ`
             : `${type}${note ? ` • ${note}` : ''}`;
+          const entryId = String(item.id);
+          const isSelected =
+            selectedEntryIds.has(entryId);
+          const editData = {
+            rowIndex: item.id,
+            rawDate: item.entry_date,
+            title: item.title,
+            note: item.note || '',
+            amount: Number(item.amount),
+            type: item.financial_type.toLowerCase(),
+            financialType: item.financial_type,
+            expenseType: item.expense_type || null,
+            icon: item.icon
+          };
           return `
             <div
-              class="entry-row"
-              onclick='openModal("edit", ${JSON.stringify({
-                rowIndex: item.id,
-                rawDate: item.entry_date,
-                title: item.title,
-                note: item.note || '',
-                amount: Number(item.amount),
-                type: item.financial_type.toLowerCase(),
-                financialType: item.financial_type,
-                expenseType: item.expense_type || null,
-                icon: item.icon
-              })})'
+              class="entry-row ${isBulkDeleteMode ? 'bulk-delete-mode' : ''} ${isSelected ? 'bulk-selected' : ''}"
+              data-entry-id="${entryId}"
+              onclick='handleEntryRowClick(event, ${JSON.stringify(editData)})'
             >
+              <div class="entry-select-circle" aria-hidden="true">
+                ${isSelected
+                  ? '<i data-lucide="check"></i>'
+                  : ''
+                }
+              </div>
               <div class="entry-left">
                 <div class="entry-badge ${typeClass}">
                   <i data-lucide="${item.icon || 'circle'}"></i>
@@ -5543,7 +5587,8 @@ function renderEntriesPage(entries) {
     document.getElementById('entriesExpenseFilter');
   if (expenseSubFilter) {
     expenseSubFilter.hidden =
-      currentEntryFilter !== 'expense'; }
+      currentEntryFilter !== 'expense';
+  }
   let filteredEntries = currentEntries;
   if (currentEntryFilter !== 'all') {
     filteredEntries = currentEntries.filter(item =>
@@ -5566,15 +5611,42 @@ function renderEntriesPage(entries) {
       entryGroupTitle = 'Expense';
     }
   }
+  const visibleIds = new Set(
+    filteredEntries.map(item => String(item.id))
+  );
+  selectedEntryIds = new Set(
+    [...selectedEntryIds].filter(id =>
+      visibleIds.has(id)
+    )
+  );
+  const toggleButton =
+    document.getElementById('entriesBulkToggle');
+  const bulkHint =
+    document.getElementById('entriesBulkHint');
+  if (toggleButton) {
+    toggleButton.textContent =
+      isBulkDeleteMode ? 'Done' : 'Edit';
+  }
+  if (bulkHint) {
+    bulkHint.hidden = !isBulkDeleteMode;
+    bulkHint.textContent = isBulkDeleteMode
+      ? `${selectedEntryIds.size} selected`
+      : '';
+  }
+  const entriesList =
+    document.getElementById('entriesList');
+  if (!entriesList) return;
   if (filteredEntries.length === 0) {
     const isFuture = isSelectedMonthFuture();
     const emptyText =
       isFuture && currentEntries.length === 0
         ? 'upcoming'
         : 'no entries yet';
-    document.getElementById('entriesList').innerHTML =
-      `<div class="loading-state">${emptyText}</div>`;
-    return; }
+    entriesList.innerHTML = `
+      <div class="loading-state">${emptyText}</div>
+    `;
+    return;
+  }
   const grouped = {
     Income: [],
     Expense: [],
@@ -5582,7 +5654,8 @@ function renderEntriesPage(entries) {
   };
   filteredEntries.forEach(item => {
     if (grouped[item.financial_type]) {
-      grouped[item.financial_type].push(item); }
+      grouped[item.financial_type].push(item);
+    }
   });
   Object.keys(grouped).forEach(type => {
     grouped[type].sort(
@@ -5590,7 +5663,7 @@ function renderEntriesPage(entries) {
         Number(b.amount) - Number(a.amount)
     );
   });
-  document.getElementById('entriesList').innerHTML = `
+  entriesList.innerHTML = `
     ${
       currentEntryFilter === 'expense'
         ? renderEntryGroup(
@@ -5604,9 +5677,142 @@ function renderEntriesPage(entries) {
           ${renderEntryGroup('Deduction', grouped.Deduction)}
         `
     }
+    ${
+      isBulkDeleteMode
+        ? `
+          <div class="entries-bulk-actions">
+            <button
+              type="button"
+              class="entries-bulk-cancel"
+              onclick="cancelBulkDeleteMode()">
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="entries-bulk-delete"
+              onclick="deleteSelectedEntries()"
+              ${selectedEntryIds.size === 0 || bulkDeleteInProgress
+                ? 'disabled'
+                : ''
+              }>
+              <i data-lucide="trash-2"></i>
+              Delete (${selectedEntryIds.size})
+            </button>
+          </div>
+        `
+        : ''
+    }
   `;
-  lucide.createIcons(); }
-
+  lucide.createIcons();
+  }
+  
+  function handleEntryRowClick(event, item) {
+  if (isBulkDeleteMode) {
+    const entryId = String(item.rowIndex);
+    if (selectedEntryIds.has(entryId)) {
+      selectedEntryIds.delete(entryId);
+    } else {
+      selectedEntryIds.add(entryId);
+    }
+    renderEntriesPage(currentEntries);
+    return;
+  }
+  openModal('edit', item);
+  }
+  
+  function toggleBulkDeleteMode() {
+    if (bulkDeleteInProgress) return;
+    isBulkDeleteMode = !isBulkDeleteMode;
+    selectedEntryIds.clear();
+    renderEntriesPage(currentEntries);
+  }
+  
+  function cancelBulkDeleteMode() {
+    if (bulkDeleteInProgress) return;
+    isBulkDeleteMode = false;
+    selectedEntryIds.clear();
+    renderEntriesPage(currentEntries);
+  }
+  
+  async function deleteSelectedEntries() {
+    if (
+      bulkDeleteInProgress ||
+      !isBulkDeleteMode ||
+      selectedEntryIds.size === 0
+    ) {
+      return;
+    }
+    const selectedIds = [...selectedEntryIds];
+    const visibleIds = new Set(
+      currentEntries.map(item => String(item.id))
+    );
+    const idsToDelete = selectedIds.filter(id =>
+      visibleIds.has(id)
+    );
+    if (idsToDelete.length === 0) {
+      alert('No valid entries selected.');
+      selectedEntryIds.clear();
+      renderEntriesPage(currentEntries);
+      return;
+    }
+    const confirmed = confirm(
+      `Delete ${idsToDelete.length} selected ${
+        idsToDelete.length === 1 ? 'entry' : 'entries'
+      } from ${
+        months[selectedMonth - 1].name
+      } ${selectedYear}?\n\nThis action cannot be undone.`
+    );
+    if (!confirmed) return;
+    const startDate =
+      `${selectedYear}-${String(selectedMonth).padStart(2, '0')}-01`;
+    const nextMonthDate = new Date(
+      selectedYear,
+      selectedMonth,
+      1
+    );
+    const endDate =
+      `${nextMonthDate.getFullYear()}-${String(
+        nextMonthDate.getMonth() + 1
+      ).padStart(2, '0')}-01`;
+    bulkDeleteInProgress = true;
+    renderEntriesPage(currentEntries);
+    try {
+      const { data: deletedRows, error } =
+        await supabaseClient
+          .from('financial_entries')
+          .delete()
+          .in('id', idsToDelete)
+          .gte('entry_date', startDate)
+          .lt('entry_date', endDate)
+          .select('id');
+      if (error) throw error;
+      if (!deletedRows || deletedRows.length !== idsToDelete.length) {
+        isBulkDeleteMode = false;
+        selectedEntryIds.clear();
+        await fetchData();
+        alert(
+          'Not all selected entries could be deleted. ' +
+          'The list has been refreshed; please check the entries.'
+        );
+        return;
+      }
+      isBulkDeleteMode = false;
+      selectedEntryIds.clear();
+      await fetchData();
+    } catch (error) {
+      console.error('Bulk delete error:', error);
+      alert(
+        'Unable to delete the selected entries. ' +
+        'Please check your connection and permissions, then try again.'
+      );
+    } finally {
+      bulkDeleteInProgress = false;
+      if (isBulkDeleteMode) {
+        renderEntriesPage(currentEntries);
+      }
+    }
+  }
+  
   function renderEntriesLoading() {
   document.getElementById('entriesList').innerHTML = `
     <div class="entries-loading">
@@ -5678,6 +5884,9 @@ function renderEntriesPage(entries) {
   let monthlyComparisonPeriod = 3;
   let paymentHistoryEntries = [];
   let previousMonthEntries = [];
+  let isBulkDeleteMode = false;
+  let selectedEntryIds = new Set();
+  let bulkDeleteInProgress = false;
   let monthlyComparisonResizeObserver = null;
   const monthlyComparisonTypePicker =
   document.getElementById('monthlyComparisonTypePicker');
@@ -11795,8 +12004,7 @@ async function copyPreviousMonthEntries() {
       return;
     }
     const confirmed = confirm(
-      `Copy ${sourceEntries.length} entries from ${sourceLabel} to ${targetLabel}?\n\n` +
-      `This will create new entries. The original entries will remain unchanged.`
+      `Copy ${sourceEntries.length} entries from ${sourceLabel} to ${targetLabel}?`
     );
     if (!confirmed) {
       return;

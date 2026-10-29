@@ -1148,6 +1148,58 @@ body:has(#entryModal.active) .floating-add-button {
   gap: 7px;
 }
 
+.copy-previous-month-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: -8px 0 20px;
+}
+
+.copy-previous-month-wrap[hidden] {
+  display: none;
+}
+
+.copy-previous-month-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 280px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(114, 152, 199, 0.45);
+  border-radius: 999px;
+  background: rgba(114, 152, 199, 0.10);
+  color: var(--blue-grey);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 0.18s ease,
+    transform 0.16s ease,
+    opacity 0.18s ease;
+}
+
+.copy-previous-month-btn:active {
+  transform: scale(0.97);
+}
+
+.copy-previous-month-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.copy-previous-month-btn svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+
 .entries-header {
   justify-content: flex-start;
 }
@@ -3490,6 +3542,19 @@ body.modal-open {
     <i data-lucide="history"></i>
   </button>
    </section>
+      <div
+      class="copy-previous-month-wrap"
+      id="copyPreviousMonthWrap"
+      hidden>
+      <button
+        class="copy-previous-month-btn"
+        id="copyPreviousMonthBtn"
+        type="button"
+        onclick="copyPreviousMonthEntries()">
+        <i data-lucide="copy"></i>
+        <span>Copy Previous Month</span>
+      </button>
+    </div>
       <div class="entries-filter" id="entriesFilter">
         <button class="entries-filter-btn active" type="button" data-filter="all" onclick="setEntryFilter('all')">
           <span>All Entries</span>
@@ -11606,8 +11671,205 @@ function openAnnualTopSpendingMonth(month) {
     { passive: true }
   );
   
+  
+function renderCopyPreviousMonthButton(
+  currentMonthEntries,
+  previousMonthEntries
+) {
+  const wrap = document.getElementById(
+    'copyPreviousMonthWrap'
+  );
+  const entriesView = document.getElementById(
+    'placeholderView'
+  );
+
+  if (!wrap || !entriesView) {
+    return;
+  }
+
+  const isEntriesView =
+    entriesView.style.display !== 'none';
+
+  const shouldShow =
+    isEntriesView &&
+    Array.isArray(currentMonthEntries) &&
+    currentMonthEntries.length === 0 &&
+    Array.isArray(previousMonthEntries) &&
+    previousMonthEntries.length > 0;
+
+  wrap.hidden = !shouldShow;
+}
+
+async function copyPreviousMonthEntries() {
+  const button = document.getElementById(
+    'copyPreviousMonthBtn'
+  );
+  if (!button || button.disabled) {
+    return;
+  }
+  const targetYear = selectedYear;
+  const targetMonth = selectedMonth;
+  const targetStart =
+    `${targetYear}-${String(targetMonth).padStart(2, '0')}-01`;
+  const targetNextDate = new Date(
+    targetYear,
+    targetMonth,
+    1
+  );
+  const targetEnd =
+    `${targetNextDate.getFullYear()}-${String(
+      targetNextDate.getMonth() + 1
+    ).padStart(2, '0')}-01`;
+  const sourceDate = new Date(
+    targetYear,
+    targetMonth - 2,
+    1
+  );
+  const sourceYear = sourceDate.getFullYear();
+  const sourceMonth = sourceDate.getMonth() + 1;
+  const sourceStart =
+    `${sourceYear}-${String(sourceMonth).padStart(2, '0')}-01`;
+  const targetLabel = new Date(
+    targetYear,
+    targetMonth - 1,
+    1
+  ).toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric'
+  });
+  const sourceLabel = sourceDate.toLocaleDateString(
+    'en-US',
+    {
+      month: 'long',
+      year: 'numeric'
+    }
+  );
+  const originalButtonHTML = button.innerHTML;
+  button.disabled = true;
+  button.innerHTML = '<span>Copying...</span>';
+  try {
+    const {
+      data: existingEntries,
+      error: existingError
+    } = await supabaseClient
+      .from('financial_entries')
+      .select('id')
+      .gte('entry_date', targetStart)
+      .lt('entry_date', targetEnd)
+      .limit(1);
+    if (existingError) {
+      throw existingError;
+    }
+    if (existingEntries && existingEntries.length > 0) {
+      alert(
+        `${targetLabel} already contains entries. Nothing was copied.`
+      );
+      await fetchData();
+      return;
+    }
+    const {
+      data: sourceEntries,
+      error: sourceError
+    } = await supabaseClient
+      .from('financial_entries')
+      .select(
+        'financial_type, title, amount, icon, note, expense_type'
+      )
+      .gte('entry_date', sourceStart)
+      .lt('entry_date', targetStart)
+      .order('entry_date', {
+        ascending: true
+      });
+    if (sourceError) {
+      throw sourceError;
+    }
+    if (!sourceEntries || sourceEntries.length === 0) {
+      alert(`No entries to copy from ${sourceLabel}.`);
+      await fetchData();
+      return;
+    }
+    if (
+      selectedYear !== targetYear ||
+      selectedMonth !== targetMonth
+    ) {
+      return;
+    }
+    const confirmed = confirm(
+      `Copy ${sourceEntries.length} entries from ${sourceLabel} to ${targetLabel}?\n\n` +
+      `This will create new entries. The original entries will remain unchanged.`
+    );
+    if (!confirmed) {
+      return;
+    }
+    const {
+      data: latestDestinationEntries,
+      error: latestDestinationError
+    } = await supabaseClient
+      .from('financial_entries')
+      .select('id')
+      .gte('entry_date', targetStart)
+      .lt('entry_date', targetEnd)
+      .limit(1);
+    if (latestDestinationError) {
+      throw latestDestinationError;
+    }
+    if (
+      latestDestinationEntries &&
+      latestDestinationEntries.length > 0
+    ) {
+      alert(
+        `${targetLabel} already contains entries. Nothing was copied.`
+      );
+      await fetchData();
+      return;
+    }
+    if (
+      selectedYear !== targetYear ||
+      selectedMonth !== targetMonth
+    ) {
+      return;
+    }
+    const entriesToInsert = sourceEntries.map(item => ({
+      entry_date: targetStart,
+      financial_type: item.financial_type,
+      title: item.title,
+      amount: item.amount,
+      icon: item.icon,
+      note: item.note ?? null,
+      expense_type:
+        item.financial_type === 'Expense'
+          ? (item.expense_type || null)
+          : null
+    }));
+    const { error: insertError } =
+      await supabaseClient
+        .from('financial_entries')
+        .insert(entriesToInsert);
+    if (insertError) {
+      throw insertError;
+    }
+    await fetchData();
+    alert(
+      `Copied ${entriesToInsert.length} entries from ${sourceLabel} to ${targetLabel}.`
+    );
+  } catch (error) {
+    console.error(
+      'Copy previous month error:',
+      error
+    );
+    alert(
+      'Unable to copy entries. Please check your data and try again.'
+    );
+  } finally {
+    button.disabled = false;
+    button.innerHTML = originalButtonHTML;
+    lucide.createIcons();
+  }
+}
+  
   async function fetchData() {
   const requestId = ++fetchRequestId;
+        renderCopyPreviousMonthButton([], []);
   // Updating state
   document.getElementById('balanceAmount').classList.add('updating');
   document.getElementById('balanceChange').classList.add('updating');
@@ -11666,7 +11928,10 @@ function openAnnualTopSpendingMonth(month) {
     const previous = previousEntries || [];
     previousMonthEntries = previous;
     if (requestId !== fetchRequestId) {
-    return; }
+      return; }
+    renderCopyPreviousMonthButton(
+      entries,
+      previous );
     paymentHistoryEntries =
     await fetchPaymentHistory();
     renderEntriesPage(entries);

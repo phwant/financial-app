@@ -1446,11 +1446,11 @@ body:has(#entryModal.active) .floating-add-button {
 .entries-bulk-toggle { margin-left: auto; min-width: 58px; padding: 7px 14px; border: 1px solid rgba(114, 152, 199, 0.35); border-radius: 999px; background: rgba(114, 152, 199, 0.09);
   color: var(--blue-grey); font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .entry-select-circle { display: none; position: absolute; left: 0; top: 50%; transform: translateY(-50%); align-items: center; justify-content: center;
-  width: 21px; height: 21px; border: 1.5px solid var(--text-sub); border-radius: 50%; color: #fff; background: transparent; box-sizing: border-box; }
+  width: 21px; height: 21px; border: 1.5px solid var(--text-sub); border-radius: 50%; color: #fff; background: transparent; box-sizing: border-box; opacity: 0.55; }
 .entry-select-circle svg { width: 13px; height: 13px; stroke-width: 3; }
 .entry-row.bulk-delete-mode .entry-select-circle { display: flex; }
-.entry-row.bulk-delete-mode .entry-left { margin-left: 28px; }
-.entry-row.bulk-selected .entry-select-circle { border-color: var(--blue-grey); background: var(--blue-grey); }
+.entry-row.bulk-delete-mode .entry-left { margin-left: 33px; }
+.entry-row.bulk-selected .entry-select-circle { border-color: var(--blue-grey); background: var(--blue-grey); opacity: 1; }
 .entries-bulk-actions { display: flex; align-items: center; gap: 12px; width: 96%; margin: 18px auto 28px; }
 .entries-bulk-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 44px; padding: 0 16px;
   border-radius: 999px; font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }

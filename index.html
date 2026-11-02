@@ -14,58 +14,66 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
     :root {
-  --morning-butter: #F3D98F;
-  --blue-grey: #7298C7;
-  --lime-400: #A3E635;
+      /* Palette */
+      --morning-butter: #F3D98F;
+      --blue-grey: #7298C7;
+      --lime-400: #A3E635;
 
-  --bg-color: #F2F3EF;
-  --glass-bg: rgba(255, 255, 255, 0.45);
-  --glass-card: #FFFFFF;
-  --glass-border: rgba(17, 21, 16, 0.09);
-  --glass-shadow: 0 8px 28px rgba(17, 21, 16, 0.045);
+      /* Light Glass Base */
+      --bg-color: #F5F5F7;
+      --glass-bg: rgba(255, 255, 255, 0.35);
+      --glass-card: rgba(255, 255, 255, 1);
+      --glass-border: rgba(15, 23, 42, 0.08);
+      --glass-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.08);
+      
+      --text-main: #1C273A;
+      --text-sub: #64748B;
+      --balance-bg: rgba(255, 255, 255, 1);
 
-  --text-main: #151914;
-  --text-sub: #777E73;
-  --balance-bg: #111510;
+      /* Header & Elements Light */
+      --icon-box-bg: rgba(163, 230, 53, 0.25);
+      --icon-box-color: #4D7C0F;
+      --btn-pill-bg: rgba(255, 255, 255, 0.6);
+      --btn-pill-border: rgba(255, 255, 255, 0.9);
+      
+      /* Functional Colors */
+      --income-color: #3BB143;
+      --income-bg: rgba(59, 177, 67, 0.25);
+      --expense-color: #F43F5E;
+      --expense-bg: rgba(244, 63, 94, 0.25);
+      --deduction-color: #D97706;
+      --deduction-bg: rgba(217, 119, 6, 0.25);
+      --modal-bg: rgba(15, 23, 42, 0.40);
+    }
 
-  --icon-box-bg: #E6F5C9;
-  --icon-box-color: #416313;
-  --btn-pill-bg: rgba(255, 255, 255, 0.72);
-  --btn-pill-border: rgba(17, 21, 16, 0.10);
+    [data-theme="dark"] {
+      /* Dark Base */
+      --bg-color: #121212;
+      --glass-bg: rgba(0, 0, 0, 0.35);
+      --glass-card: rgba(30, 30, 30, 1);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+      
+      --text-main: #F8FAFC;
+      --text-sub: #94A3B8;
+      --balance-bg: rgba(30, 30, 30, 1);
 
-  --income-color: #398B4A;
-  --income-bg: rgba(57, 139, 74, 0.12);
-  --expense-color: #D6535F;
-  --expense-bg: rgba(214, 83, 95, 0.11);
-  --deduction-color: #B77B2D;
-  --deduction-bg: rgba(183, 123, 45, 0.12);
-  --modal-bg: rgba(5, 8, 5, 0.48);
-}
+      /* Header & Elements Dark */
+      --icon-box-bg: #202B14;
+      --icon-box-color: var(--lime-400);
+      --btn-pill-bg: rgba(30, 41, 59, 0.6);
+      --btn-pill-border: rgba(255, 255, 255, 0.12);
+      
+      /* Functional Colors (Dark) */
+      --income-color: #3BB143;
+      --income-bg: rgba(59, 177, 67, 0.25);
+      --expense-color: #F43F5E;
+      --expense-bg: rgba(244, 63, 94, 0.25);
+      --deduction-color: #D97706;
+      --deduction-bg: rgba(217, 119, 6, 0.25);
+      --modal-bg: rgba(0, 0, 0, 0.40);
+    }
 
-[data-theme="dark"] {
-  --bg-color: #080A08;
-  --glass-bg: rgba(12, 15, 12, 0.72);
-  --glass-card: #141814;
-  --glass-border: rgba(255, 255, 255, 0.075);
-  --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.22);
-
-  --text-main: #F1F4EC;
-  --text-sub: #92998E;
-  --balance-bg: #171D16;
-
-  --icon-box-bg: rgba(163, 230, 53, 0.13);
-  --icon-box-color: var(--lime-400);
-  --btn-pill-bg: rgba(255, 255, 255, 0.055);
-  --btn-pill-border: rgba(255, 255, 255, 0.10);
-
-  --income-color: #72C77D;
-  --income-bg: rgba(57, 139, 74, 0.16);
-  --expense-color: #F07880;
-  --expense-bg: rgba(214, 83, 95, 0.15);
-  --deduction-color: #E5AD61;
-  --deduction-bg: rgba(183, 123, 45, 0.16);
-  --modal-bg: rgba(0, 0, 0, 0.62);
-}
     * { 
       box-sizing: border-box; margin: 0; padding: 0; 
       font-family: 'Inter', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif; 
@@ -3363,491 +3371,6 @@ body.modal-open {
   touch-action: pan-y;
 }
 
-/* =========================================
-   PREMIUM EDITORIAL — OVERVIEW
-   Black × Lime
-========================================= */
-
-.overview-page {
-  padding-bottom: 34px;
-}
-
-.overview-page .app-header {
-  padding-top: calc(env(safe-area-inset-top) + 22px);
-  padding-bottom: 22px;
-}
-
-.overview-brand {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
-
-.overview-brand-mark {
-  width: 46px;
-  height: 46px;
-  border-radius: 15px;
-  display: grid;
-  place-items: center;
-  color: #111510;
-  background: var(--lime-400);
-  box-shadow: 0 5px 18px rgba(163, 230, 53, 0.15);
-}
-
-.overview-brand-mark svg {
-  width: 22px;
-  height: 22px;
-  stroke-width: 2.2;
-}
-
-.overview-brand-eyebrow,
-.overview-kicker {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 1.8px;
-  color: var(--text-sub);
-}
-
-.overview-page .app-title {
-  font-size: 23px;
-  font-weight: 800;
-  letter-spacing: -0.9px;
-  line-height: 1.2;
-  color: var(--text-main);
-}
-
-.overview-title-dot {
-  color: var(--lime-400);
-}
-
-.overview-header-tag {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: var(--text-sub);
-}
-
-.overview-status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--lime-400);
-  box-shadow: 0 0 0 3px rgba(163, 230, 53, 0.12);
-}
-
-/* Period selector */
-
-.overview-page .period-bar {
-  justify-content: flex-start;
-  gap: 8px;
-  margin: 0 0 20px;
-}
-
-.overview-page .period-circle-btn,
-.overview-page .current-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 11px;
-  background: var(--glass-card);
-  border: 1px solid var(--glass-border);
-  box-shadow: none;
-  color: var(--text-main);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.overview-page .period-picker-capsule {
-  min-height: 38px;
-  border-radius: 11px;
-  background: var(--glass-card);
-  border: 1px solid var(--glass-border);
-  box-shadow: none;
-}
-
-.overview-page .period-picker {
-  color: var(--text-main);
-  font-weight: 750;
-}
-
-/* Balance editorial hero */
-
-.overview-page .overview-balance {
-  min-height: 230px;
-  height: auto;
-  padding: 25px 24px 19px;
-  margin-bottom: 30px;
-  border-radius: 25px;
-  border: 1px solid rgba(163, 230, 53, 0.14);
-  background:
-    radial-gradient(
-      circle at 92% 15%,
-      rgba(163, 230, 53, 0.13),
-      transparent 38%
-    ),
-    linear-gradient(135deg, #1A2118 0%, #101510 60%, #0B0E0B 100%);
-  color: #F4F7EF;
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.13);
-}
-
-[data-theme="dark"] .overview-page .overview-balance {
-  background:
-    radial-gradient(
-      circle at 92% 15%,
-      rgba(163, 230, 53, 0.15),
-      transparent 38%
-    ),
-    linear-gradient(135deg, #1A2118 0%, #101510 60%, #0B0E0B 100%);
-}
-
-.overview-page .overview-balance-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  position: relative;
-  z-index: 2;
-}
-
-.overview-page .overview-kicker {
-  color: rgba(226, 235, 216, 0.58);
-}
-
-.overview-page .balance-label {
-  margin: 6px 0 0;
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0;
-  color: rgba(226, 235, 216, 0.68);
-}
-
-.overview-page .balance-wallet {
-  position: static;
-  width: 39px;
-  height: 39px;
-  border-radius: 12px;
-  background: rgba(163, 230, 53, 0.12);
-  border: 1px solid rgba(163, 230, 53, 0.22);
-}
-
-.overview-page .balance-wallet svg {
-  width: 19px;
-  height: 19px;
-  stroke: var(--lime-400);
-}
-
-.overview-page .balance-amount {
-  position: relative;
-  z-index: 2;
-  margin-top: 16px;
-  font-size: clamp(31px, 8vw, 39px);
-  line-height: 1.2;
-  letter-spacing: -1.6px;
-  font-weight: 800;
-  color: #F5F7F0;
-  overflow-wrap: anywhere;
-}
-
-.overview-page .balance-change {
-  position: relative;
-  z-index: 2;
-  margin-top: 9px;
-  font-size: 11px;
-  font-weight: 650;
-  color: rgba(226, 235, 216, 0.65);
-}
-
-.overview-page .balance-change.positive {
-  color: var(--lime-400);
-}
-
-.overview-page .balance-change.negative {
-  color: #F07880;
-}
-
-.overview-balance-decoration {
-  position: absolute;
-  width: 190px;
-  height: 190px;
-  right: -54px;
-  top: 40px;
-  pointer-events: none;
-  opacity: 0.72;
-}
-
-.overview-orbit {
-  position: absolute;
-  border: 1px solid rgba(163, 230, 53, 0.16);
-  border-radius: 50%;
-  transform: rotate(-25deg);
-}
-
-.overview-orbit-one {
-  inset: 12px;
-}
-
-.overview-orbit-two {
-  inset: 32px;
-}
-
-.overview-orbit-three {
-  inset: 52px;
-}
-
-.overview-orbit-core {
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  top: 29px;
-  right: 43px;
-  border-radius: 50%;
-  background: var(--lime-400);
-  box-shadow: 0 0 18px rgba(163, 230, 53, 0.45);
-}
-
-.overview-balance-footer {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 20px;
-  padding-top: 13px;
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
-  color: rgba(226, 235, 216, 0.43);
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-}
-
-.overview-balance-footer-mark {
-  font-size: 15px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.65);
-}
-
-.overview-balance-footer-mark span {
-  color: var(--lime-400);
-}
-
-/* Section headings */
-
-.overview-page .overview-section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 14px;
-}
-
-.overview-page .overview-section-title {
-  margin-top: 5px;
-  color: var(--text-main);
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: -0.65px;
-}
-
-.overview-page .overview-section-index {
-  color: var(--text-sub);
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: 1px;
-  padding-bottom: 3px;
-}
-
-.overview-page .overview-flow-section {
-  margin-bottom: 30px;
-}
-
-/* Cash flow tiles */
-
-.overview-page .stats-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 9px;
-  margin-bottom: 0;
-}
-
-.overview-page .stat-card {
-  min-width: 0;
-  min-height: 143px;
-  padding: 13px 10px 12px;
-  border-radius: 17px;
-  background: var(--glass-card);
-  border: 1px solid var(--glass-border);
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.overview-page .overview-stat-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 13px;
-}
-
-.overview-page .stat-icon {
-  width: 30px;
-  height: 30px;
-  margin: 0;
-  border-radius: 10px;
-}
-
-.overview-page .stat-icon svg {
-  width: 16px;
-  height: 16px;
-}
-
-.overview-page .overview-stat-symbol {
-  font-size: 8px;
-  font-weight: 850;
-  letter-spacing: 1px;
-  color: var(--text-sub);
-  opacity: 0.7;
-}
-
-.overview-page .stat-label {
-  font-size: 8px;
-  font-weight: 850;
-  letter-spacing: 1px;
-  margin-bottom: 7px;
-}
-
-.overview-page .stat-value {
-  font-size: clamp(11px, 3vw, 14px);
-  line-height: 1.3;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  overflow-wrap: anywhere;
-}
-
-.overview-page .stat-change {
-  margin-top: 7px;
-  font-size: 9px;
-  white-space: normal;
-  line-height: 1.35;
-}
-
-/* Highlights */
-
-.overview-page .overview-highlights-heading {
-  margin-bottom: 15px;
-}
-
-.overview-page .see-all-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 7px 0 4px 8px;
-  color: var(--text-main);
-  font-size: 11px;
-  font-weight: 800;
-}
-
-.overview-page .see-all-btn svg {
-  width: 14px;
-  height: 14px;
-  color: var(--lime-400);
-}
-
-.overview-page .highlight-card {
-  min-height: 0;
-  border-radius: 18px;
-  background: var(--glass-card);
-  border: 1px solid var(--glass-border);
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-.overview-page .highlight-card-content {
-  min-height: 0;
-}
-
-.overview-page .highlight-state-loading,
-.overview-page .highlight-state-empty,
-.overview-page .highlight-state-future,
-.overview-page .highlight-state-error {
-  min-height: 180px;
-}
-
-.overview-page .highlight-empty {
-  min-height: 180px;
-  font-size: 11px;
-  color: var(--text-sub);
-}
-
-.overview-page .highlight-item {
-  min-height: 72px;
-  padding: 14px 15px;
-}
-
-.overview-page .highlight-item + .highlight-item::before {
-  left: 15px;
-  right: 15px;
-  background: var(--glass-border);
-}
-
-.overview-page .entry-left {
-  gap: 12px;
-}
-
-.overview-page .entry-badge {
-  width: 39px;
-  height: 39px;
-  border-radius: 13px;
-}
-
-.overview-page .entry-title {
-  font-size: 12px;
-  font-weight: 750;
-}
-
-.overview-page .entry-date {
-  font-size: 10px;
-}
-
-.overview-page .entry-amount {
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.overview-bottom-note {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 28px;
-  padding: 0 2px;
-  color: var(--text-sub);
-  opacity: 0.55;
-  font-size: 8px;
-  font-weight: 800;
-  letter-spacing: 1.3px;
-}
-
-/* Responsive refinements */
-
-@media (max-width: 360px) {
-  .overview-page .container {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-
-  .overview-page .stat-card {
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-
-  .overview-page .overview-balance {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .overview-page .overview-header-tag {
-    font-size: 7px;
-  }
-}
-
 </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3869,174 +3392,114 @@ body.modal-open {
       <span></span>
     </div>
   </div>
-  
-<div class="hero-section overview-page">
-  <header class="app-header overview-header">
-    <div class="overview-brand">
-      <div class="overview-brand-mark">
-        <i data-lucide="layers-3"></i>
-      </div>
-      <div>
-        <div class="overview-brand-eyebrow">PERSONAL FINANCE</div>
-        <div class="app-title">Overview<span class="overview-title-dot">.</span></div>
-      </div>
-    </div>
-    <div class="overview-header-tag">
-      <span class="overview-status-dot"></span>
-      YOUR FINANCES
+<div class="hero-section">
+  <header class="app-header">
+    <div class="header-left">
+ <div class="home-icon-box">
+  <i data-lucide="house"></i>
+</div>
+<div class="app-title">Overview</div>
     </div>
   </header>
-
+  
   <main class="container" id="mainContent">
+    <section class="period-bar">
+  <button
+    class="period-circle-btn"
+    id="prevMonthBtn"
+    type="button"
+    onclick="changeMonth(-1)"
+    aria-label="Previous month">
+    <i data-lucide="chevron-left"></i>
+  </button>
+  <div class="period-picker-capsule">
+    <select
+      class="period-picker month-picker"
+      id="selectedMonth"
+      aria-label="Select month">
+    </select>
+    <div class="period-picker-divider"></div>
+    <select
+      class="period-picker year-picker"
+      id="selectedYear"
+      aria-label="Select year">
+    </select>
+  </div>
+  <button
+    class="period-circle-btn"
+    id="nextMonthBtn"
+    type="button"
+    onclick="changeMonth(1)"
+    aria-label="Next month">
+    <i data-lucide="chevron-right"></i>
+  </button>
+  <button
+    class="current-btn"
+    type="button"
+    onclick="resetToCurrent()"
+    aria-label="Return to current month">
+    <i data-lucide="history"></i>
+  </button>
+   </section>
 
-    <section class="period-bar overview-period">
-      <button
-        class="period-circle-btn"
-        id="prevMonthBtn"
-        type="button"
-        onclick="changeMonth(-1)"
-        aria-label="Previous month">
-        <i data-lucide="chevron-left"></i>
-      </button>
-
-      <div class="period-picker-capsule">
-        <select
-          class="period-picker month-picker"
-          id="selectedMonth"
-          aria-label="Select month">
-        </select>
-        <div class="period-picker-divider"></div>
-        <select
-          class="period-picker year-picker"
-          id="selectedYear"
-          aria-label="Select year">
-        </select>
+    <section class="balance-card">
+      <div class="balance-wallet">
+        <i data-lucide="wallet"></i>
       </div>
-
-      <button
-        class="period-circle-btn"
-        id="nextMonthBtn"
-        type="button"
-        onclick="changeMonth(1)"
-        aria-label="Next month">
-        <i data-lucide="chevron-right"></i>
-      </button>
-
-      <button
-        class="current-btn"
-        type="button"
-        onclick="resetToCurrent()"
-        aria-label="Return to current month">
-        <i data-lucide="history"></i>
-      </button>
-    </section>
-
-    <section class="balance-card overview-balance">
-      <div class="overview-balance-top">
-        <div>
-          <div class="overview-kicker">TOTAL BALANCE</div>
-          <div class="balance-label">Your available balance</div>
-        </div>
-        <div class="balance-wallet">
-          <i data-lucide="wallet"></i>
-        </div>
-      </div>
-
+      <div class="balance-label">Balance</div>
       <div class="balance-amount" id="balanceAmount">฿0.00</div>
       <div class="balance-change" id="balanceChange"></div>
+    </section>
 
-      <div class="overview-balance-decoration" aria-hidden="true">
-        <div class="overview-orbit overview-orbit-one"></div>
-        <div class="overview-orbit overview-orbit-two"></div>
-        <div class="overview-orbit overview-orbit-three"></div>
-        <div class="overview-orbit-core"></div>
+    <section class="stats-grid">
+      <div class="stat-card income">
+        <div class="stat-icon">
+          <i data-lucide="circle-arrow-down"></i>
+        </div>
+        <div class="stat-label">Income</div>
+        <div class="stat-value" id="incomeAmount">฿0.00</div>
+        <div class="stat-change" id="incomeChange"></div>
       </div>
-
-      <div class="overview-balance-footer">
-        <span>FINANCIAL POSITION</span>
-        <span class="overview-balance-footer-mark">F<span>.</span></span>
+      <div class="stat-card expense">
+        <div class="stat-icon">
+            <i data-lucide="circle-arrow-up"></i>
+        </div>
+        <div class="stat-label">Expense</div>
+        <div class="stat-value" id="expenseAmount">฿0.00</div>
+        <div class="stat-change" id="expenseChange"></div>
+      </div>
+      <div class="stat-card deduction">
+        <div class="stat-icon">
+          <i data-lucide="receipt-text"></i>
+        </div>
+        <div class="stat-label">Deduction</div>
+        <div class="stat-value" id="deductionAmount">฿0.00</div>
+        <div class="stat-change" id="deductionChange"></div>
       </div>
     </section>
 
-    <section class="overview-flow-section">
-      <div class="overview-section-heading">
-        <div>
-          <div class="overview-kicker">CASH FLOW</div>
-          <div class="overview-section-title">Monthly breakdown</div>
-        </div>
-        <div class="overview-section-index">01 / 02</div>
-      </div>
-
-      <div class="stats-grid overview-stats">
-        <div class="stat-card income">
-          <div class="overview-stat-top">
-            <div class="stat-icon">
-              <i data-lucide="arrow-down-left"></i>
-            </div>
-            <span class="overview-stat-symbol">IN</span>
-          </div>
-          <div class="stat-label">INCOME</div>
-          <div class="stat-value" id="incomeAmount">฿0.00</div>
-          <div class="stat-change" id="incomeChange"></div>
-        </div>
-
-        <div class="stat-card expense">
-          <div class="overview-stat-top">
-            <div class="stat-icon">
-              <i data-lucide="arrow-up-right"></i>
-            </div>
-            <span class="overview-stat-symbol">OUT</span>
-          </div>
-          <div class="stat-label">EXPENSE</div>
-          <div class="stat-value" id="expenseAmount">฿0.00</div>
-          <div class="stat-change" id="expenseChange"></div>
-        </div>
-
-        <div class="stat-card deduction">
-          <div class="overview-stat-top">
-            <div class="stat-icon">
-              <i data-lucide="receipt-text"></i>
-            </div>
-            <span class="overview-stat-symbol">TAX</span>
-          </div>
-          <div class="stat-label">DEDUCTION</div>
-          <div class="stat-value" id="deductionAmount">฿0.00</div>
-          <div class="stat-change" id="deductionChange"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="overview-highlights-section">
-      <div class="overview-section-heading overview-highlights-heading">
-        <div>
-          <div class="overview-kicker">YOUR ACTIVITY</div>
-          <div class="overview-section-title">Highlights<span class="overview-title-dot">.</span></div>
-        </div>
+    <section>
+      <div class="section-header">
+        <div class="section-title">Highlights</div>
         <button
           class="see-all-btn"
           type="button"
           onclick="goToEntriesFromOverview()">
-          See all <i data-lucide="arrow-up-right"></i>
+          See All
         </button>
       </div>
-
-      <div id="entryList" class="entry-list">
-        <div class="highlight-card">
-          <div class="highlight-card-content highlight-state-loading">
-            <div class="highlight-empty">Loading data...</div>
+       <div id="entryList" class="entry-list">
+         <div class="highlight-card">
+           <div class="highlight-card-content highlight-state-loading">
+             <div class="highlight-empty">
+              loading data...
+            </div>
           </div>
         </div>
       </div>
     </section>
-
-    <div class="overview-bottom-note">
-      <span>MANAGE YOUR MONEY</span>
-      <span>WITH INTENTION.</span>
-    </div>
-
   </main>
 </div>
-
     <!-- Entries Page -->
   <div id="placeholderView" style="display:none;">
     <header class="app-header entries-header">

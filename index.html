@@ -668,7 +668,7 @@
 
 .type-selector {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
 }
 
@@ -3708,10 +3708,89 @@ svg.lucide {
 .scan-review-confirm:disabled {
   opacity: 0.4;
 }
+.scan-entries-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
 
+.scan-entries-control[hidden] {
+  display: none;
+}
+
+.scan-entries-btn {
+  width: 100%;
+  height: 43px;
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  background: var(--glass-bg);
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scan-entries-btn svg {
+  width: 19px;
+  height: 19px;
+}
+
+.scan-entries-control span {
+  font-size: 9px;
+  color: var(--text-sub);
+  white-space: nowrap;
+}
+
+.scan-source-sheet[hidden] {
+  display: none;
+}
+
+.scan-source-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+}
+
+.scan-source-content {
+  width: 100%;
+  max-width: 420px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--glass-card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scan-source-title {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+}
+
+.scan-source-content button {
+  min-height: 46px;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: var(--glass-bg);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+}
 </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
   <div
@@ -4483,6 +4562,31 @@ svg.lucide {
     </div>
     <div class="modal-form-stage">
     <form id="recordForm" onsubmit="handleFormSubmit(event)">
+      <div class="scan-source-sheet" id="scanSourceSheet" hidden>
+  <div class="scan-source-content">
+    <div class="scan-source-title">SCAN ENTRIES</div>
+    <button type="button" onclick="openScanCamera()">Camera</button>
+    <button type="button" onclick="openScanPhotos()">Photos</button>
+    <button type="button" onclick="closeScanSourcePicker()">Cancel</button>
+  </div>
+</div>
+
+<input
+  type="file"
+  id="scanCameraInput"
+  accept="image/*"
+  capture="environment"
+  hidden
+  onchange="handleDeductionImageSelected(event)"
+>
+
+<input
+  type="file"
+  id="scanPhotosInput"
+  accept="image/*"
+  hidden
+  onchange="handleDeductionImageSelected(event)"
+>
       <input type="hidden" id="editRowIndex">
       <div class="form-group">
         <label class="form-label">Type</label>
@@ -4503,7 +4607,7 @@ svg.lucide {
           >
             Expense
           </button>
-          <button
+                    <button
             type="button"
             class="type-btn deduction"
             data-type="Deduction"
@@ -4511,6 +4615,19 @@ svg.lucide {
           >
             Deduction
           </button>
+
+          <div class="scan-entries-control" id="scanEntriesControl" hidden>
+            <button
+              type="button"
+              class="scan-entries-btn"
+              id="scanEntriesBtn"
+              onclick="showScanSourcePicker()"
+              aria-label="Scan entries"
+            >
+              <i data-lucide="scan-line"></i>
+            </button>
+            <span>Scan entries</span>
+          </div>
         </div>
       </div>
       <div
@@ -15260,6 +15377,12 @@ function openEntriesFromInsight() {
       modal.classList.add(
         'active'
       );
+      const scanControl =
+      document.getElementById('scanEntriesControl');
+
+      if (scanControl) {
+        scanControl.hidden = mode !== 'add';
+      }
       document.documentElement.classList.add(
         'modal-open'
       );

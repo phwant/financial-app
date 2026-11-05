@@ -3592,6 +3592,123 @@ svg.lucide {
 .copy-previous-month-confirm:disabled {
   opacity: .4;
 }
+
+/* Scan Deduction Review */
+.scan-review-modal {
+  z-index: 1100;
+}
+
+.scan-review-content {
+  max-height: calc(100dvh - 40px);
+}
+
+.scan-review-description {
+  color: var(--text-sub);
+  font-size: 12px;
+  margin: -10px 0 18px;
+}
+
+.scan-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.scan-review-row {
+  padding: 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  background: var(--glass-bg);
+}
+
+.scan-review-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.scan-review-code {
+  color: var(--text-sub);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.scan-review-remove {
+  border: 0;
+  background: transparent;
+  color: var(--expense-color);
+  padding: 5px;
+}
+
+.scan-review-remove svg {
+  width: 17px;
+  height: 17px;
+}
+
+.scan-review-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.scan-review-field label {
+  color: var(--text-sub);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.scan-review-field select,
+.scan-review-field input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: var(--glass-card);
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.scan-review-status {
+  margin-top: 9px;
+  color: var(--text-sub);
+  font-size: 11px;
+}
+
+.scan-review-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.scan-review-actions button {
+  flex: 1;
+  min-height: 48px;
+  border-radius: 15px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.scan-review-cancel {
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-main);
+}
+
+.scan-review-confirm {
+  border: 1px solid var(--deduction-color);
+  background: var(--deduction-color);
+  color: white;
+}
+
+.scan-review-confirm:disabled {
+  opacity: 0.4;
+}
+
 </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -4584,6 +4701,52 @@ svg.lucide {
     </div>
   </div>
  </div>
+</div>
+
+<div class="modal scan-review-modal" id="deductionReviewModal">
+  <div class="modal-content scan-review-content">
+    <div class="modal-header">
+      <div class="modal-title">REVIEW SCAN ENTRIES</div>
+
+      <button
+        type="button"
+        class="close-btn"
+        onclick="closeDeductionReview()"
+        aria-label="Close"
+      >
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="scan-review-description">
+      ตรวจสอบชื่อรายการและจำนวนเงินก่อนเพิ่มลงใน Deduction
+    </div>
+
+    <div
+      class="scan-review-list"
+      id="deductionReviewList"
+    ></div>
+
+    <div class="scan-review-actions">
+      <button
+        type="button"
+        class="scan-review-cancel"
+        onclick="closeDeductionReview()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="scan-review-confirm"
+        id="confirmDeductionReviewBtn"
+        onclick="confirmDeductionReview()"
+        disabled
+      >
+        Add (0)
+      </button>
+    </div>
+  </div>
 </div>
 <div class="modal" id="copyPreviousMonthModal">
   <div class="modal-content copy-previous-month-content">
@@ -15349,6 +15512,246 @@ function openEntriesFromInsight() {
         };
       });
     }
+    
+let deductionReviewEntries = [];
+
+function openDeductionReview(entries) {
+  deductionReviewEntries = (entries || []).map(entry => ({
+    code: entry.code || '',
+    title: entry.title || '',
+    amount: entry.amount ?? ''
+  }));
+
+  renderDeductionReview();
+
+  const modal = document.getElementById(
+    'deductionReviewModal'
+  );
+
+  modal.classList.add('active');
+
+  requestAnimationFrame(() => {
+    lucide.createIcons();
+  });
+}
+
+function closeDeductionReview() {
+  document.getElementById(
+    'deductionReviewModal'
+  ).classList.remove('active');
+
+  deductionReviewEntries = [];
+}
+
+function renderDeductionReview() {
+  const list = document.getElementById(
+    'deductionReviewList'
+  );
+
+  const confirmBtn = document.getElementById(
+    'confirmDeductionReviewBtn'
+  );
+
+  list.innerHTML = '';
+
+  const deductionItems = sortEntryItems(
+    getAllEntryItemNames('Deduction')
+  );
+
+  deductionReviewEntries.forEach((entry, index) => {
+    const card = document.createElement('div');
+    card.className = 'scan-review-row';
+
+    const header = document.createElement('div');
+    header.className = 'scan-review-row-header';
+
+    const code = document.createElement('span');
+    code.className = 'scan-review-code';
+    code.textContent = entry.code
+      ? `CODE: ${entry.code}`
+      : 'MANUAL ENTRY';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'scan-review-remove';
+    removeBtn.setAttribute('aria-label', 'Remove entry');
+    removeBtn.innerHTML = '<i data-lucide="trash-2"></i>';
+
+    removeBtn.addEventListener('click', () => {
+      deductionReviewEntries.splice(index, 1);
+      renderDeductionReview();
+    });
+
+    header.append(code, removeBtn);
+
+    const itemField = document.createElement('div');
+    itemField.className = 'scan-review-field';
+
+    const itemLabel = document.createElement('label');
+    itemLabel.textContent = 'Deduction Item';
+
+    const itemSelect = document.createElement('select');
+
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'Select deduction item';
+    itemSelect.appendChild(placeholder);
+
+    deductionItems.forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.textContent = name;
+      itemSelect.appendChild(option);
+    });
+
+    itemSelect.value = entry.title;
+
+    itemSelect.addEventListener('change', event => {
+      deductionReviewEntries[index].title =
+        event.target.value;
+      updateDeductionReviewButton();
+      updateStatus();
+    });
+
+    itemField.append(itemLabel, itemSelect);
+
+    const amountField = document.createElement('div');
+    amountField.className = 'scan-review-field';
+
+    const amountLabel = document.createElement('label');
+    amountLabel.textContent = 'Amount';
+
+    const amountInput = document.createElement('input');
+    amountInput.type = 'number';
+    amountInput.step = 'any';
+    amountInput.min = '0';
+    amountInput.placeholder = '0.00';
+    amountInput.value = entry.amount;
+
+    amountInput.addEventListener('input', event => {
+      deductionReviewEntries[index].amount =
+        event.target.value;
+
+      updateDeductionReviewButton();
+    });
+
+    amountField.append(amountLabel, amountInput);
+
+    const status = document.createElement('div');
+    status.className = 'scan-review-status';
+
+    function updateStatus() {
+      if (!deductionReviewEntries[index].title) {
+        status.textContent =
+          'กรุณาเลือกชื่อรายการให้ถูกต้อง';
+      } else if (
+        !Number.isFinite(
+          Number(deductionReviewEntries[index].amount)
+        ) ||
+        Number(deductionReviewEntries[index].amount) <= 0
+      ) {
+        status.textContent =
+          'กรุณาตรวจสอบจำนวนเงิน';
+      } else {
+        status.textContent = 'พร้อมเพิ่มรายการ';
+      }
+    }
+
+    updateStatus();
+
+    card.append(
+      header,
+      itemField,
+      amountField,
+      status
+    );
+
+    list.appendChild(card);
+  });
+
+  updateDeductionReviewButton();
+
+  requestAnimationFrame(() => {
+    lucide.createIcons();
+  });
+}
+
+function updateDeductionReviewButton() {
+  const validEntries = deductionReviewEntries.filter(entry =>
+    entry.title &&
+    Number.isFinite(Number(entry.amount)) &&
+    Number(entry.amount) > 0
+  );
+
+  const button = document.getElementById(
+    'confirmDeductionReviewBtn'
+  );
+
+  button.textContent = `Add (${validEntries.length})`;
+
+  button.disabled =
+    deductionReviewEntries.length === 0 ||
+    validEntries.length !== deductionReviewEntries.length;
+}
+
+async function confirmDeductionReview() {
+  const button = document.getElementById(
+    'confirmDeductionReviewBtn'
+  );
+
+  const formDate = document.getElementById('formDate');
+
+  if (!formDate.value) {
+    alert('Please select a date first.');
+    return;
+  }
+
+  if (
+    deductionReviewEntries.length === 0 ||
+    deductionReviewEntries.some(entry =>
+      !entry.title ||
+      !Number.isFinite(Number(entry.amount)) ||
+      Number(entry.amount) <= 0
+    )
+  ) {
+    alert('Please check all scanned entries.');
+    return;
+  }
+
+  const databaseDate = `${formDate.value}-01`;
+
+  const entriesToSave = deductionReviewEntries.map(entry => ({
+    financial_type: 'Deduction',
+    entry_date: databaseDate,
+    title: entry.title,
+    amount: Number(entry.amount),
+    note: '',
+    icon: getEntryIcon(entry.title, 'Deduction'),
+    expense_type: null
+  }));
+
+  button.disabled = true;
+  button.textContent = 'Saving...';
+
+  try {
+    const { error } = await supabaseClient
+      .from('financial_entries')
+      .insert(entriesToSave);
+
+    if (error) {
+      throw error;
+    }
+
+    closeDeductionReview();
+    closeModal();
+    fetchData();
+
+  } catch (error) {
+    console.error('Scan entries save error:', error);
+    alert('Error saving scanned entries.');
+    updateDeductionReviewButton();
+  }
+}
 
     function getEntryIcon(
       title,

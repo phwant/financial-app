@@ -3426,7 +3426,7 @@ svg.lucide {
   justify-content: space-between;
   min-height: 44px;
   padding: 0 2px 12px;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: none;
   color: var(--text-main);
   font-size: 13px;
   font-weight: 800;
@@ -3435,8 +3435,17 @@ svg.lucide {
 .copy-previous-month-list {
   max-height: min(48dvh, 430px);
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.copy-previous-month-list::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .copy-previous-month-group {
@@ -3461,10 +3470,32 @@ svg.lucide {
 }
 
 .copy-previous-month-check {
-  width: 19px;
-  height: 19px;
-  flex: 0 0 19px;
-  accent-color: var(--blue-grey);
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  display: grid;
+  place-content: center;
+  border: 1.5px solid #AAB0B9;
+  border-radius: 50%;
+  background: #FFFFFF;
+  cursor: pointer;
+}
+
+.copy-previous-month-check:checked {
+  background: var(--blue-grey);
+  border-color: var(--blue-grey);
+}
+
+.copy-previous-month-check:checked::after {
+  content: "";
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid #FFFFFF;
+  border-bottom: 2px solid #FFFFFF;
+  transform: rotate(45deg);
+  margin-top: -2px;
 }
 
 .copy-previous-month-icon {
@@ -3519,7 +3550,7 @@ svg.lucide {
 }
 
 .copy-previous-month-amount.income {
-  color: var(--income-color);
+  color: #238B2E;
 }
 
 .copy-previous-month-amount.expense {
@@ -4575,15 +4606,16 @@ svg.lucide {
       id="copyPreviousMonthPeriod"
     ></div>
 
-    <label class="copy-previous-month-select-all">
-      <span>Select All</span>
+   <div class="copy-previous-month-select-all">
+  <span>Select All</span>
 
-      <input
-        class="copy-previous-month-check"
-        type="checkbox"
-        id="copyPreviousMonthSelectAll"
-      >
-    </label>
+  <input
+    class="copy-previous-month-check"
+    type="checkbox"
+    id="copyPreviousMonthSelectAll"
+    aria-label="Select all entries"
+  >
+</div>
 
     <div
       class="copy-previous-month-list"
@@ -4658,6 +4690,7 @@ svg.lucide {
     
     function resetAppSession() {
     closeModal();
+    closeCopyPreviousMonthModal();
     const wasInsightContext = insightContext && insightContextEntriesActive;
     const sessionTab = wasInsightContext ? 'insights' : currentTab;
     fetchRequestId++;
@@ -12239,7 +12272,7 @@ function renderCopyPreviousMonthSelection() {
     group.appendChild(heading);
 
     entries.forEach(({ item, index }) => {
-      const row = document.createElement('label');
+      const row = document.createElement('div');
       row.className = 'copy-previous-month-row';
 
       const checkbox = document.createElement('input');
@@ -12247,6 +12280,10 @@ function renderCopyPreviousMonthSelection() {
       checkbox.className = 'copy-previous-month-check';
       checkbox.checked =
         copyPreviousMonthSelectedIndexes.has(index);
+        checkbox.setAttribute(
+            'aria-label',
+            `Select ${item.title || 'Untitled'}`
+          );
 
       checkbox.addEventListener('change', () => {
         if (checkbox.checked) {
@@ -12277,30 +12314,6 @@ function renderCopyPreviousMonthSelection() {
       name.textContent = item.title || 'Untitled';
 
       info.appendChild(name);
-
-      const details = [];
-
-      if (item.note) {
-        details.push(item.note);
-      }
-
-      if (
-        type === 'Expense' &&
-        item.expense_type
-      ) {
-        details.push(
-          item.expense_type === 'FIXED'
-            ? 'Fixed'
-            : 'Variable'
-        );
-      }
-
-      if (details.length > 0) {
-        const detail = document.createElement('span');
-        detail.className = 'copy-previous-month-note';
-        detail.textContent = details.join(' · ');
-        info.appendChild(detail);
-      }
 
       const amount = document.createElement('span');
       amount.className =
@@ -12504,6 +12517,21 @@ document.body.classList.add(
 lockBackgroundScroll();
 
     renderCopyPreviousMonthSelection();
+    const modalContent = modal.querySelector(
+  '.copy-previous-month-content'
+);
+
+if (modalContent) {
+  modalContent.scrollTop = 0;
+}
+
+const list = document.getElementById(
+  'copyPreviousMonthList'
+);
+
+if (list) {
+  list.scrollTop = 0;
+}
 
   } catch (error) {
     console.error(

@@ -3408,6 +3408,159 @@ svg.lucide {
 .close-btn {
   color: #626873;
 }
+/* Copy Previous Month Selection Modal */
+.copy-previous-month-content {
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+
+.copy-previous-month-period {
+  margin: -12px 0 18px;
+  color: var(--text-sub);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.copy-previous-month-select-all {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  padding: 0 2px 12px;
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--text-main);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.copy-previous-month-list {
+  max-height: min(48dvh, 430px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.copy-previous-month-group {
+  padding-top: 16px;
+}
+
+.copy-previous-month-group-title {
+  margin: 0 2% 5px;
+  color: var(--text-sub);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .7px;
+}
+
+.copy-previous-month-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 62px;
+  padding: 9px 2%;
+  border-bottom: 1px solid rgba(100, 116, 139, .08);
+}
+
+.copy-previous-month-check {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  accent-color: var(--blue-grey);
+}
+
+.copy-previous-month-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--glass-bg);
+  color: var(--text-sub);
+}
+
+.copy-previous-month-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.1;
+}
+
+.copy-previous-month-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.copy-previous-month-name {
+  overflow: hidden;
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-previous-month-note {
+  overflow: hidden;
+  margin-top: 3px;
+  color: var(--text-sub);
+  font-size: 10px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.copy-previous-month-amount {
+  flex: 0 0 auto;
+  margin-left: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.copy-previous-month-amount.income {
+  color: var(--income-color);
+}
+
+.copy-previous-month-amount.expense {
+  color: var(--expense-color);
+}
+
+.copy-previous-month-amount.deduction {
+  color: var(--deduction-color);
+}
+
+.copy-previous-month-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.copy-previous-month-actions button {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 48px;
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.copy-previous-month-cancel {
+  background: var(--glass-bg);
+  color: var(--text-main);
+}
+
+.copy-previous-month-confirm {
+  border-color: transparent !important;
+  background: var(--lime-400);
+  color: #252830;
+}
+
+.copy-previous-month-confirm:disabled {
+  opacity: .4;
+}
 </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -4400,7 +4553,65 @@ svg.lucide {
     </div>
   </div>
  </div>
+<div class="modal" id="copyPreviousMonthModal">
+  <div class="modal-content copy-previous-month-content">
 
+    <div class="modal-header">
+      <div class="modal-title">Copy Previous Month</div>
+
+      <button
+        type="button"
+        class="close-btn"
+        onclick="closeCopyPreviousMonthModal()"
+        aria-label="Close"
+      >
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div
+      class="copy-previous-month-period"
+      id="copyPreviousMonthPeriod"
+    ></div>
+
+    <label class="copy-previous-month-select-all">
+      <span>Select All</span>
+
+      <input
+        class="copy-previous-month-check"
+        type="checkbox"
+        id="copyPreviousMonthSelectAll"
+      >
+    </label>
+
+    <div
+      class="copy-previous-month-list"
+      id="copyPreviousMonthList"
+    ></div>
+
+    <div class="copy-previous-month-actions">
+
+      <button
+        type="button"
+        class="copy-previous-month-cancel"
+        onclick="closeCopyPreviousMonthModal()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="copy-previous-month-confirm"
+        id="confirmCopyPreviousMonthBtn"
+        onclick="confirmCopyPreviousMonth()"
+        disabled
+      >
+        Copy (0)
+      </button>
+
+    </div>
+  </div>
+</div>
 <script>
   const SUPABASE_URL = "https://hsxgbjrizttwyxyvugbz.supabase.co";
   const SUPABASE_KEY = "sb_publishable_YsDE61OC-0fTymC27TRtXw_-m_SKqtw";
@@ -11965,35 +12176,209 @@ function renderCopyPreviousMonthButton(
   wrap.hidden = !shouldShow;
 }
 
+let copyPreviousMonthSourceEntries = [];
+let copyPreviousMonthSelectedIndexes = new Set();
+let copyPreviousMonthTargetYear = null;
+let copyPreviousMonthTargetMonth = null;
+
+function formatCopyPreviousMonthAmount(value) {
+  return `฿${Number(value || 0).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  })}`;
+}
+
+function updateCopyPreviousMonthSelection() {
+  const count = copyPreviousMonthSelectedIndexes.size;
+  const total = copyPreviousMonthSourceEntries.length;
+
+  const selectAll = document.getElementById(
+    'copyPreviousMonthSelectAll'
+  );
+
+  const confirmButton = document.getElementById(
+    'confirmCopyPreviousMonthBtn'
+  );
+
+  if (selectAll) {
+    selectAll.checked = total > 0 && count === total;
+    selectAll.indeterminate = count > 0 && count < total;
+  }
+
+  if (confirmButton) {
+    confirmButton.textContent = `Copy (${count})`;
+    confirmButton.disabled =
+      count === 0 || confirmButton.dataset.loading === 'true';
+  }
+}
+
+function renderCopyPreviousMonthSelection() {
+  const list = document.getElementById(
+    'copyPreviousMonthList'
+  );
+
+  if (!list) return;
+
+  list.replaceChildren();
+
+  ['Income', 'Expense', 'Deduction'].forEach(type => {
+    const entries = copyPreviousMonthSourceEntries
+      .map((item, index) => ({ item, index }))
+      .filter(row => row.item.financial_type === type);
+
+    if (!entries.length) return;
+
+    const group = document.createElement('section');
+    group.className = 'copy-previous-month-group';
+
+    const heading = document.createElement('div');
+    heading.className = 'copy-previous-month-group-title';
+    heading.textContent = type.toUpperCase();
+
+    group.appendChild(heading);
+
+    entries.forEach(({ item, index }) => {
+      const row = document.createElement('label');
+      row.className = 'copy-previous-month-row';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'copy-previous-month-check';
+      checkbox.checked =
+        copyPreviousMonthSelectedIndexes.has(index);
+
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          copyPreviousMonthSelectedIndexes.add(index);
+        } else {
+          copyPreviousMonthSelectedIndexes.delete(index);
+        }
+
+        updateCopyPreviousMonthSelection();
+      });
+
+      const iconBox = document.createElement('span');
+      iconBox.className = 'copy-previous-month-icon';
+
+      const icon = document.createElement('i');
+      icon.setAttribute(
+        'data-lucide',
+        item.icon || getEntryIcon(item.title, item.financial_type)
+      );
+
+      iconBox.appendChild(icon);
+
+      const info = document.createElement('span');
+      info.className = 'copy-previous-month-info';
+
+      const name = document.createElement('span');
+      name.className = 'copy-previous-month-name';
+      name.textContent = item.title || 'Untitled';
+
+      info.appendChild(name);
+
+      const details = [];
+
+      if (item.note) {
+        details.push(item.note);
+      }
+
+      if (
+        type === 'Expense' &&
+        item.expense_type
+      ) {
+        details.push(
+          item.expense_type === 'FIXED'
+            ? 'Fixed'
+            : 'Variable'
+        );
+      }
+
+      if (details.length > 0) {
+        const detail = document.createElement('span');
+        detail.className = 'copy-previous-month-note';
+        detail.textContent = details.join(' · ');
+        info.appendChild(detail);
+      }
+
+      const amount = document.createElement('span');
+      amount.className =
+        `copy-previous-month-amount ${type.toLowerCase()}`;
+
+      amount.textContent =
+        formatCopyPreviousMonthAmount(item.amount);
+
+      row.append(
+        checkbox,
+        iconBox,
+        info,
+        amount
+      );
+
+      group.appendChild(row);
+    });
+
+    list.appendChild(group);
+  });
+
+  const selectAll = document.getElementById(
+    'copyPreviousMonthSelectAll'
+  );
+
+  if (selectAll) {
+    selectAll.onchange = () => {
+      copyPreviousMonthSelectedIndexes =
+        selectAll.checked
+          ? new Set(
+              copyPreviousMonthSourceEntries.map(
+                (_, index) => index
+              )
+            )
+          : new Set();
+
+      renderCopyPreviousMonthSelection();
+    };
+  }
+
+  updateCopyPreviousMonthSelection();
+  lucide.createIcons();
+}
+
 async function copyPreviousMonthEntries() {
   const button = document.getElementById(
     'copyPreviousMonthBtn'
   );
-  if (!button || button.disabled) {
-    return;
-  }
+
+  if (!button || button.disabled) return;
+
   const targetYear = selectedYear;
   const targetMonth = selectedMonth;
+
   const targetStart =
     `${targetYear}-${String(targetMonth).padStart(2, '0')}-01`;
+
   const targetNextDate = new Date(
     targetYear,
     targetMonth,
     1
   );
+
   const targetEnd =
     `${targetNextDate.getFullYear()}-${String(
       targetNextDate.getMonth() + 1
     ).padStart(2, '0')}-01`;
+
   const sourceDate = new Date(
     targetYear,
     targetMonth - 2,
     1
   );
-  const sourceYear = sourceDate.getFullYear();
-  const sourceMonth = sourceDate.getMonth() + 1;
+
   const sourceStart =
-    `${sourceYear}-${String(sourceMonth).padStart(2, '0')}-01`;
+    `${sourceDate.getFullYear()}-${String(
+      sourceDate.getMonth() + 1
+    ).padStart(2, '0')}-01`;
+
   const targetLabel = new Date(
     targetYear,
     targetMonth - 1,
@@ -12002,6 +12387,7 @@ async function copyPreviousMonthEntries() {
     month: 'long',
     year: 'numeric'
   });
+
   const sourceLabel = sourceDate.toLocaleDateString(
     'en-US',
     {
@@ -12009,10 +12395,14 @@ async function copyPreviousMonthEntries() {
       year: 'numeric'
     }
   );
+
   const originalButtonHTML = button.innerHTML;
+
   button.disabled = true;
-  button.innerHTML = '<span>Copying...</span>';
+  button.innerHTML = '<span>Loading...</span>';
+
   try {
+    // ตรวจสอบว่าเดือนปลายทางยังไม่มีรายการ
     const {
       data: existingEntries,
       error: existingError
@@ -12022,16 +12412,24 @@ async function copyPreviousMonthEntries() {
       .gte('entry_date', targetStart)
       .lt('entry_date', targetEnd)
       .limit(1);
+
     if (existingError) {
       throw existingError;
     }
-    if (existingEntries && existingEntries.length > 0) {
+
+    if (
+      existingEntries &&
+      existingEntries.length > 0
+    ) {
       alert(
         `${targetLabel} already contains entries. Nothing was copied.`
       );
+
       await fetchData();
       return;
     }
+
+    // ดึงรายการจากเดือนก่อนหน้า
     const {
       data: sourceEntries,
       error: sourceError
@@ -12045,26 +12443,193 @@ async function copyPreviousMonthEntries() {
       .order('entry_date', {
         ascending: true
       });
+
     if (sourceError) {
       throw sourceError;
     }
-    if (!sourceEntries || sourceEntries.length === 0) {
-      alert(`No entries to copy from ${sourceLabel}.`);
+
+    if (
+      !sourceEntries ||
+      sourceEntries.length === 0
+    ) {
+      alert(
+        `No entries to copy from ${sourceLabel}.`
+      );
+
       await fetchData();
       return;
     }
+
     if (
       selectedYear !== targetYear ||
       selectedMonth !== targetMonth
     ) {
       return;
     }
-    const confirmed = confirm(
-      `Copy ${sourceEntries.length} entries from ${sourceLabel} to ${targetLabel}?`
+
+    // เก็บข้อมูลเพื่อใช้ใน Modal
+    copyPreviousMonthSourceEntries = sourceEntries;
+
+    // เริ่มต้นด้วยการเลือกรายการทั้งหมด
+    copyPreviousMonthSelectedIndexes = new Set(
+      sourceEntries.map((_, index) => index)
     );
-    if (!confirmed) {
-      return;
+
+    copyPreviousMonthTargetYear = targetYear;
+    copyPreviousMonthTargetMonth = targetMonth;
+
+    const period = document.getElementById(
+      'copyPreviousMonthPeriod'
+    );
+
+    if (period) {
+      period.textContent =
+        `${sourceLabel} → ${targetLabel}`;
     }
+
+    const modal = document.getElementById(
+      'copyPreviousMonthModal'
+    );
+
+    if (modal) {
+      modal.classList.add('active');
+
+      document.documentElement.classList.add(
+        'modal-open'
+      );
+
+      document.body.classList.add(
+        'modal-open'
+      );
+
+      lockBackgroundScroll();
+    }
+
+    renderCopyPreviousMonthSelection();
+
+  } catch (error) {
+    console.error(
+      'Copy previous month error:',
+      error
+    );
+
+    alert(
+      'Unable to load entries. Please check your data and try again.'
+    );
+
+  } finally {
+    button.disabled = false;
+    button.innerHTML = originalButtonHTML;
+    lucide.createIcons();
+  }
+}
+
+function closeCopyPreviousMonthModal() {
+  const modal = document.getElementById(
+    'copyPreviousMonthModal'
+  );
+
+  if (!modal) return;
+
+  modal.classList.remove('active');
+
+  document.documentElement.classList.remove(
+    'modal-open'
+  );
+
+  document.body.classList.remove(
+    'modal-open'
+  );
+
+  unlockBackgroundScroll();
+
+  copyPreviousMonthSourceEntries = [];
+  copyPreviousMonthSelectedIndexes = new Set();
+}
+
+async function confirmCopyPreviousMonth() {
+  const confirmButton = document.getElementById(
+    'confirmCopyPreviousMonthBtn'
+  );
+
+  const triggerButton = document.getElementById(
+    'copyPreviousMonthBtn'
+  );
+
+  if (
+    !confirmButton ||
+    confirmButton.disabled ||
+    confirmButton.dataset.loading === 'true'
+  ) {
+    return;
+  }
+
+  const targetYear = copyPreviousMonthTargetYear;
+  const targetMonth = copyPreviousMonthTargetMonth;
+
+  if (
+    targetYear == null ||
+    targetMonth == null ||
+    selectedYear !== targetYear ||
+    selectedMonth !== targetMonth
+  ) {
+    closeCopyPreviousMonthModal();
+    return;
+  }
+
+  // เลือกเฉพาะ Entry ที่ผู้ใช้ติ๊กไว้
+  const selectedEntries = [
+    ...copyPreviousMonthSelectedIndexes
+  ]
+    .sort((a, b) => a - b)
+    .map(index => copyPreviousMonthSourceEntries[index])
+    .filter(Boolean);
+
+  if (selectedEntries.length === 0) return;
+
+  const targetStart =
+    `${targetYear}-${String(targetMonth).padStart(2, '0')}-01`;
+
+  const targetNextDate = new Date(
+    targetYear,
+    targetMonth,
+    1
+  );
+
+  const targetEnd =
+    `${targetNextDate.getFullYear()}-${String(
+      targetNextDate.getMonth() + 1
+    ).padStart(2, '0')}-01`;
+
+  const sourceDate = new Date(
+    targetYear,
+    targetMonth - 2,
+    1
+  );
+
+  const sourceLabel = sourceDate.toLocaleDateString(
+    'en-US',
+    {
+      month: 'long',
+      year: 'numeric'
+    }
+  );
+
+  const targetLabel = new Date(
+    targetYear,
+    targetMonth - 1,
+    1
+  ).toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric'
+  });
+
+  confirmButton.dataset.loading = 'true';
+  confirmButton.textContent = 'Copying...';
+  confirmButton.disabled = true;
+
+  try {
+    // ตรวจสอบเดือนปลายทางซ้ำก่อนบันทึก
     const {
       data: latestDestinationEntries,
       error: latestDestinationError
@@ -12074,9 +12639,11 @@ async function copyPreviousMonthEntries() {
       .gte('entry_date', targetStart)
       .lt('entry_date', targetEnd)
       .limit(1);
+
     if (latestDestinationError) {
       throw latestDestinationError;
     }
+
     if (
       latestDestinationEntries &&
       latestDestinationEntries.length > 0
@@ -12084,16 +12651,22 @@ async function copyPreviousMonthEntries() {
       alert(
         `${targetLabel} already contains entries. Nothing was copied.`
       );
+
+      closeCopyPreviousMonthModal();
       await fetchData();
       return;
     }
+
     if (
       selectedYear !== targetYear ||
       selectedMonth !== targetMonth
     ) {
+      closeCopyPreviousMonthModal();
       return;
     }
-    const entriesToInsert = sourceEntries.map(item => ({
+
+    // เตรียมเฉพาะรายการที่เลือก
+    const entriesToInsert = selectedEntries.map(item => ({
       entry_date: targetStart,
       financial_type: item.financial_type,
       title: item.title,
@@ -12105,29 +12678,42 @@ async function copyPreviousMonthEntries() {
           ? (item.expense_type || null)
           : null
     }));
+
     const { error: insertError } =
       await supabaseClient
         .from('financial_entries')
         .insert(entriesToInsert);
+
     if (insertError) {
       throw insertError;
     }
+
+    closeCopyPreviousMonthModal();
+
     await fetchData();
+
     alert(
       `Copied ${entriesToInsert.length} entries from ${sourceLabel} to ${targetLabel}.`
     );
+
   } catch (error) {
     console.error(
       'Copy previous month error:',
       error
     );
+
     alert(
       'Unable to copy entries. Please check your data and try again.'
     );
+
   } finally {
-    button.disabled = false;
-    button.innerHTML = originalButtonHTML;
-    lucide.createIcons();
+    confirmButton.dataset.loading = 'false';
+
+    if (triggerButton) {
+      triggerButton.disabled = false;
+    }
+
+    updateCopyPreviousMonthSelection();
   }
 }
   

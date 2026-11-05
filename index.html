@@ -14,38 +14,38 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
     :root {
-      /* Palette */
-      --morning-butter: #F3D98F;
-      --blue-grey: #7298C7;
-      --lime-400: #A3E635;
+  color-scheme: light;
 
-      /* Light Glass Base */
-      --bg-color: #F5F5F7;
-      --glass-bg: rgba(255, 255, 255, 0.35);
-      --glass-card: rgba(255, 255, 255, 1);
-      --glass-border: rgba(15, 23, 42, 0.08);
-      --glass-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.08);
-      
-      --text-main: #1C273A;
-      --text-sub: #64748B;
-      --balance-bg: rgba(255, 255, 255, 1);
+  /* Cool Grey — Modern Minimal */
+  --morning-butter: #F3D98F;
+  --blue-grey: #7298C7;
+  --lime-400: #A3E635;
 
-      /* Header & Elements Light */
-      --icon-box-bg: rgba(163, 230, 53, 0.25);
-      --icon-box-color: #4D7C0F;
-      --btn-pill-bg: rgba(255, 255, 255, 0.6);
-      --btn-pill-border: rgba(255, 255, 255, 0.9);
-      
-      /* Functional Colors */
-      --income-color: #3BB143;
-      --income-bg: rgba(59, 177, 67, 0.25);
-      --expense-color: #F43F5E;
-      --expense-bg: rgba(244, 63, 94, 0.25);
-      --deduction-color: #D97706;
-      --deduction-bg: rgba(217, 119, 6, 0.25);
-      --modal-bg: rgba(15, 23, 42, 0.40);
-    }
+  --bg-color: #F1F2F4;
+  --glass-bg: #E8EAED;
+  --glass-card: #FFFFFF;
+  --glass-border: #E1E3E7;
+  --glass-shadow: 0 4px 16px rgba(37, 40, 48, 0.04);
 
+  --text-main: #252830;
+  --text-sub: #858A94;
+  --balance-bg: #FFFFFF;
+
+  /* Subtle Accent Elements */
+  --icon-box-bg: rgba(163, 230, 53, 0.18);
+  --icon-box-color: #557A16;
+  --btn-pill-bg: #FFFFFF;
+  --btn-pill-border: #E1E3E7;
+
+  /* Functional Colors */
+  --income-color: #3BB143;
+  --income-bg: rgba(59, 177, 67, 0.25);
+  --expense-color: #F43F5E;
+  --expense-bg: rgba(244, 63, 94, 0.25);
+  --deduction-color: #D97706;
+  --deduction-bg: rgba(217, 119, 6, 0.25);
+  --modal-bg: rgba(37, 40, 48, 0.36);
+}
     [data-theme="dark"] {
       /* Dark Base */
       --bg-color: #121212;
@@ -4617,7 +4617,7 @@ body.modal-open {
     fetchData();
    }
   document.addEventListener("DOMContentLoaded", () => {
-  applyTheme(getPreferredTheme());
+  applyTheme('light');
   updatePeriodUI();
   loadCustomItems().catch(error => {
     console.error(
@@ -4821,14 +4821,11 @@ body.modal-open {
     }
     );
   
-  // Theme Toggle
-  function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  document.body.setAttribute('data-theme', theme); }
-  function getPreferredTheme() {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light"; }
+  // Fixed single theme: Cool Grey — Modern Minimal
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', 'light');
+  document.body.setAttribute('data-theme', 'light');
+}
 
   function populateYearPickers() {
   const minYear = 2025;
@@ -14949,11 +14946,6 @@ function openEntriesFromInsight() {
       );
     });
     renderEntriesPage(currentEntries); }
-    
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    media.addEventListener("change", (e) => {
-      applyTheme(e.matches ? "dark" : "light");
-    });
   </script>
   <script> lucide.createIcons();
 </script>

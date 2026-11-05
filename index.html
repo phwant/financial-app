@@ -12258,7 +12258,11 @@ function renderCopyPreviousMonthSelection() {
   ['Income', 'Expense', 'Deduction'].forEach(type => {
     const entries = copyPreviousMonthSourceEntries
       .map((item, index) => ({ item, index }))
-      .filter(row => row.item.financial_type === type);
+      .filter(row => row.item.financial_type === type)
+      .sort((a, b) =>
+        Number(b.item.amount || 0) -
+        Number(a.item.amount || 0)
+      );
 
     if (!entries.length) return;
 

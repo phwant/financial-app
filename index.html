@@ -673,7 +673,7 @@
 }
 
 .type-selector:has(#scanEntriesControl:not([hidden])) {
-  grid-template-columns: repeat(3, minmax(0, 1fr)) 72px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .type-btn {
@@ -3720,16 +3720,14 @@ svg.lucide {
 .scan-review-confirm:disabled {
   opacity: 0.4;
 }
+
 .scan-entries-control {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1px;
-  width: 72px;
-  min-width: 72px;
+  align-items: stretch;
+  justify-content: stretch;
+  width: 100%;
+  min-width: 0;
   height: 48px;
-  box-sizing: border-box;
 }
 
 .scan-entries-control[hidden] {
@@ -3741,25 +3739,20 @@ svg.lucide {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 27px;
-  min-height: 27px;
+  height: 48px;
+  min-height: 48px;
   padding: 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
+  box-sizing: border-box;
+  border-radius: 14px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
   color: var(--text-sub);
+  cursor: pointer;
 }
 
 .scan-entries-btn svg {
   width: 20px;
   height: 20px;
-}
-
-.scan-entries-control span {
-  font-size: 9px;
-  line-height: 11px;
-  color: var(--text-sub);
-  white-space: nowrap;
 }
 
 .scan-source-sheet[hidden] {
@@ -4645,7 +4638,6 @@ svg.lucide {
             >
               <i data-lucide="scan-line"></i>
             </button>
-            <span>Scan entries</span>
           </div>
         </div>
       </div>

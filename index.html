@@ -3370,7 +3370,44 @@ body.modal-open {
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
 }
+/* Cool Grey icon system */
+:root {
+  --icon-box-bg: #E8EAED;
+  --icon-box-color: #626873;
+}
 
+/* All Lucide icons */
+svg.lucide {
+  color: #626873 !important;
+  stroke: #626873 !important;
+}
+
+/* Icon containers */
+.home-icon-box,
+.balance-wallet,
+.custom-icon-preview {
+  background: #E8EAED;
+  border-color: #E1E3E7;
+  color: #626873;
+  box-shadow: none;
+}
+
+/* Entry and summary icons */
+.stat-card .stat-icon,
+.entry-badge {
+  background: #E8EAED !important;
+  color: #626873 !important;
+}
+
+/* Navigation and other interface icons */
+.floating-tab,
+.floating-tab.active,
+.floating-add-button,
+.expense-chart-bubble-icon,
+.item-picker-chevron,
+.close-btn {
+  color: #626873;
+}
 </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

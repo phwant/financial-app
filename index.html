@@ -673,7 +673,7 @@
 }
 
 .type-selector:has(#scanEntriesControl:not([hidden])) {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 72px;
 }
 
 .type-btn {
@@ -3722,9 +3722,12 @@ svg.lucide {
 }
 .scan-entries-control {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 2px;
+  width: 72px;
+  height: 48px;
   min-width: 0;
 }
 
@@ -3733,7 +3736,11 @@ svg.lucide {
 }
 
 .scan-entries-btn {
-  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 22px;
+  width: 22px;
   height: 48px;
   min-height: 48px;
   padding: 0;
@@ -3741,14 +3748,17 @@ svg.lucide {
   border-radius: 0;
   background: transparent;
   color: var(--text-sub);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .scan-entries-btn svg {
-  width: 21px;
-  height: 21px;
+  width: 20px;
+  height: 20px;
+}
+
+.scan-entries-control span {
+  font-size: 8px;
+  color: var(--text-sub);
+  white-space: nowrap;
 }
 
 .scan-entries-control span {

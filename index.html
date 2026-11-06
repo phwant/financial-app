@@ -15950,10 +15950,6 @@ async function handleDeductionImageSelected(event) {
         blocks: true
       }
     );
-    window.prompt(
-      'OCR diagnostic — Please copy this text and send it to me.',
-      result.data.text || '(No OCR text detected)'
-    );
     const extractedEntries = parseDeductionOCR(
       result.data
     );

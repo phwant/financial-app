@@ -15740,12 +15740,11 @@ async function handleDeductionImageSelected(event) {
     closeScanSourcePicker();
 
     if (!extractedEntries.length) {
-  window.prompt(
-    'OCR RAW TEXT — Please copy this text and send it to ChatGPT:',
-    result.data.text || '(No text detected)'
-  );
-  return;
-}
+      alert(
+        'No deduction codes were detected. Please try another image with clearer text.'
+      );
+      return;
+    }
 
     openDeductionReview(extractedEntries);
 

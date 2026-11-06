@@ -3605,6 +3605,7 @@ svg.lucide {
   opacity: .4;
 }
 
+
 /* Scan Deduction Review */
 .scan-review-modal {
   z-index: 1100;
@@ -3617,78 +3618,121 @@ svg.lucide {
 .scan-review-description {
   color: var(--text-sub);
   font-size: 12px;
-  margin: -10px 0 18px;
+  margin: -10px 0 16px;
 }
 
 .scan-review-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
 .scan-review-row {
-  padding: 14px;
+  padding: 12px;
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--glass-bg);
 }
 
 .scan-review-row-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .scan-review-code {
+  color: var(--text-main);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.scan-review-type {
   color: var(--text-sub);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
 }
 
 .scan-review-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: auto;
+  padding: 0;
   border: 0;
+  border-radius: 9px;
   background: transparent;
   color: var(--expense-color);
-  padding: 5px;
 }
 
 .scan-review-remove svg {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
 }
 
-.scan-review-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 10px;
+.scan-review-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(100px, 1fr);
+  gap: 8px;
+  align-items: center;
 }
 
-.scan-review-field label {
-  color: var(--text-sub);
-  font-size: 11px;
-  font-weight: 700;
+.scan-review-item-wrap {
+  position: relative;
+  min-width: 0;
 }
 
-.scan-review-field select,
-.scan-review-field input {
+.scan-review-item-select,
+.scan-review-amount {
   width: 100%;
-  min-height: 46px;
+  height: 46px;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 0 12px;
   border: 1px solid var(--glass-border);
-  border-radius: 12px;
+  border-radius: 11px;
   background: var(--glass-card);
   color: var(--text-main);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-.scan-review-status {
-  margin-top: 9px;
+.scan-review-item-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 32px;
+}
+
+.scan-review-chevron {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 15px;
+  height: 15px;
   color: var(--text-sub);
-  font-size: 11px;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.scan-review-amount {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.scan-review-amount.is-missing {
+  border-color: var(--deduction-color);
+  background: var(--glass-card);
+}
+
+.scan-review-warning {
+  grid-column: 1 / -1;
+  color: var(--deduction-color);
+  font-size: 10px;
+  margin-top: -2px;
 }
 
 .scan-review-actions {
@@ -3699,7 +3743,7 @@ svg.lucide {
 .scan-review-actions button {
   flex: 1;
   min-height: 48px;
-  border-radius: 15px;
+  border-radius: 14px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 800;
@@ -3712,13 +3756,25 @@ svg.lucide {
 }
 
 .scan-review-confirm {
-  border: 1px solid var(--deduction-color);
-  background: var(--deduction-color);
-  color: white;
+  border: 1px solid transparent;
+  background: #626873;
+  color: #FFFFFF;
 }
 
 .scan-review-confirm:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
+}
+
+.scan-image-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .scan-entries-control {
@@ -4574,31 +4630,13 @@ svg.lucide {
     </div>
     <div class="modal-form-stage">
     <form id="recordForm" onsubmit="handleFormSubmit(event)">
-      <div class="scan-source-sheet" id="scanSourceSheet" hidden>
-  <div class="scan-source-content">
-    <div class="scan-source-title" id="scanSourceTitle">SCAN ENTRIES</div>
-    <button type="button" onclick="openScanCamera()">Camera</button>
-    <button type="button" onclick="openScanPhotos()">Photos</button>
-    <button type="button" onclick="closeScanSourcePicker()">Cancel</button>
-  </div>
-</div>
-
-<input
-  type="file"
-  id="scanCameraInput"
-  accept="image/*"
-  capture="environment"
-  hidden
-  onchange="handleDeductionImageSelected(event)"
->
-
-<input
-  type="file"
-  id="scanPhotosInput"
-  accept="image/*"
-  hidden
-  onchange="handleDeductionImageSelected(event)"
->
+    <input
+      type="file"
+      id="scanImageInput"
+      class="scan-image-input"
+      accept="image/*"
+      onchange="handleDeductionImageSelected(event)"
+    >
       <input type="hidden" id="editRowIndex">
       <div class="form-group">
         <label class="form-label">Type</label>
@@ -4834,7 +4872,7 @@ svg.lucide {
 <div class="modal scan-review-modal" id="deductionReviewModal">
   <div class="modal-content scan-review-content">
     <div class="modal-header">
-      <div class="modal-title">REVIEW SCAN ENTRIES</div>
+      <div class="modal-title">REVIEW SCANNED ENTRIES</div>
 
       <button
         type="button"
@@ -15591,96 +15629,106 @@ function openEntriesFromInsight() {
       "7021-5": "ออมทรัพย์"
     };
     
-    function parseDeductionOCR(ocrText) {
-      const lines = String(ocrText || "")
-        .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(Boolean);
     
-      const codePattern = /\b\d{4}-\d\b/g;
-      const codeMatches = [];
-    
-      lines.forEach((line, lineIndex) => {
-        let match;
-    
-        while ((match = codePattern.exec(line)) !== null) {
-          codeMatches.push({
-            code: match[0],
-            lineIndex
-          });
-        }
-      });
-    
-      return codeMatches.map((entry, index) => {
-        const nextCodeIndex =
-          codeMatches[index + 1]?.lineIndex ?? lines.length;
-    
-        const block = lines
-          .slice(entry.lineIndex, nextCodeIndex)
-          .join(" ");
-    
-        const amountMatches = [
-          ...block.matchAll(
-            /(?:฿\s*)?(\d{1,3}(?:,\d{3})*|\d+)\.(\d{2})/g
-          )
-        ];
-    
-        const amountMatch = amountMatches[0];
-        const title = deductionCodeMap[entry.code] || null;
-    
-        return {
-          code: entry.code,
-          title,
-          amount: amountMatch
-            ? Number(
-                amountMatch[1].replace(/,/g, "") +
-                "." +
-                amountMatch[2]
-              )
-            : null,
-          status: !title
-            ? "unmatched"
-            : !amountMatch
-              ? "missing_amount"
-              : "matched"
-        };
+function parseDeductionOCR(ocrText) {
+  const thaiDigits = {
+    '๐': '0', '๑': '1', '๒': '2', '๓': '3',
+    '๔': '4', '๕': '5', '๖': '6', '๗': '7',
+    '๘': '8', '๙': '9'
+  };
+
+  const normalizedText = String(ocrText || '')
+    .replace(/[๐-๙]/g, digit => thaiDigits[digit])
+    .replace(/[–—−]/g, '-');
+
+  const lines = normalizedText
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean);
+
+  const codePattern = /\b\d{4}-\d\b/g;
+  const codeMatches = [];
+
+  lines.forEach((line, lineIndex) => {
+    let match;
+
+    while ((match = codePattern.exec(line)) !== null) {
+      codeMatches.push({
+        code: match[0],
+        lineIndex
       });
     }
+
+    codePattern.lastIndex = 0;
+  });
+
+  return codeMatches.map((entry, index) => {
+    const nextCodeIndex =
+      codeMatches[index + 1]?.lineIndex ?? lines.length;
+
+    const blockLines = lines.slice(
+      entry.lineIndex,
+      nextCodeIndex
+    );
+
+    const amountPattern =
+      /^(?:฿\s*)?(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{1,2}))?$/;
+
+    let amount = null;
+
+    for (const line of blockLines) {
+      const cleanLine = line
+        .replace(codePattern, '')
+        .replace(/บาท/g, '')
+        .trim();
+
+      const match = cleanLine.match(amountPattern);
+
+      if (match) {
+        const value = Number(
+          match[1].replace(/,/g, '') +
+          (match[2] ? '.' + match[2] : '')
+        );
+
+        if (Number.isFinite(value) && value > 0) {
+          amount = value;
+          break;
+        }
+      }
+    }
+
+    const title = deductionCodeMap[entry.code] || '';
+
+    return {
+      code: entry.code,
+      title,
+      amount,
+      status: !title
+        ? 'unmatched'
+        : amount === null
+          ? 'missing_amount'
+          : 'matched'
+    };
+  });
+}
 
 let deductionOCRWorker = null;
 let deductionOCRInProgress = false;
 
+
 function showScanSourcePicker() {
   const control = document.getElementById('scanEntriesControl');
-  const sheet = document.getElementById('scanSourceSheet');
+  const input = document.getElementById('scanImageInput');
 
-  if (!control || control.hidden || deductionOCRInProgress) {
+  if (
+    !control ||
+    control.hidden ||
+    deductionOCRInProgress ||
+    !input
+  ) {
     return;
   }
 
-  sheet.hidden = false;
-}
-
-function closeScanSourcePicker() {
-  const sheet = document.getElementById('scanSourceSheet');
-  const title = document.getElementById('scanSourceTitle');
-
-  if (sheet) sheet.hidden = true;
-  if (title) title.textContent = 'SCAN ENTRIES';
-}
-
-function openScanCamera() {
-  closeScanSourcePicker();
-
-  const input = document.getElementById('scanCameraInput');
-  input.value = '';
-  input.click();
-}
-
-function openScanPhotos() {
-  closeScanSourcePicker();
-
-  const input = document.getElementById('scanPhotosInput');
   input.value = '';
   input.click();
 }
@@ -15706,13 +15754,12 @@ async function handleDeductionImageSelected(event) {
 
   deductionOCRInProgress = true;
 
-  const sheet = document.getElementById('scanSourceSheet');
-  const title = document.getElementById('scanSourceTitle');
-  const sourceButtons = sheet.querySelectorAll('button');
+  const scanButton = document.getElementById('scanEntriesBtn');
 
-  sheet.hidden = false;
-  title.textContent = 'PREPARING SCANNER...';
-  sourceButtons.forEach(button => button.disabled = true);
+  if (scanButton) {
+    scanButton.disabled = true;
+    scanButton.setAttribute('aria-label', 'Scanning image...');
+  }
 
   try {
     if (!deductionOCRWorker) {
@@ -15721,23 +15768,28 @@ async function handleDeductionImageSelected(event) {
         1,
         {
           logger: message => {
-            if (message.status === 'recognizing text') {
-              const percent = Math.round(message.progress * 100);
-              title.textContent = `SCANNING IMAGE ${percent}%`;
-            } else if (message.status) {
-              title.textContent = 'PREPARING SCANNER...';
+            if (
+              message.status === 'recognizing text' &&
+              scanButton
+            ) {
+              const percent = Math.round(
+                message.progress * 100
+              );
+
+              scanButton.setAttribute(
+                'aria-label',
+                `Scanning image ${percent}%`
+              );
             }
           }
         }
       );
     }
 
-    title.textContent = 'SCANNING IMAGE...';
-
     const result = await deductionOCRWorker.recognize(file);
-    const extractedEntries = parseDeductionOCR(result.data.text);
-
-    closeScanSourcePicker();
+    const extractedEntries = parseDeductionOCR(
+      result.data.text
+    );
 
     if (!extractedEntries.length) {
       alert(
@@ -15751,15 +15803,18 @@ async function handleDeductionImageSelected(event) {
   } catch (error) {
     console.error('Deduction OCR error:', error);
 
-    closeScanSourcePicker();
-
     alert(
       'Unable to scan this image. Please check your internet connection and try again.'
     );
 
   } finally {
     deductionOCRInProgress = false;
-    sourceButtons.forEach(button => button.disabled = false);
+
+    if (scanButton) {
+      scanButton.disabled = false;
+      scanButton.setAttribute('aria-label', 'Scan entries');
+    }
+
     event.target.value = '';
   }
 }
@@ -15794,13 +15849,10 @@ function closeDeductionReview() {
   deductionReviewEntries = [];
 }
 
+
 function renderDeductionReview() {
   const list = document.getElementById(
     'deductionReviewList'
-  );
-
-  const confirmBtn = document.getElementById(
-    'confirmDeductionReviewBtn'
   );
 
   list.innerHTML = '';
@@ -15820,7 +15872,11 @@ function renderDeductionReview() {
     code.className = 'scan-review-code';
     code.textContent = entry.code
       ? `CODE: ${entry.code}`
-      : 'MANUAL ENTRY';
+      : 'CODE: Not detected';
+
+    const type = document.createElement('span');
+    type.className = 'scan-review-type';
+    type.textContent = 'Deduction';
 
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
@@ -15833,19 +15889,20 @@ function renderDeductionReview() {
       renderDeductionReview();
     });
 
-    header.append(code, removeBtn);
+    header.append(code, type, removeBtn);
 
-    const itemField = document.createElement('div');
-    itemField.className = 'scan-review-field';
+    const fields = document.createElement('div');
+    fields.className = 'scan-review-fields';
 
-    const itemLabel = document.createElement('label');
-    itemLabel.textContent = 'Deduction Item';
+    const itemWrap = document.createElement('div');
+    itemWrap.className = 'scan-review-item-wrap';
 
     const itemSelect = document.createElement('select');
+    itemSelect.className = 'scan-review-item-select';
 
     const placeholder = document.createElement('option');
     placeholder.value = '';
-    placeholder.textContent = 'Select deduction item';
+    placeholder.textContent = 'Select item';
     itemSelect.appendChild(placeholder);
 
     deductionItems.forEach(name => {
@@ -15860,63 +15917,92 @@ function renderDeductionReview() {
     itemSelect.addEventListener('change', event => {
       deductionReviewEntries[index].title =
         event.target.value;
+
       updateDeductionReviewButton();
-      updateStatus();
     });
 
-    itemField.append(itemLabel, itemSelect);
+    const chevron = document.createElement('i');
+    chevron.setAttribute('data-lucide', 'chevron-down');
+    chevron.className = 'scan-review-chevron';
 
-    const amountField = document.createElement('div');
-    amountField.className = 'scan-review-field';
-
-    const amountLabel = document.createElement('label');
-    amountLabel.textContent = 'Amount';
+    itemWrap.append(itemSelect, chevron);
 
     const amountInput = document.createElement('input');
-    amountInput.type = 'number';
-    amountInput.step = 'any';
-    amountInput.min = '0';
+    amountInput.type = 'text';
+    amountInput.inputMode = 'decimal';
+    amountInput.className = 'scan-review-amount';
     amountInput.placeholder = '0.00';
-    amountInput.value = entry.amount;
+    amountInput.value =
+      entry.amount === '' || entry.amount === null
+        ? ''
+        : Number(entry.amount).toFixed(2);
+
+    if (
+      entry.amount === '' ||
+      entry.amount === null
+    ) {
+      amountInput.classList.add('is-missing');
+    }
 
     amountInput.addEventListener('input', event => {
-      deductionReviewEntries[index].amount =
-        event.target.value;
+      const value = event.target.value
+        .replace(/,/g, '')
+        .replace(/[^\d.]/g, '');
+
+      deductionReviewEntries[index].amount = value;
+
+      amountInput.classList.toggle(
+        'is-missing',
+        !value || !Number.isFinite(Number(value)) ||
+        Number(value) <= 0
+      );
 
       updateDeductionReviewButton();
     });
 
-    amountField.append(amountLabel, amountInput);
+    amountInput.addEventListener('blur', () => {
+      const value = String(
+        deductionReviewEntries[index].amount ?? ''
+      ).replace(/,/g, '');
 
-    const status = document.createElement('div');
-    status.className = 'scan-review-status';
+      if (value && Number.isFinite(Number(value)) && Number(value) > 0) {
+        deductionReviewEntries[index].amount =
+          Number(value).toFixed(2);
 
-    function updateStatus() {
-      if (!deductionReviewEntries[index].title) {
-        status.textContent =
-          'กรุณาเลือกชื่อรายการให้ถูกต้อง';
-      } else if (
-        !Number.isFinite(
-          Number(deductionReviewEntries[index].amount)
-        ) ||
-        Number(deductionReviewEntries[index].amount) <= 0
-      ) {
-        status.textContent =
-          'กรุณาตรวจสอบจำนวนเงิน';
-      } else {
-        status.textContent = 'พร้อมเพิ่มรายการ';
+        amountInput.value =
+          Number(value).toFixed(2);
       }
+    });
+
+    fields.append(itemWrap, amountInput);
+
+    const warning = document.createElement('div');
+    warning.className = 'scan-review-warning';
+
+    function updateWarning() {
+      const current = deductionReviewEntries[index];
+
+      if (!current.title) {
+        warning.textContent = 'Please select a Deduction item.';
+      } else if (
+        !current.amount ||
+        !Number.isFinite(Number(current.amount)) ||
+        Number(current.amount) <= 0
+      ) {
+        warning.textContent = 'Amount not detected — Please enter amount.';
+      } else {
+        warning.textContent = '';
+      }
+
+      warning.hidden = !warning.textContent;
     }
 
-    updateStatus();
+    itemSelect.addEventListener('change', updateWarning);
+    amountInput.addEventListener('input', updateWarning);
 
-    card.append(
-      header,
-      itemField,
-      amountField,
-      status
-    );
+    updateWarning();
 
+    card.append(header, fields, warning);
     list.appendChild(card);
   });
 
@@ -15927,12 +16013,19 @@ function renderDeductionReview() {
   });
 }
 
+
 function updateDeductionReviewButton() {
-  const validEntries = deductionReviewEntries.filter(entry =>
-    entry.title &&
-    Number.isFinite(Number(entry.amount)) &&
-    Number(entry.amount) > 0
-  );
+  const validEntries = deductionReviewEntries.filter(entry => {
+    const amount = Number(
+      String(entry.amount ?? '').replace(/,/g, '')
+    );
+
+    return (
+      entry.title &&
+      Number.isFinite(amount) &&
+      amount > 0
+    );
+  });
 
   const button = document.getElementById(
     'confirmDeductionReviewBtn'
@@ -15962,7 +16055,7 @@ async function confirmDeductionReview() {
     deductionReviewEntries.some(entry =>
       !entry.title ||
       !Number.isFinite(Number(entry.amount)) ||
-      Number(entry.amount) <= 0
+       Number(String(entry.amount).replace(/,/g, '')) <= 0
     )
   ) {
     alert('Please check all scanned entries.');
@@ -15975,7 +16068,9 @@ async function confirmDeductionReview() {
     financial_type: 'Deduction',
     entry_date: databaseDate,
     title: entry.title,
-    amount: Number(entry.amount),
+    amount: Number(
+      String(entry.amount).replace(/,/g, '')
+    ),
     note: '',
     icon: getEntryIcon(entry.title, 'Deduction'),
     expense_type: null

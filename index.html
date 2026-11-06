@@ -3606,40 +3606,61 @@ svg.lucide {
 }
 
 
+
 /* Scan Deduction Review */
 .scan-review-modal {
   z-index: 1100;
 }
 
 .scan-review-content {
+  display: flex;
+  flex-direction: column;
   max-height: calc(100dvh - 40px);
+  padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  overflow: hidden;
 }
 
 .scan-review-description {
   color: var(--text-sub);
   font-size: 12px;
-  margin: -10px 0 16px;
+  margin: -12px 0 12px;
 }
 
 .scan-review-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 18px;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: min(48dvh, 430px);
+  margin-bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scan-review-list::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .scan-review-row {
-  padding: 12px;
-  border: 1px solid var(--glass-border);
-  border-radius: 14px;
-  background: var(--glass-bg);
+  padding: 12px 2%;
+  border: none;
+  border-bottom: 1px solid rgba(100, 116, 139, .12);
+  border-radius: 0;
+  background: transparent;
 }
 
 .scan-review-row-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 10px;
+  min-height: 30px;
+  margin-bottom: 8px;
 }
 
 .scan-review-code {
@@ -3659,19 +3680,19 @@ svg.lucide {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   margin-left: auto;
   padding: 0;
-  border: 0;
-  border-radius: 9px;
+  border: none;
+  border-radius: 8px;
   background: transparent;
   color: var(--expense-color);
 }
 
 .scan-review-remove svg {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
 }
 
 .scan-review-fields {
@@ -3724,26 +3745,33 @@ svg.lucide {
 }
 
 .scan-review-amount.is-missing {
-  border-color: var(--deduction-color);
+  border-color: var(--glass-border);
   background: var(--glass-card);
 }
 
+.scan-review-amount.is-missing::placeholder {
+  color: #D97706;
+  opacity: 1;
+}
+
 .scan-review-warning {
-  grid-column: 1 / -1;
   color: var(--deduction-color);
   font-size: 10px;
-  margin-top: -2px;
+  margin-top: 6px;
 }
 
 .scan-review-actions {
   display: flex;
+  flex: 0 0 auto;
   gap: 10px;
+  margin-top: 18px;
 }
 
 .scan-review-actions button {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   min-height: 48px;
-  border-radius: 14px;
+  border-radius: 16px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 800;
@@ -3751,7 +3779,7 @@ svg.lucide {
 
 .scan-review-cancel {
   border: 1px solid var(--glass-border);
-  background: transparent;
+  background: var(--glass-bg);
   color: var(--text-main);
 }
 
@@ -3762,7 +3790,7 @@ svg.lucide {
 }
 
 .scan-review-confirm:disabled {
-  opacity: 0.35;
+  opacity: .35;
 }
 
 .scan-image-input {
@@ -15671,28 +15699,68 @@ function parseDeductionOCR(ocrText) {
       nextCodeIndex
     );
 
-    const amountPattern =
-      /^(?:฿\s*)?(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{1,2}))?$/;
-
     let amount = null;
+
+    // First priority: find decimal amounts anywhere
+    // in the code block, including after description text.
+    const decimalPattern =
+      /(?:฿\s*)?(\d{1,3}(?:,\d{3})*|\d+)\s*\.\s*(\d{2})(?!\d)/g;
+
+    const decimalCandidates = [];
 
     for (const line of blockLines) {
       const cleanLine = line
         .replace(codePattern, '')
-        .replace(/บาท/g, '')
-        .trim();
+        .replace(/บาท/g, '');
 
-      const match = cleanLine.match(amountPattern);
+      let match;
 
-      if (match) {
+      while (
+        (match = decimalPattern.exec(cleanLine)) !== null
+      ) {
         const value = Number(
           match[1].replace(/,/g, '') +
-          (match[2] ? '.' + match[2] : '')
+          '.' +
+          match[2]
         );
 
         if (Number.isFinite(value) && value > 0) {
-          amount = value;
-          break;
+          decimalCandidates.push(value);
+        }
+      }
+
+      decimalPattern.lastIndex = 0;
+    }
+
+    // The amount is usually the last decimal value
+    // in the code block.
+    if (decimalCandidates.length) {
+      amount = decimalCandidates[
+        decimalCandidates.length - 1
+      ];
+    }
+
+    // Fallback: accept integer amounts on a numeric-only line.
+    if (amount === null) {
+      const integerPattern =
+        /^(?:฿\s*)?(\d{1,3}(?:,\d{3})*|\d+)$/;
+
+      for (const line of blockLines) {
+        const cleanLine = line
+          .replace(codePattern, '')
+          .replace(/บาท/g, '')
+          .trim();
+
+        const match = cleanLine.match(integerPattern);
+
+        if (match) {
+          const value = Number(
+            match[1].replace(/,/g, '')
+          );
+
+          if (Number.isFinite(value) && value > 0) {
+            amount = value;
+          }
         }
       }
     }
@@ -15850,20 +15918,21 @@ function closeDeductionReview() {
 }
 
 
+
 function renderDeductionReview() {
   const list = document.getElementById(
     'deductionReviewList'
   );
 
-  list.innerHTML = '';
+  list.replaceChildren();
 
   const deductionItems = sortEntryItems(
     getAllEntryItemNames('Deduction')
   );
 
   deductionReviewEntries.forEach((entry, index) => {
-    const card = document.createElement('div');
-    card.className = 'scan-review-row';
+    const row = document.createElement('div');
+    row.className = 'scan-review-row';
 
     const header = document.createElement('div');
     header.className = 'scan-review-row-header';
@@ -15914,13 +15983,6 @@ function renderDeductionReview() {
 
     itemSelect.value = entry.title;
 
-    itemSelect.addEventListener('change', event => {
-      deductionReviewEntries[index].title =
-        event.target.value;
-
-      updateDeductionReviewButton();
-    });
-
     const chevron = document.createElement('i');
     chevron.setAttribute('data-lucide', 'chevron-down');
     chevron.className = 'scan-review-chevron';
@@ -15931,7 +15993,8 @@ function renderDeductionReview() {
     amountInput.type = 'text';
     amountInput.inputMode = 'decimal';
     amountInput.className = 'scan-review-amount';
-    amountInput.placeholder = '0.00';
+    amountInput.placeholder = 'Enter amount';
+
     amountInput.value =
       entry.amount === '' || entry.amount === null
         ? ''
@@ -15944,6 +16007,40 @@ function renderDeductionReview() {
       amountInput.classList.add('is-missing');
     }
 
+    const warning = document.createElement('div');
+    warning.className = 'scan-review-warning';
+
+    function updateWarning() {
+      const current = deductionReviewEntries[index];
+      const amount = Number(
+        String(current.amount ?? '').replace(/,/g, '')
+      );
+
+      if (!current.title) {
+        warning.textContent =
+          'Please select a Deduction item.';
+      } else if (
+        !current.amount ||
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
+        warning.textContent =
+          'Amount not detected — Please enter amount.';
+      } else {
+        warning.textContent = '';
+      }
+
+      warning.hidden = !warning.textContent;
+    }
+
+    itemSelect.addEventListener('change', event => {
+      deductionReviewEntries[index].title =
+        event.target.value;
+
+      updateWarning();
+      updateDeductionReviewButton();
+    });
+
     amountInput.addEventListener('input', event => {
       const value = event.target.value
         .replace(/,/g, '')
@@ -15953,10 +16050,12 @@ function renderDeductionReview() {
 
       amountInput.classList.toggle(
         'is-missing',
-        !value || !Number.isFinite(Number(value)) ||
+        !value ||
+        !Number.isFinite(Number(value)) ||
         Number(value) <= 0
       );
 
+      updateWarning();
       updateDeductionReviewButton();
     });
 
@@ -15965,7 +16064,11 @@ function renderDeductionReview() {
         deductionReviewEntries[index].amount ?? ''
       ).replace(/,/g, '');
 
-      if (value && Number.isFinite(Number(value)) && Number(value) > 0) {
+      if (
+        value &&
+        Number.isFinite(Number(value)) &&
+        Number(value) > 0
+      ) {
         deductionReviewEntries[index].amount =
           Number(value).toFixed(2);
 
@@ -15975,35 +16078,10 @@ function renderDeductionReview() {
     });
 
     fields.append(itemWrap, amountInput);
-
-    const warning = document.createElement('div');
-    warning.className = 'scan-review-warning';
-
-    function updateWarning() {
-      const current = deductionReviewEntries[index];
-
-      if (!current.title) {
-        warning.textContent = 'Please select a Deduction item.';
-      } else if (
-        !current.amount ||
-        !Number.isFinite(Number(current.amount)) ||
-        Number(current.amount) <= 0
-      ) {
-        warning.textContent = 'Amount not detected — Please enter amount.';
-      } else {
-        warning.textContent = '';
-      }
-
-      warning.hidden = !warning.textContent;
-    }
-
-    itemSelect.addEventListener('change', updateWarning);
-    amountInput.addEventListener('input', updateWarning);
-
     updateWarning();
 
-    card.append(header, fields, warning);
-    list.appendChild(card);
+    row.append(header, fields, warning);
+    list.appendChild(row);
   });
 
   updateDeductionReviewButton();
@@ -16052,11 +16130,17 @@ async function confirmDeductionReview() {
 
   if (
     deductionReviewEntries.length === 0 ||
-    deductionReviewEntries.some(entry =>
+    deductionReviewEntries.some(entry => {
+    const amount = Number(
+      String(entry.amount ?? '').replace(/,/g, '')
+    );
+  
+    return (
       !entry.title ||
-      !Number.isFinite(Number(entry.amount)) ||
-       Number(String(entry.amount).replace(/,/g, '')) <= 0
-    )
+      !Number.isFinite(amount) ||
+      amount <= 0
+    );
+  })
   ) {
     alert('Please check all scanned entries.');
     return;

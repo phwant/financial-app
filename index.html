@@ -1457,13 +1457,15 @@ body:has(#entryModal.active) .floating-add-button {
 .entries-bulk-hint[hidden] { display: none; }
 .entries-select-all-row {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
   width: 96%;
-  margin: 0 auto 4px;
+  margin: 0 auto 6px;
+  gap: 1px;
 }
 
 .entries-select-all-btn {
-  padding: 5px 0 5px 12px;
+  padding: 5px 0;
   border: none;
   background: transparent;
   color: #626873;
@@ -1473,6 +1475,13 @@ body:has(#entryModal.active) .floating-add-button {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+
+.entries-select-count {
+  color: var(--text-sub);
+  font-size: 11px;
+  font-weight: 600;
+}
+
 .entries-bulk-toggle { margin-left: auto; min-width: 58px; padding: 7px 14px; border: 1px solid rgba(114, 152, 199, 0.35); border-radius: 999px; background: rgba(114, 152, 199, 0.09);
   color: var(--blue-grey); font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .entry-select-circle { display: none; position: absolute; left: 0; top: 50%; transform: translateY(-50%); align-items: center; justify-content: center;
@@ -6293,11 +6302,9 @@ function renderEntriesPage(entries) {
     toggleButton.textContent =
       isBulkDeleteMode ? 'Done' : 'Edit';
   }
-  if (bulkHint) {
-    bulkHint.hidden = !isBulkDeleteMode;
-    bulkHint.textContent = isBulkDeleteMode
-      ? `${selectedEntryIds.size} selected`
-      : '';
+    if (bulkHint) {
+    bulkHint.hidden = true;
+    bulkHint.textContent = '';
   }
   const entriesList =
     document.getElementById('entriesList');
@@ -6347,6 +6354,9 @@ function renderEntriesPage(entries) {
                 : 'Select All'
               }
             </button>
+            <div class="entries-select-count">
+              ${selectedEntryIds.size} selected
+            </div>
           </div>
         `
         : ''
@@ -16180,24 +16190,11 @@ function renderDeductionReview() {
 
     function updateWarning() {
       const current = deductionReviewEntries[index];
-      const amount = Number(
-        String(current.amount ?? '').replace(/,/g, '')
-      );
-
-      if (!current.title) {
-        warning.textContent =
-          'Please select a Deduction item.';
-      } else if (
-        !current.amount ||
-        !Number.isFinite(amount) ||
-        amount <= 0
-      ) {
-        warning.textContent =
-          'Amount not detected — Please enter amount.';
-      } else {
-        warning.textContent = '';
-      }
-
+    
+      warning.textContent = !current.title
+        ? 'Please select a Deduction item.'
+        : '';
+    
       warning.hidden = !warning.textContent;
     }
 

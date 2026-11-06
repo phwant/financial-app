@@ -1455,6 +1455,24 @@ body:has(#entryModal.active) .floating-add-button {
 .entries-bulk-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 96%; margin: 0 auto 8px; min-height: 36px; }
 .entries-bulk-hint { color: var(--text-sub); font-size: 11px; font-weight: 600; }
 .entries-bulk-hint[hidden] { display: none; }
+.entries-select-all-row {
+  display: flex;
+  justify-content: flex-end;
+  width: 96%;
+  margin: 0 auto 4px;
+}
+
+.entries-select-all-btn {
+  padding: 5px 0 5px 12px;
+  border: none;
+  background: transparent;
+  color: #626873;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 .entries-bulk-toggle { margin-left: auto; min-width: 58px; padding: 7px 14px; border: 1px solid rgba(114, 152, 199, 0.35); border-radius: 999px; background: rgba(114, 152, 199, 0.09);
   color: var(--blue-grey); font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .entry-select-circle { display: none; position: absolute; left: 0; top: 50%; transform: translateY(-50%); align-items: center; justify-content: center;
@@ -6311,7 +6329,28 @@ function renderEntriesPage(entries) {
         Number(b.amount) - Number(a.amount)
     );
   });
+    const allVisibleSelected =
+    filteredEntries.length > 0 &&
+    selectedEntryIds.size === filteredEntries.length;
+
   entriesList.innerHTML = `
+    ${
+      isBulkDeleteMode
+        ? `
+          <div class="entries-select-all-row">
+            <button
+              type="button"
+              class="entries-select-all-btn"
+              onclick="toggleSelectAllEntries()">
+              ${allVisibleSelected
+                ? 'Deselect All'
+                : 'Select All'
+              }
+            </button>
+          </div>
+        `
+        : ''
+    }
     ${
       currentEntryFilter === 'expense'
         ? renderEntryGroup(
@@ -6372,6 +6411,43 @@ function renderEntriesPage(entries) {
     if (bulkDeleteInProgress) return;
     isBulkDeleteMode = !isBulkDeleteMode;
     selectedEntryIds.clear();
+    renderEntriesPage(currentEntries);
+  }
+    function toggleSelectAllEntries() {
+    if (
+      !isBulkDeleteMode ||
+      bulkDeleteInProgress
+    ) {
+      return;
+    }
+
+    const entriesList =
+      document.getElementById('entriesList');
+
+    if (!entriesList) return;
+
+    const visibleIds = [
+      ...entriesList.querySelectorAll(
+        '.entry-row[data-entry-id]'
+      )
+    ].map(row => row.dataset.entryId);
+
+    if (visibleIds.length === 0) return;
+
+    const allSelected = visibleIds.every(
+      id => selectedEntryIds.has(id)
+    );
+
+    if (allSelected) {
+      visibleIds.forEach(id =>
+        selectedEntryIds.delete(id)
+      );
+    } else {
+      visibleIds.forEach(id =>
+        selectedEntryIds.add(id)
+      );
+    }
+
     renderEntriesPage(currentEntries);
   }
   

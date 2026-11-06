@@ -15657,71 +15657,163 @@ function openEntriesFromInsight() {
       "7021-5": "ออมทรัพย์"
     };
     
-    
-function parseDeductionOCR(ocrText) {
+function parseDeductionOCR(ocrData) {
   const thaiDigits = {
     '๐': '0', '๑': '1', '๒': '2', '๓': '3',
     '๔': '4', '๕': '5', '๖': '6', '๗': '7',
     '๘': '8', '๙': '9'
   };
 
-  const normalizedText = String(ocrText || '')
-    .replace(/[๐-๙]/g, digit => thaiDigits[digit])
-    .replace(/[–—−]/g, '-');
+  const normalize = value =>
+    String(value || '')
+      .replace(/[๐-๙]/g, digit => thaiDigits[digit])
+      .replace(/[–—−]/g, '-');
 
-  const lines = normalizedText
-    .split(/\r?\n/)
-    .map(line => line.trim())
-    .filter(Boolean);
+  const words = [];
 
-  const codePattern = /\b\d{4}-\d\b/g;
-  const codeMatches = [];
+  // Use word-level data when available.
+  if (Array.isArray(ocrData?.words)) {
+    words.push(...ocrData.words);
+  } else {
+    // Tesseract.js v5 provides word positions inside blocks.
+    const collectWords = node => {
+      if (Array.isArray(node)) {
+        node.forEach(collectWords);
+        return;
+      }
 
-  lines.forEach((line, lineIndex) => {
-    let match;
+      if (!node || typeof node !== 'object') return;
 
-    while ((match = codePattern.exec(line)) !== null) {
-      codeMatches.push({
-        code: match[0],
-        lineIndex
+      const hasText =
+        typeof node.text === 'string' &&
+        node.text.trim();
+
+      const bbox = node.bbox;
+
+      const hasValidBox =
+        bbox &&
+        Number.isFinite(bbox.x0) &&
+        Number.isFinite(bbox.y0) &&
+        Number.isFinite(bbox.x1) &&
+        Number.isFinite(bbox.y1);
+
+      const hasStructuralChildren =
+        Array.isArray(node.paragraphs) ||
+        Array.isArray(node.lines) ||
+        Array.isArray(node.words);
+
+      if (hasText && hasValidBox && !hasStructuralChildren) {
+        words.push(node);
+        return;
+      }
+
+      Object.entries(node).forEach(([key, value]) => {
+        if (key !== 'bbox' && key !== 'symbols') {
+          collectWords(value);
+        }
       });
-    }
+    };
 
-    codePattern.lastIndex = 0;
-  });
+    collectWords(ocrData?.blocks || []);
+  }
 
-  return codeMatches.map((entry, index) => {
-    const nextCodeIndex =
-      codeMatches[index + 1]?.lineIndex ?? lines.length;
+  const positionedWords = words
+    .filter(word =>
+      word?.bbox &&
+      Number.isFinite(word.bbox.x0) &&
+      Number.isFinite(word.bbox.y0) &&
+      Number.isFinite(word.bbox.x1) &&
+      Number.isFinite(word.bbox.y1)
+    )
+    .map(word => ({
+      text: normalize(word.text).trim(),
+      x: (word.bbox.x0 + word.bbox.x1) / 2,
+      y: (word.bbox.y0 + word.bbox.y1) / 2,
+      height: word.bbox.y1 - word.bbox.y0
+    }))
+    .filter(word => word.text && word.height > 0)
+    .sort((a, b) => a.y - b.y || a.x - b.x);
 
-    const blockLines = lines.slice(
-      entry.lineIndex,
-      nextCodeIndex
+  if (!positionedWords.length) {
+    return [];
+  }
+
+  // Estimate the typical text height.
+  const heights = positionedWords
+    .map(word => word.height)
+    .sort((a, b) => a - b);
+
+  const medianHeight =
+    heights[Math.floor(heights.length / 2)];
+
+  const rowTolerance = Math.max(
+    8,
+    medianHeight * 0.8
+  );
+
+  // Group words by their vertical position.
+  const rows = [];
+
+  positionedWords.forEach(word => {
+    let row = rows.find(item =>
+      Math.abs(item.centerY - word.y) <= rowTolerance
     );
 
-    let amount = null;
+    if (!row) {
+      row = {
+        centerY: word.y,
+        words: []
+      };
+      rows.push(row);
+    }
 
-    // First priority: find decimal amounts anywhere
-    // in the code block, including after description text.
-    const decimalPattern =
-      /(?:฿\s*)?(\d{1,3}(?:,\d{3})*|\d+)\s*\.\s*(\d{2})(?!\d)/g;
+    row.words.push(word);
 
-    const decimalCandidates = [];
+    row.centerY =
+      row.words.reduce((sum, item) => sum + item.y, 0) /
+      row.words.length;
+  });
 
-    for (const line of blockLines) {
-      const cleanLine = line
+  rows.sort((a, b) => a.centerY - b.centerY);
+
+  const codePattern = /(\d{4})\s*-\s*(\d)/g;
+
+  const decimalPattern =
+    /(?:฿\s*)?(\d{1,3}(?:,\d{3})*|\d+)\s*\.\s*(\d{2})(?!\d)/g;
+
+  const integerPattern =
+    /(?:฿\s*)?(\d{1,3}(?:,\d{3})*|\d+)(?![\d.-])/g;
+
+  const entries = [];
+
+  rows.forEach(row => {
+    const rowText = row.words
+      .sort((a, b) => a.x - b.x)
+      .map(word => word.text)
+      .join(' ');
+
+    const codeMatches = [...rowText.matchAll(codePattern)];
+
+    if (!codeMatches.length) return;
+
+    codeMatches.forEach(codeMatch => {
+      const code = `${codeMatch[1]}-${codeMatch[2]}`;
+
+      // Only read amounts from this same visual row.
+      const cleanText = rowText
         .replace(codePattern, '')
         .replace(/บาท/g, '');
 
-      let match;
+      const decimalCandidates = [];
+      let amountMatch;
 
       while (
-        (match = decimalPattern.exec(cleanLine)) !== null
+        (amountMatch = decimalPattern.exec(cleanText)) !== null
       ) {
         const value = Number(
-          match[1].replace(/,/g, '') +
+          amountMatch[1].replace(/,/g, '') +
           '.' +
-          match[2]
+          amountMatch[2]
         );
 
         if (Number.isFinite(value) && value > 0) {
@@ -15730,54 +15822,50 @@ function parseDeductionOCR(ocrText) {
       }
 
       decimalPattern.lastIndex = 0;
-    }
 
-    // The amount is usually the last decimal value
-    // in the code block.
-    if (decimalCandidates.length) {
-      amount = decimalCandidates[
-        decimalCandidates.length - 1
-      ];
-    }
+      let amount = null;
 
-    // Fallback: accept integer amounts on a numeric-only line.
-    if (amount === null) {
-      const integerPattern =
-        /^(?:฿\s*)?(\d{1,3}(?:,\d{3})*|\d+)$/;
+      if (decimalCandidates.length) {
+        amount = decimalCandidates[decimalCandidates.length - 1];
+      } else {
+        const integerCandidates = [];
+        let integerMatch;
 
-      for (const line of blockLines) {
-        const cleanLine = line
-          .replace(codePattern, '')
-          .replace(/บาท/g, '')
-          .trim();
-
-        const match = cleanLine.match(integerPattern);
-
-        if (match) {
+        while (
+          (integerMatch = integerPattern.exec(cleanText)) !== null
+        ) {
           const value = Number(
-            match[1].replace(/,/g, '')
+            integerMatch[1].replace(/,/g, '')
           );
 
           if (Number.isFinite(value) && value > 0) {
-            amount = value;
+            integerCandidates.push(value);
           }
         }
+
+        integerPattern.lastIndex = 0;
+
+        if (integerCandidates.length === 1) {
+          amount = integerCandidates[0];
+        }
       }
-    }
 
-    const title = deductionCodeMap[entry.code] || '';
+      const title = deductionCodeMap[code] || '';
 
-    return {
-      code: entry.code,
-      title,
-      amount,
-      status: !title
-        ? 'unmatched'
-        : amount === null
-          ? 'missing_amount'
-          : 'matched'
-    };
+      entries.push({
+        code,
+        title,
+        amount,
+        status: !title
+          ? 'unmatched'
+          : amount === null
+            ? 'missing_amount'
+            : 'matched'
+      });
+    });
   });
+
+  return entries;
 }
 
 let deductionOCRWorker = null;
@@ -15854,9 +15942,17 @@ async function handleDeductionImageSelected(event) {
       );
     }
 
-    const result = await deductionOCRWorker.recognize(file);
+    const result = await deductionOCRWorker.recognize(
+      file,
+      {},
+      {
+        text: true,
+        blocks: true
+      }
+    );
+    
     const extractedEntries = parseDeductionOCR(
-      result.data.text
+      result.data
     );
 
     if (!extractedEntries.length) {

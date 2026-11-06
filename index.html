@@ -4576,7 +4576,7 @@ svg.lucide {
     <form id="recordForm" onsubmit="handleFormSubmit(event)">
       <div class="scan-source-sheet" id="scanSourceSheet" hidden>
   <div class="scan-source-content">
-    <div class="scan-source-title">SCAN ENTRIES</div>
+    <div class="scan-source-title" id="scanSourceTitle">SCAN ENTRIES</div>
     <button type="button" onclick="openScanCamera()">Camera</button>
     <button type="button" onclick="openScanPhotos()">Photos</button>
     <button type="button" onclick="closeScanSourcePicker()">Cancel</button>
@@ -15646,7 +15646,124 @@ function openEntriesFromInsight() {
         };
       });
     }
-    
+
+let deductionOCRWorker = null;
+let deductionOCRInProgress = false;
+
+function showScanSourcePicker() {
+  const control = document.getElementById('scanEntriesControl');
+  const sheet = document.getElementById('scanSourceSheet');
+
+  if (!control || control.hidden || deductionOCRInProgress) {
+    return;
+  }
+
+  sheet.hidden = false;
+}
+
+function closeScanSourcePicker() {
+  const sheet = document.getElementById('scanSourceSheet');
+  const title = document.getElementById('scanSourceTitle');
+
+  if (sheet) sheet.hidden = true;
+  if (title) title.textContent = 'SCAN ENTRIES';
+}
+
+function openScanCamera() {
+  closeScanSourcePicker();
+
+  const input = document.getElementById('scanCameraInput');
+  input.value = '';
+  input.click();
+}
+
+function openScanPhotos() {
+  closeScanSourcePicker();
+
+  const input = document.getElementById('scanPhotosInput');
+  input.value = '';
+  input.click();
+}
+
+async function handleDeductionImageSelected(event) {
+  const file = event.target.files?.[0];
+
+  if (!file || deductionOCRInProgress) {
+    return;
+  }
+
+  if (!file.type.startsWith('image/')) {
+    alert('Please select an image file.');
+    event.target.value = '';
+    return;
+  }
+
+  if (!window.Tesseract) {
+    alert('OCR library could not be loaded. Please check your internet connection and try again.');
+    event.target.value = '';
+    return;
+  }
+
+  deductionOCRInProgress = true;
+
+  const sheet = document.getElementById('scanSourceSheet');
+  const title = document.getElementById('scanSourceTitle');
+  const sourceButtons = sheet.querySelectorAll('button');
+
+  sheet.hidden = false;
+  title.textContent = 'PREPARING SCANNER...';
+  sourceButtons.forEach(button => button.disabled = true);
+
+  try {
+    if (!deductionOCRWorker) {
+      deductionOCRWorker = await Tesseract.createWorker(
+        'tha+eng',
+        1,
+        {
+          logger: message => {
+            if (message.status === 'recognizing text') {
+              const percent = Math.round(message.progress * 100);
+              title.textContent = `SCANNING IMAGE ${percent}%`;
+            } else if (message.status) {
+              title.textContent = 'PREPARING SCANNER...';
+            }
+          }
+        }
+      );
+    }
+
+    title.textContent = 'SCANNING IMAGE...';
+
+    const result = await deductionOCRWorker.recognize(file);
+    const extractedEntries = parseDeductionOCR(result.data.text);
+
+    closeScanSourcePicker();
+
+    if (!extractedEntries.length) {
+      alert(
+        'No deduction codes were detected. Please try another image with clearer text.'
+      );
+      return;
+    }
+
+    openDeductionReview(extractedEntries);
+
+  } catch (error) {
+    console.error('Deduction OCR error:', error);
+
+    closeScanSourcePicker();
+
+    alert(
+      'Unable to scan this image. Please check your internet connection and try again.'
+    );
+
+  } finally {
+    deductionOCRInProgress = false;
+    sourceButtons.forEach(button => button.disabled = false);
+    event.target.value = '';
+  }
+}
+
 let deductionReviewEntries = [];
 
 function openDeductionReview(entries) {

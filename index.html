@@ -1452,38 +1452,97 @@ body:has(#entryModal.active) .floating-add-button {
 .entry-type { min-width: 0; font-size: 10px; font-weight: 700; color: var(--text-sub); line-height: 1.2; letter-spacing: 0.3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .entry-right { flex-shrink: 0; margin-left: 14px; display: flex; align-items: center; }
 .entry-amount { font-size: 14px; font-weight: 800; white-space: nowrap; }
-.entries-bulk-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 96%; margin: 0 auto 8px; min-height: 36px; }
-.entries-bulk-hint { color: var(--text-sub); font-size: 11px; font-weight: 600; }
-.entries-bulk-hint[hidden] { display: none; }
-.entries-select-all-row {
+.entries-bulk-toolbar {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   width: 96%;
-  margin: 0 auto 6px;
-  gap: 1px;
+  margin: 0 auto 8px;
+  min-height: 44px;
 }
 
-.entries-select-all-btn {
-  padding: 5px 0;
-  border: none;
-  background: transparent;
+.entries-select-all-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.entries-select-all-control[hidden] {
+  display: none;
+}
+
+.entries-select-all-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.entries-select-all-label {
   color: #626873;
-  font-family: inherit;
   font-size: 12px;
   font-weight: 700;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  line-height: 1.3;
 }
 
 .entries-select-count {
   color: var(--text-sub);
   font-size: 11px;
   font-weight: 600;
+  line-height: 1.3;
 }
 
-.entries-bulk-toggle { margin-left: auto; min-width: 58px; padding: 7px 14px; border: 1px solid rgba(114, 152, 199, 0.35); border-radius: 999px; background: rgba(114, 152, 199, 0.09);
-  color: var(--blue-grey); font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.entries-select-all-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  flex: 0 0 21px;
+  padding: 0;
+  border: 1.5px solid var(--text-sub);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  box-sizing: border-box;
+  opacity: 0.55;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.entries-select-all-circle span {
+  display: block;
+  width: 5px;
+  height: 9px;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transform: rotate(45deg);
+  margin-top: -2px;
+}
+
+.entries-select-all-circle.is-selected {
+  border-color: var(--blue-grey);
+  background: var(--blue-grey);
+  opacity: 1;
+}
+
+.entries-select-all-circle.is-selected span {
+  border-color: #FFFFFF;
+}
+
+.entries-bulk-toggle {
+  margin-left: auto;
+  min-width: 58px;
+  padding: 7px 14px;
+  border: 1px solid rgba(114, 152, 199, 0.35);
+  border-radius: 999px;
+  background: rgba(114, 152, 199, 0.09);
+  color: var(--blue-grey);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
 .entry-select-circle { display: none; position: absolute; left: 0; top: 50%; transform: translateY(-50%); align-items: center; justify-content: center;
   width: 21px; height: 21px; border: 1.5px solid var(--text-sub); border-radius: 50%; color: #fff; background: transparent; box-sizing: border-box; opacity: 0.55; }
 .entry-select-circle svg { width: 13px; height: 13px; stroke-width: 3; }
@@ -3462,7 +3521,8 @@ svg.lucide {
 .copy-previous-month-select-all {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 14px;
   min-height: 44px;
   padding: 0 2px 12px;
   border-bottom: none;
@@ -4151,23 +4211,42 @@ svg.lucide {
   </button>
     </div>
      <div class="entries-bulk-toolbar" id="entriesBulkToolbar">
-        <div
-          class="entries-bulk-hint"
-          id="entriesBulkHint"
-          hidden>
-          Select entries to delete
-        </div>
-        <button
-          class="entries-bulk-toggle"
-          id="entriesBulkToggle"
-          type="button"
-          onclick="toggleBulkDeleteMode()">
-          Edit
-        </button>
+  <div
+    class="entries-select-all-control"
+    id="entriesSelectAllControl"
+    hidden
+  >
+    <div class="entries-select-all-copy">
+      <div class="entries-select-all-label">
+        Select All
       </div>
-      <div class="entries-list" id="entriesList">
-        <div class="loading-state">no entries yet</div>
+      <div
+        class="entries-select-count"
+        id="entriesSelectCount"
+      >
+        0 selected
       </div>
+    </div>
+    <button
+      type="button"
+      class="entries-select-all-circle"
+      id="entriesSelectAllButton"
+      onclick="toggleSelectAllEntries()"
+      aria-label="Select all entries"
+      aria-pressed="false"
+    >
+      <span></span>
+    </button>
+  </div>
+  <button
+    class="entries-bulk-toggle"
+    id="entriesBulkToggle"
+    type="button"
+    onclick="toggleBulkDeleteMode()"
+  >
+    Edit
+  </button>
+</div>
     </main>
   </div>
     <!-- Insights Page -->
@@ -6337,30 +6416,43 @@ function renderEntriesPage(entries) {
     );
   });
     const allVisibleSelected =
-    filteredEntries.length > 0 &&
-    selectedEntryIds.size === filteredEntries.length;
+  filteredEntries.length > 0 &&
+  selectedEntryIds.size === filteredEntries.length;
 
+const selectAllControl = document.getElementById(
+  'entriesSelectAllControl'
+);
+
+const selectAllCount = document.getElementById(
+  'entriesSelectCount'
+);
+
+const selectAllButton = document.getElementById(
+  'entriesSelectAllButton'
+);
+
+if (selectAllControl) {
+  selectAllControl.hidden =
+    !isBulkDeleteMode || filteredEntries.length === 0;
+}
+
+if (selectAllCount) {
+  selectAllCount.textContent =
+    `${selectedEntryIds.size} selected`;
+}
+
+if (selectAllButton) {
+  selectAllButton.classList.toggle(
+    'is-selected',
+    allVisibleSelected
+  );
+
+  selectAllButton.setAttribute(
+    'aria-pressed',
+    String(allVisibleSelected)
+  );
+}
   entriesList.innerHTML = `
-    ${
-      isBulkDeleteMode
-        ? `
-          <div class="entries-select-all-row">
-            <button
-              type="button"
-              class="entries-select-all-btn"
-              onclick="toggleSelectAllEntries()">
-              ${allVisibleSelected
-                ? 'Deselect All'
-                : 'Select All'
-              }
-            </button>
-            <div class="entries-select-count">
-              ${selectedEntryIds.size} selected
-            </div>
-          </div>
-        `
-        : ''
-    }
     ${
       currentEntryFilter === 'expense'
         ? renderEntryGroup(

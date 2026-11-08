@@ -6410,6 +6410,43 @@ function renderEntriesPage(entries) {
     bulkHint.hidden = true;
     bulkHint.textContent = '';
   }
+  const allVisibleSelected =
+    filteredEntries.length > 0 &&
+    selectedEntryIds.size === filteredEntries.length;
+
+  const selectAllControl = document.getElementById(
+    'entriesSelectAllControl'
+  );
+
+  const selectAllCount = document.getElementById(
+    'entriesSelectCount'
+  );
+
+  const selectAllButton = document.getElementById(
+    'entriesSelectAllButton'
+  );
+
+  if (selectAllControl) {
+    selectAllControl.hidden =
+      !isBulkDeleteMode || filteredEntries.length === 0;
+  }
+
+  if (selectAllCount) {
+    selectAllCount.textContent =
+      `${selectedEntryIds.size} selected`;
+  }
+
+  if (selectAllButton) {
+    selectAllButton.classList.toggle(
+      'is-selected',
+      allVisibleSelected
+    );
+
+    selectAllButton.setAttribute(
+      'aria-pressed',
+      String(allVisibleSelected)
+    );
+  }
   const entriesList =
     document.getElementById('entriesList');
   if (!entriesList) return;
@@ -6440,43 +6477,7 @@ function renderEntriesPage(entries) {
         Number(b.amount) - Number(a.amount)
     );
   });
-    const allVisibleSelected =
-  filteredEntries.length > 0 &&
-  selectedEntryIds.size === filteredEntries.length;
 
-const selectAllControl = document.getElementById(
-  'entriesSelectAllControl'
-);
-
-const selectAllCount = document.getElementById(
-  'entriesSelectCount'
-);
-
-const selectAllButton = document.getElementById(
-  'entriesSelectAllButton'
-);
-
-if (selectAllControl) {
-  selectAllControl.hidden =
-    !isBulkDeleteMode || filteredEntries.length === 0;
-}
-
-if (selectAllCount) {
-  selectAllCount.textContent =
-    `${selectedEntryIds.size} selected`;
-}
-
-if (selectAllButton) {
-  selectAllButton.classList.toggle(
-    'is-selected',
-    allVisibleSelected
-  );
-
-  selectAllButton.setAttribute(
-    'aria-pressed',
-    String(allVisibleSelected)
-  );
-}
   entriesList.innerHTML = `
     ${
       currentEntryFilter === 'expense'
@@ -13307,6 +13308,30 @@ async function confirmCopyPreviousMonth() {
   async function fetchData() {
   const requestId = ++fetchRequestId;
   renderCopyPreviousMonthButton([], []);
+  const selectAllControl = document.getElementById(
+    'entriesSelectAllControl'
+  );
+
+  const selectAllCount = document.getElementById(
+    'entriesSelectCount'
+  );
+
+  const selectAllButton = document.getElementById(
+    'entriesSelectAllButton'
+  );
+
+  if (selectAllControl) {
+    selectAllControl.hidden = true;
+  }
+
+  if (selectAllCount) {
+    selectAllCount.textContent = '0 selected';
+  }
+
+  if (selectAllButton) {
+    selectAllButton.classList.remove('is-selected');
+    selectAllButton.setAttribute('aria-pressed', 'false');
+  }
   const bulkToggle =
   document.getElementById('entriesBulkToggle');
   if (bulkToggle) {

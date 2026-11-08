@@ -3735,6 +3735,28 @@ svg.lucide {
   height: 0;
 }
 
+.scan-review-total {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 2% 12px;
+  border-top: 1px solid rgba(100, 116, 139, .12);
+}
+
+.scan-review-total-label {
+  color: #626873;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.scan-review-total-amount {
+  color: #626873;
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
 .scan-review-row {
   padding: 12px 2%;
   border: none;
@@ -16314,8 +16336,9 @@ function renderDeductionReview() {
         !Number.isFinite(Number(value)) ||
         Number(value) <= 0
       );
-
+      
       updateWarning();
+      updateDeductionReviewTotal();
       updateDeductionReviewButton();
     });
 
@@ -16344,13 +16367,88 @@ function renderDeductionReview() {
     list.appendChild(row);
   });
 
-  updateDeductionReviewButton();
+    const totalRow = document.createElement('div');
+    totalRow.className = 'scan-review-total';
+  
+    const totalLabel = document.createElement('span');
+    totalLabel.className = 'scan-review-total-label';
+    totalLabel.textContent = 'Total Amount';
+  
+    const totalAmount = document.createElement('span');
+    totalAmount.className = 'scan-review-total-amount';
+  
+    totalRow.append(totalLabel, totalAmount);
+    list.appendChild(totalRow);
+  
+    updateDeductionReviewTotal();
+    updateDeductionReviewButton();
+  
+    requestAnimationFrame(() => {
+      lucide.createIcons();
+    });
+  }
+  
+  function updateDeductionReviewTotal() {
+  const totalElement = document.querySelector(
+    '#deductionReviewList .scan-review-total-amount'
+  );
 
-  requestAnimationFrame(() => {
-    lucide.createIcons();
-  });
+  if (!totalElement) return;
+
+  const total = deductionReviewEntries.reduce(
+    (sum, entry) => {
+      const rawAmount = String(
+        entry.amount ?? ''
+      ).replace(/,/g, '').trim();
+
+      if (!rawAmount) return sum;
+
+      const amount = Number(rawAmount);
+
+      return Number.isFinite(amount) && amount > 0
+        ? sum + amount
+        : sum;
+    },
+    0
+  );
+
+  totalElement.textContent =
+    `฿${total.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
 }
 
+function updateDeductionReviewTotal() {
+  const totalElement = document.querySelector(
+    '#deductionReviewList .scan-review-total-amount'
+  );
+
+  if (!totalElement) return;
+
+  const total = deductionReviewEntries.reduce(
+    (sum, entry) => {
+      const rawAmount = String(
+        entry.amount ?? ''
+      ).replace(/,/g, '').trim();
+
+      if (!rawAmount) return sum;
+
+      const amount = Number(rawAmount);
+
+      return Number.isFinite(amount) && amount > 0
+        ? sum + amount
+        : sum;
+    },
+    0
+  );
+
+  totalElement.textContent =
+    `฿${total.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+}
 
 function updateDeductionReviewButton() {
   const validEntries = deductionReviewEntries.filter(entry => {

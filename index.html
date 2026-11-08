@@ -16419,37 +16419,6 @@ function renderDeductionReview() {
     })}`;
 }
 
-function updateDeductionReviewTotal() {
-  const totalElement = document.querySelector(
-    '#deductionReviewList .scan-review-total-amount'
-  );
-
-  if (!totalElement) return;
-
-  const total = deductionReviewEntries.reduce(
-    (sum, entry) => {
-      const rawAmount = String(
-        entry.amount ?? ''
-      ).replace(/,/g, '').trim();
-
-      if (!rawAmount) return sum;
-
-      const amount = Number(rawAmount);
-
-      return Number.isFinite(amount) && amount > 0
-        ? sum + amount
-        : sum;
-    },
-    0
-  );
-
-  totalElement.textContent =
-    `฿${total.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`;
-}
-
 function updateDeductionReviewButton() {
   const validEntries = deductionReviewEntries.filter(entry => {
     const amount = Number(

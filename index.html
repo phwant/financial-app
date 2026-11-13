@@ -214,70 +214,15 @@
     }
 
     body{
-    position: relative;
-    isolation: isolate;
     background-color: var(--bg-color);
     background-image: none;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     overflow-x: hidden;
     color: var(--text-main);
     min-height: 100vh;
     padding-bottom: 100px;
-    }
-    /* Cool Grey — Soft Flow Background */
-    body::before {
-    content: "";
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 140vw;
-    height: 140vh;
-    z-index: -1;
-    pointer-events: none;
-  
-    background:
-      radial-gradient(
-        ellipse at 25% 30%,
-        rgba(255, 255, 255, 0.95) 0%,
-        transparent 48%
-      ),
-      radial-gradient(
-        ellipse at 75% 65%,
-        rgba(218, 222, 228, 0.75) 0%,
-        transparent 52%
-      ),
-      radial-gradient(
-        ellipse at 55% 5%,
-        rgba(255, 255, 255, 0.7) 0%,
-        transparent 42%
-      ),
-      radial-gradient(
-        ellipse at 10% 85%,
-        rgba(225, 228, 233, 0.7) 0%,
-        transparent 50%
-      );
-  
-      opacity: 0.65;
-      transform: translate3d(-50%, -50%, 0);
-      animation: softFlowMove 26s ease-in-out infinite alternate;
-      will-change: transform;
-    }
-    
-    @keyframes softFlowMove {
-      0% {
-        transform: translate3d(-53%, -48%, 0) scale(1.05) rotate(-2deg);
-      }
-    
-      100% {
-        transform: translate3d(-47%, -52%, 0) scale(1.1) rotate(2deg);
-      }
-    }
-    
-    @media (prefers-reduced-motion: reduce) {
-      body::before {
-        animation: none;
-        transform: translate3d(-50%, -50%, 0);
-        will-change: auto;
-      }
     }
     
     html { scrollbar-width: none; -ms-overflow-style: none; }

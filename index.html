@@ -506,8 +506,8 @@
  background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(22px) ; -webkit-backdrop-filter: blur(22px) ; }
 
     .balance-card { 
-      background: var(--balance-bg);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: var(--modal-bg);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-radius: 28px; padding: 28px; min-height: 166px; height: 166px;
       display: flex; flex-direction: column; justify-content: center;
       border: 1px solid var(--glass-border); 
@@ -540,7 +540,7 @@
 
     /* Stats Grid Glass Cards */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 22px; }
-    .stat-card { background: var(--glass-card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; padding: 16px 10px; border: 1px solid var(--glass-border); text-align: left; box-shadow: var(--glass-shadow); }
+    .stat-card { background: var(--modal-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 20px; padding: 16px 10px; border: 1px solid var(--glass-border); text-align: left; box-shadow: var(--glass-shadow); }
     .stat-icon { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 0 8px; font-size: 15px; font-weight: bold; }
     .stat-icon svg { width: 18px; height: 18px; stroke-width: 2.2; }
     .stat-card.income .stat-icon { background: var(--income-bg); color: var(--income-color); }
@@ -568,7 +568,7 @@
     .see-all-btn { background: none; border: none; color: #84CC16; /* Lime 500 — Light */; font-size: 13px; font-weight: 800; cursor: pointer; padding: 4px 0; }
      [data-theme="dark"] .see-all-btn { color: var(--lime-400); }
 
-    .highlight-card { background: var(--glass-card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);border-radius: 20px;
+    .highlight-card { background: var(--modal-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);border-radius: 20px;
      border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); overflow: hidden; min-height: 420px; }
     .highlight-card-content { min-height: 420px; animation: highlightContentFade 0.18s ease both; }
     @keyframes highlightContentFade {
@@ -597,9 +597,6 @@
      padding: 15px 18px; color: var(--text-sub); font-size: 12px; font-weight: 600; text-align: center; }
 
     /* Liquid Glass Floating Bottom Action Bar */
-
-
-    /* Liquid Glass Modal */
     .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--modal-bg);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; align-items: flex-end; justify-content: center; }
     .modal.active { display: flex; }

@@ -223,7 +223,7 @@
       padding-bottom: 100px;
     }
     
-    /* Blue Lavender — Soft Sculpted Ribbons */
+    /* Blue Lavender — Quiet Sculpted Surface */
     body::before {
       content: "";
       position: fixed;
@@ -232,16 +232,20 @@
       pointer-events: none;
       background:
         radial-gradient(
-          ellipse at 18% 12%,
-          rgba(255,255,255,0.72),
-          transparent 48%
+          ellipse 85% 48% at 12% 0%,
+          rgba(255, 255, 255, 0.52),
+          transparent 75%
+        ),
+        radial-gradient(
+          ellipse 80% 55% at 100% 100%,
+          rgba(157, 169, 225, 0.22),
+          transparent 75%
         ),
         linear-gradient(
           145deg,
-          #E8ECFA 0%,
-          #D7DDF5 42%,
-          #C3C9ED 76%,
-          #DCE1F7 100%
+          #E7EBF9 0%,
+          #DCE2F6 48%,
+          #D1D8F2 100%
         );
     }
     
@@ -4030,129 +4034,76 @@ svg.lucide {
 </head>
 <body>
   
+
 <div class="ribbon-background" aria-hidden="true">
   <svg viewBox="0 0 430 932"
        preserveAspectRatio="xMidYMid slice"
        xmlns="http://www.w3.org/2000/svg">
 
     <defs>
-      <linearGradient id="silkMain" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#F8F9FF"/>
-        <stop offset="22%" stop-color="#E6EAFB"/>
-        <stop offset="48%" stop-color="#BFC8ED"/>
-        <stop offset="72%" stop-color="#A3AFE2"/>
-        <stop offset="100%" stop-color="#DDE2F8"/>
+      <linearGradient id="softSilk"
+        x1="0" y1="0" x2="0.9" y2="1">
+        <stop offset="0%" stop-color="#F7F8FF" stop-opacity=".12"/>
+        <stop offset="45%" stop-color="#C6CEF0" stop-opacity=".30"/>
+        <stop offset="100%" stop-color="#929FD9" stop-opacity=".42"/>
       </linearGradient>
 
-      <linearGradient id="silkFold" x1="0" y1="0" x2="1" y2="0.8">
-        <stop offset="0%" stop-color="#A6B1E4"/>
-        <stop offset="38%" stop-color="#DCE2F9"/>
-        <stop offset="65%" stop-color="#F8F9FF"/>
-        <stop offset="100%" stop-color="#AAB5E7"/>
-      </linearGradient>
-
-      <linearGradient id="silkShadow" x1="0" y1="0" x2="0.9" y2="1">
-        <stop offset="0%" stop-color="#8795D0" stop-opacity="0"/>
-        <stop offset="55%" stop-color="#8997D3" stop-opacity=".22"/>
-        <stop offset="100%" stop-color="#7888C9" stop-opacity=".42"/>
-      </linearGradient>
-
-      <linearGradient id="silkLight" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".72"/>
-        <stop offset="45%" stop-color="#FFFFFF" stop-opacity=".12"/>
+      <linearGradient id="softFold"
+        x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0"/>
+        <stop offset="45%" stop-color="#FFFFFF" stop-opacity=".28"/>
         <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
       </linearGradient>
 
-      <filter id="softDepth" x="-30%" y="-30%" width="160%" height="160%">
-        <feGaussianBlur stdDeviation="13"/>
+      <linearGradient id="softShade"
+        x1="0" y1="0" x2="0.8" y2="1">
+        <stop offset="0%" stop-color="#8F9DD7" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#8F9DD7" stop-opacity=".20"/>
+      </linearGradient>
+
+      <filter id="silkBlur">
+        <feGaussianBlur stdDeviation="18"/>
       </filter>
     </defs>
 
-    <!-- Soft ambient shadow -->
+    <!-- Soft ambient depth -->
     <path
-      d="M-120 250
-         C20 65 205 65 330 190
-         C465 325 365 445 205 510
-         C65 565 45 640 165 735
-         C285 830 415 775 550 650
-         L550 830
-         C390 960 225 915 75 800
-         C-75 685 -35 520 130 440
-         C295 360 385 305 270 205
-         C165 115 35 145 -120 390 Z"
-      fill="#7888C9"
-      opacity=".22"
-      filter="url(#softDepth)"
-      transform="translate(0 14)"/>
+      d="M-100 790
+         C35 690 150 725 255 800
+         C365 880 450 830 540 750
+         L540 1050 L-100 1050 Z"
+      fill="#9AA7DE"
+      opacity=".20"
+      filter="url(#silkBlur)"/>
 
-    <!-- Main continuous sculpted ribbon -->
+    <!-- One broad, soft flowing surface -->
     <path
-      d="M-120 250
-         C20 65 205 65 330 190
-         C465 325 365 445 205 510
-         C65 565 45 640 165 735
-         C285 830 415 775 550 650
-         L550 830
-         C390 960 225 915 75 800
-         C-75 685 -35 520 130 440
-         C295 360 385 305 270 205
-         C165 115 35 145 -120 390 Z"
-      fill="url(#silkMain)"/>
+      d="M-100 790
+         C35 690 150 725 255 800
+         C365 880 450 830 540 750
+         L540 1050 L-100 1050 Z"
+      fill="url(#softSilk)"/>
 
-    <!-- Inner folded surface -->
+    <!-- Gentle inner fold -->
     <path
-      d="M-75 290
-         C65 115 195 125 300 225
-         C405 325 330 405 190 465
-         C75 515 55 615 175 695
-         C285 770 405 735 520 635
-         C405 790 275 820 145 720
-         C15 620 65 505 190 430
-         C320 350 365 310 270 225
-         C180 145 70 180 -75 290 Z"
-      fill="url(#silkFold)"
-      opacity=".88"/>
-
-    <!-- Fold shadow for depth -->
-    <path
-      d="M-30 335
-         C95 185 195 180 285 255
-         C365 325 310 385 190 440"
-      fill="none"
-      stroke="url(#silkShadow)"
-      stroke-width="38"
-      stroke-linecap="round"
+      d="M-80 830
+         C45 750 145 770 250 840
+         C350 905 445 865 530 805
+         C430 920 350 950 235 885
+         C120 815 35 805 -80 900 Z"
+      fill="url(#softFold)"
       opacity=".65"/>
 
-    <!-- Secondary flowing fold -->
+    <!-- Very subtle shaded curvature -->
     <path
-      d="M260 -80
-         C390 30 475 145 430 270
-         C395 365 315 405 235 445
-         C360 395 465 330 490 220
-         C520 100 425 -5 350 -80 Z"
-      fill="url(#silkFold)"
-      opacity=".62"/>
-
-    <!-- Soft surface reflections -->
-    <path
-      d="M-75 270
-         C65 105 205 105 320 215
-         C410 300 385 365 300 420"
+      d="M-80 900
+         C60 815 145 835 255 905
+         C360 970 445 920 530 860"
       fill="none"
-      stroke="url(#silkLight)"
-      stroke-width="7"
-      stroke-linecap="round"/>
-
-    <path
-      d="M95 555
-         C45 625 95 690 185 750
-         C285 820 405 775 500 690"
-      fill="none"
-      stroke="#FFFFFF"
-      stroke-opacity=".22"
-      stroke-width="5"
-      stroke-linecap="round"/>
+      stroke="url(#softShade)"
+      stroke-width="32"
+      stroke-linecap="round"
+      filter="url(#silkBlur)"/>
 
   </svg>
 </div>

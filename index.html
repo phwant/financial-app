@@ -206,25 +206,42 @@
       }
     }
     
-    html,
-    body{
-    margin: 0;
-    min-height: 100%;
-    background-color: var(--bg-color);
-    }
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
 
-    body{
-    background-color: var(--bg-color);
-    background-image: none;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-    overflow-x: hidden;
-    color: var(--text-main);
-    min-height: 100vh;
-    padding-bottom: 100px;
-    }
-    
+html {
+  background-color: #0B1830;
+}
+
+body {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  overflow-x: hidden;
+  color: var(--text-main);
+  min-height: 100vh;
+  padding-bottom: 100px;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      rgba(4, 12, 28, 0.16),
+      rgba(4, 12, 28, 0.16)
+    ),
+    url("financial-app-background.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
     html { scrollbar-width: none; -ms-overflow-style: none; }
     html::-webkit-scrollbar { display: none; width: 0; height: 0; }
     body { scrollbar-width: none; -ms-overflow-style: none; }
@@ -506,12 +523,8 @@
  background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(22px) ; -webkit-backdrop-filter: blur(22px) ; }
 
     .balance-card { 
-      background-color: #D3DEDA;
-      background-image: var(--surface-gradient);
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-attachment: fixed;
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: var(--balance-bg);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-radius: 28px; padding: 28px; min-height: 166px; height: 166px;
       display: flex; flex-direction: column; justify-content: center;
       border: 1px solid var(--glass-border); 
@@ -544,11 +557,7 @@
 
     /* Stats Grid Glass Cards */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 22px; }
-    .stat-card { background-color: #D3DEDA;
-    background-image: var(--surface-gradient);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 20px; padding: 16px 10px; border: 1px solid var(--glass-border); text-align: left; box-shadow: var(--glass-shadow); }
+    .stat-card { background: var(--glass-card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 20px; padding: 16px 10px; border: 1px solid var(--glass-border); text-align: left; box-shadow: var(--glass-shadow); }
     .stat-icon { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 0 8px; font-size: 15px; font-weight: bold; }
     .stat-icon svg { width: 18px; height: 18px; stroke-width: 2.2; }
     .stat-card.income .stat-icon { background: var(--income-bg); color: var(--income-color); }
@@ -576,11 +585,7 @@
     .see-all-btn { background: none; border: none; color: #84CC16; /* Lime 500 — Light */; font-size: 13px; font-weight: 800; cursor: pointer; padding: 4px 0; }
      [data-theme="dark"] .see-all-btn { color: var(--lime-400); }
 
-    .highlight-card { background-color: #D3DEDA;
-    background-image: var(--surface-gradient);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);border-radius: 20px;
+    .highlight-card { background: var(--glass-card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);border-radius: 20px;
      border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow); overflow: hidden; min-height: 420px; }
     .highlight-card-content { min-height: 420px; animation: highlightContentFade 0.18s ease both; }
     @keyframes highlightContentFade {
@@ -609,6 +614,9 @@
      padding: 15px 18px; color: var(--text-sub); font-size: 12px; font-weight: 600; text-align: center; }
 
     /* Liquid Glass Floating Bottom Action Bar */
+
+
+    /* Liquid Glass Modal */
     .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--modal-bg);
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); z-index: 1000; align-items: flex-end; justify-content: center; }
     .modal.active { display: flex; }
@@ -3999,45 +4007,6 @@ svg.lucide {
   font-size: 14px;
   font-weight: 700;
 }
-
-
-/* BACKGROUND — DEEPER MUTED TEAL 20% */
-
-html {
-  background-color: #A9B9B1;
-}
-
-body {
-  background-color: #A9B9B1;
-
-  background-image:
-    radial-gradient(
-      ellipse 110% 55% at 100% 0%,
-      rgba(73, 95, 90, 0.42) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 90% 50% at 0% 55%,
-      rgba(111, 129, 122, 0.46) 0%,
-      transparent 72%
-    ),
-    radial-gradient(
-      ellipse 85% 55% at 85% 100%,
-      rgba(89, 116, 107, 0.38) 0%,
-      transparent 72%
-    ),
-    linear-gradient(
-      145deg,
-      #B3BAB6 0%,
-      #A4AEA9 48%,
-      #95A29C 100%
-    );
-
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-}
-
 </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

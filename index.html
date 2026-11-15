@@ -223,82 +223,47 @@
       padding-bottom: 100px;
     }
     
-    /* Liquid Glass — Blue Lavender Background */
+    
+    /* Blue Lavender — Sculpted Ribbon Background */
     body::before {
       content: "";
       position: fixed;
       inset: 0;
       z-index: -2;
       pointer-events: none;
-    
       background:
-        radial-gradient(
-          ellipse 85% 58% at 8% 12%,
-          rgba(255, 255, 255, 0.28),
-          transparent 70%
-        ),
-        radial-gradient(
-          ellipse 75% 62% at 92% 28%,
-          rgba(117, 126, 205, 0.38),
-          transparent 72%
-        ),
-        radial-gradient(
-          ellipse 90% 65% at 45% 100%,
-          rgba(151, 160, 226, 0.48),
-          transparent 72%
-        ),
         linear-gradient(
-          145deg,
-          #D9E1F7 0%,
-          #C5D0EF 38%,
-          #B8BDE5 72%,
-          #D0D5F1 100%
+          150deg,
+          #E5E9F8 0%,
+          #D1D8F1 38%,
+          #BEC5E9 72%,
+          #DDE1F5 100%
         );
     }
     
-    /* Layered Liquid Glass Waves */
-    body::after {
-      content: "";
+    .ribbon-background {
       position: fixed;
-      inset: -16% -30%;
+      inset: 0;
       z-index: -1;
       pointer-events: none;
-    
-      background:
-        radial-gradient(
-          ellipse 58% 34% at 18% 24%,
-          transparent 54%,
-          rgba(255, 255, 255, 0.42) 57%,
-          rgba(255, 255, 255, 0.12) 61%,
-          transparent 68%
-        ),
-        radial-gradient(
-          ellipse 62% 38% at 78% 42%,
-          transparent 54%,
-          rgba(255, 255, 255, 0.34) 57%,
-          rgba(119, 129, 207, 0.20) 62%,
-          transparent 70%
-        ),
-        radial-gradient(
-          ellipse 70% 42% at 44% 84%,
-          transparent 55%,
-          rgba(255, 255, 255, 0.30) 58%,
-          rgba(135, 145, 220, 0.20) 63%,
-          transparent 71%
-        ),
-        linear-gradient(
-          130deg,
-          transparent 18%,
-          rgba(255, 255, 255, 0.16) 38%,
-          rgba(255, 255, 255, 0.04) 58%,
-          rgba(116, 126, 205, 0.12) 76%,
-          transparent 90%
-        );
-    
-      filter: blur(8px);
-      transform: rotate(-12deg) scale(1.08);
-      opacity: 0.95;
+      overflow: hidden;
     }
+    
+    .ribbon-background svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    
+    /* Keep the ribbon subtle behind app content */
+    .ribbon-background .ribbon-highlight {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.38);
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+    
+
 
     html { scrollbar-width: none; -ms-overflow-style: none; }
     html::-webkit-scrollbar { display: none; width: 0; height: 0; }
@@ -4071,6 +4036,85 @@ svg.lucide {
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
+  <div class="ribbon-background" aria-hidden="true">
+    <svg viewBox="0 0 430 932"
+         preserveAspectRatio="xMidYMid slice"
+         xmlns="http://www.w3.org/2000/svg">
+  
+      <defs>
+        <linearGradient id="ribbonTop" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#F9FAFF"/>
+          <stop offset="32%" stop-color="#DCE3FA"/>
+          <stop offset="68%" stop-color="#AEB9E8"/>
+          <stop offset="100%" stop-color="#8995D2"/>
+        </linearGradient>
+  
+        <linearGradient id="ribbonMiddle" x1="0" y1="0" x2="1" y2="0.8">
+          <stop offset="0%" stop-color="#8997D3"/>
+          <stop offset="38%" stop-color="#C7CEF0"/>
+          <stop offset="70%" stop-color="#EEF0FC"/>
+          <stop offset="100%" stop-color="#A5AFE0"/>
+        </linearGradient>
+  
+        <linearGradient id="ribbonBottom" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#F5F6FF"/>
+          <stop offset="45%" stop-color="#C4CCEF"/>
+          <stop offset="100%" stop-color="#8D99D4"/>
+        </linearGradient>
+      </defs>
+  
+      <!-- Upper flowing ribbon -->
+      <path
+        d="M-100 160
+           C35 55 125 85 235 175
+           C340 265 420 260 530 145
+           L530 285
+           C415 390 325 365 215 280
+           C105 195 40 190 -100 305 Z"
+        fill="url(#ribbonTop)"
+        opacity="0.88"/>
+  
+      <path
+        d="M-70 185
+           C55 95 130 120 240 210
+           C340 292 415 280 505 205"
+        class="ribbon-highlight"/>
+  
+      <!-- Central sculpted ribbon -->
+      <path
+        d="M-110 500
+           C15 390 115 390 235 490
+           C345 585 425 590 540 470
+           L540 625
+           C425 735 330 700 215 610
+           C105 520 35 530 -110 660 Z"
+        fill="url(#ribbonMiddle)"
+        opacity="0.82"/>
+  
+      <path
+        d="M-75 525
+           C45 425 125 430 245 530
+           C350 615 420 620 510 540"
+        class="ribbon-highlight"/>
+  
+      <!-- Lower flowing ribbon -->
+      <path
+        d="M-110 815
+           C25 690 145 710 260 810
+           C360 900 440 885 540 785
+           L540 1010
+           L-110 1010 Z"
+        fill="url(#ribbonBottom)"
+        opacity="0.9"/>
+  
+      <path
+        d="M-75 830
+           C45 735 150 750 270 850
+           C365 930 435 915 515 850"
+        class="ribbon-highlight"/>
+  
+    </svg>
+  </div>
   <div
     class="pull-refresh-indicator"
     id="pullRefreshIndicator"

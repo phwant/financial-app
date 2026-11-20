@@ -11,6 +11,10 @@
   <link rel="icon" type="image/png" href="icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
     :root {
@@ -3990,6 +3994,302 @@ svg.lucide {
   font-size: 14px;
   font-weight: 700;
 }
+
+
+/* =========================================================
+   BLACK × LIME — PREMIUM FINANCE REDESIGN
+   Additive visual layer: existing data and app logic retained.
+   ========================================================= */
+:root {
+  color-scheme: dark;
+  --bg-color: #111318;
+  --glass-bg: #292F39;
+  --glass-card: #1B1F27;
+  --glass-border: #343C49;
+  --glass-shadow: 0 8px 24px rgba(0,0,0,.16);
+  --text-main: #F1F3F5;
+  --text-sub: #9AA3B2;
+  --balance-bg: #1B1F27;
+  --icon-box-bg: #292F39;
+  --icon-box-color: #A3E635;
+  --btn-pill-bg: #1B1F27;
+  --btn-pill-border: #343C49;
+  --income-color: #3BB143;
+  --income-bg: rgba(59,177,67,.13);
+  --expense-color: #F43F5E;
+  --expense-bg: rgba(244,63,94,.13);
+  --deduction-color: #D97706;
+  --deduction-bg: rgba(217,119,6,.14);
+  --lime-400: #A3E635;
+  --blue-grey: #A3E635;
+  --modal-bg: rgba(5,7,11,.76);
+}
+html, body {
+  background: #111318 !important;
+  color: #F1F3F5 !important;
+}
+body {
+  background-image: none !important;
+  padding-bottom: calc(112px + env(safe-area-inset-bottom)) !important;
+  -webkit-font-smoothing: antialiased;
+}
+.container { padding: 8px 18px 28px !important; max-width: 680px; margin: 0 auto; }
+.app-header {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top) + 14px) 20px 12px !important;
+}
+.app-title { font-size: 22px !important; font-weight: 750 !important; letter-spacing: -.45px !important; }
+.home-icon-box {
+  width: 42px !important; height: 42px !important; border-radius: 14px !important;
+  background: #292F39 !important; border: 1px solid #343C49 !important;
+  box-shadow: none !important; color: #A3E635 !important; backdrop-filter: none !important;
+}
+.home-icon-box svg { stroke: currentColor !important; }
+.section-title, .insights-section-title, .top-spending-title {
+  color: #F1F3F5 !important; font-size: 15px !important; font-weight: 700 !important;
+  letter-spacing: -.15px !important;
+}
+.section-header { margin: 24px 2px 12px !important; }
+.see-all-btn, .top-spending-view-all { color: #A3E635 !important; }
+
+/* Shared period controls: calm, secondary, iOS-native selects preserved. */
+.period-bar { gap: 8px !important; margin: 2px 0 18px !important; }
+.period-circle-btn, .current-btn {
+  width: 34px !important; height: 34px !important; border-radius: 50% !important;
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  box-shadow: none !important; color: #9AA3B2 !important; backdrop-filter: none !important;
+}
+.period-picker-capsule {
+  height: 38px !important; width: 196px !important; border-radius: 12px !important;
+  background: transparent !important; border: 1px solid transparent !important;
+  box-shadow: none !important; backdrop-filter: none !important;
+}
+.period-picker { color: #D8DDE5 !important; font-size: 14px !important; font-weight: 650 !important; }
+.period-picker-divider { background: #343C49 !important; }
+#insightsView .period-picker-capsule { background: #1B1F27 !important; border-color: #343C49 !important; }
+#insightsView .period-picker { font-size: 13px !important; }
+.insights-view-mode {
+  height: 40px !important; width: 132px !important; padding: 3px !important;
+  margin: 2px 0 10px !important; background: #1B1F27 !important;
+  border: 1px solid #343C49 !important; border-radius: 12px !important; box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+.insights-view-mode-btn { border-radius: 9px !important; color: #9AA3B2 !important; font-size: 11px !important; }
+.insights-view-mode-btn.active {
+  background: #A3E635 !important; color: #18200D !important; box-shadow: none !important;
+}
+
+/* Overview balance card — summary metrics live inside one surface. */
+.balance-card {
+  height: auto !important; min-height: 0 !important;
+  padding: 22px 20px 18px !important; margin: 0 0 22px !important;
+  border-radius: 20px !important; background: #1B1F27 !important;
+  border: 1px solid #343C49 !important; box-shadow: none !important;
+  backdrop-filter: none !important; overflow: visible !important;
+  display: flex !important; flex-direction: column !important; align-items: stretch !important;
+}
+.balance-wallet { display: none !important; }
+.balance-label { color: #9AA3B2 !important; font-size: 12px !important; font-weight: 650 !important; letter-spacing: .2px !important; margin: 0 0 6px !important; }
+.balance-amount { color: #F1F3F5 !important; font-size: clamp(30px, 8vw, 38px) !important; font-weight: 750 !important; line-height: 1.2 !important; letter-spacing: -.9px !important; }
+.balance-change { font-size: 11px !important; margin-top: 5px !important; }
+.balance-card .stats-grid {
+  display: grid !important; grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  gap: 0 !important; margin: 18px 0 0 !important; padding-top: 15px !important;
+  border-top: 1px solid #343C49 !important;
+}
+.balance-card .stat-card {
+  background: transparent !important; border: 0 !important; border-radius: 0 !important;
+  box-shadow: none !important; padding: 0 8px !important; text-align: left !important;
+  min-width: 0 !important; backdrop-filter: none !important;
+}
+.balance-card .stat-card:first-child { padding-left: 0 !important; }
+.balance-card .stat-card:last-child { padding-right: 0 !important; }
+.balance-card .stat-icon { display: none !important; }
+.balance-card .stat-label { color: #9AA3B2 !important; font-size: 10px !important; font-weight: 650 !important; margin-bottom: 6px !important; }
+.balance-card .stat-value { font-size: clamp(11px, 3vw, 14px) !important; font-weight: 750 !important; line-height: 1.25 !important; white-space: nowrap !important; letter-spacing: -.2px !important; }
+.balance-card .stat-change { font-size: 9px !important; white-space: normal !important; line-height: 1.3 !important; color: #9AA3B2 !important; }
+
+/* Highlights */
+.highlight-card {
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-radius: 18px !important; box-shadow: none !important; min-height: 0 !important;
+}
+.highlight-card-content, .highlight-state-loading, .highlight-state-empty,
+.highlight-state-future, .highlight-state-error { min-height: 190px !important; }
+.highlight-item { min-height: 66px !important; padding: 12px 14px !important; }
+.highlight-item + .highlight-item::before { background: #343C49 !important; opacity: .65; }
+.entry-badge { background: #292F39 !important; border: 1px solid #343C49 !important; border-radius: 13px !important; color: #9AA3B2 !important; }
+.entry-badge.income { color: var(--income-color) !important; background: var(--income-bg) !important; }
+.entry-badge.expense { color: var(--expense-color) !important; background: var(--expense-bg) !important; }
+.entry-badge.deduction { color: var(--deduction-color) !important; background: var(--deduction-bg) !important; }
+.entry-title { color: #F1F3F5 !important; font-size: 13px !important; font-weight: 650 !important; }
+.entry-date, .entry-type { color: #9AA3B2 !important; font-size: 10px !important; }
+.entry-amount { font-size: 13px !important; font-weight: 750 !important; }
+
+/* Entries */
+.entries-filter {
+  display: grid !important; grid-template-columns: repeat(4,minmax(0,1fr)) !important;
+  gap: 3px !important; padding: 4px !important; margin: 4px 0 14px !important;
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-radius: 13px !important;
+}
+.entries-filter-btn {
+  flex: initial !important; width: 100% !important; height: 36px !important;
+  border: 0 !important; border-radius: 9px !important; background: transparent !important;
+  color: #9AA3B2 !important; font-size: 10px !important; font-weight: 700 !important;
+}
+.entries-filter-btn.active[data-filter="all"],
+.entries-filter-btn.active[data-filter="income"],
+.entries-filter-btn.active[data-filter="expense"],
+.entries-filter-btn.active[data-filter="deduction"] {
+  background: #A3E635 !important; color: #18200D !important; border: 0 !important;
+}
+.entries-expense-filter { justify-content: stretch !important; gap: 3px !important; padding: 4px !important;
+  margin: -5px 0 14px !important; background: #1B1F27 !important; border: 1px solid #343C49 !important; border-radius: 12px !important; }
+.entries-expense-filter .entries-filter-btn { flex: 1 1 0 !important; width: auto !important; }
+.entries-expense-filter .entries-filter-btn.active { background: #A3E635 !important; color: #18200D !important; border: 0 !important; }
+.copy-previous-month-wrap { margin: 0 0 14px !important; }
+.copy-previous-month-btn {
+  width: 100% !important; max-width: none !important; min-height: 46px !important;
+  justify-content: flex-start !important; padding: 0 15px !important;
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-radius: 13px !important; color: #F1F3F5 !important;
+  font-size: 12px !important; font-weight: 650 !important;
+}
+.copy-previous-month-btn svg { color: #A3E635 !important; }
+.entries-total { margin: 0 2px 14px !important; color: #9AA3B2 !important; font-size: 11px !important; }
+.entry-group { margin-bottom: 22px !important; }
+.entry-group-header { margin: 0 3px 8px !important; }
+.entry-group-title, .entry-group-count { color: #9AA3B2 !important; font-size: 11px !important; }
+.entry-group-items {
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-radius: 16px !important; overflow: hidden !important;
+}
+.entry-row {
+  width: 100% !important; min-height: 66px !important; margin: 0 !important;
+  padding: 11px 14px !important; border: 0 !important; background: transparent !important;
+  border-radius: 0 !important;
+}
+.entry-row + .entry-row { border-top: 1px solid rgba(52,60,73,.55) !important; }
+.entry-left { gap: 11px !important; min-width: 0 !important; }
+.entry-info { min-width: 0 !important; }
+.entry-title { overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+.entry-right { flex: 0 0 auto !important; margin-left: 10px !important; }
+.entry-select-circle { border-color: #687384 !important; }
+.entry-row.bulk-delete-mode .entry-left { gap: 10px !important; }
+.entries-bulk-toggle { color: #A3E635 !important; }
+.entries-bulk-toolbar { margin-bottom: 12px !important; }
+
+/* Insights cards and sections */
+#insightsContent { padding-top: 4px !important; }
+.insights-section { margin: 0 0 18px !important; }
+.insights-section-title { margin: 0 2px 11px !important; }
+.monthly-summary-card, .monthly-comparison-card, .annual-expense-trend-card {
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-radius: 17px !important; box-shadow: none !important; overflow: hidden !important;
+}
+.monthly-summary-card { padding: 5px 15px !important; }
+.monthly-summary-row {
+  min-height: 62px !important; padding: 9px 0 !important;
+  border-bottom: 1px solid rgba(52,60,73,.65) !important;
+}
+.monthly-summary-row:last-child { border-bottom: 0 !important; }
+.monthly-summary-label { color: #9AA3B2 !important; font-size: 11px !important; font-weight: 600 !important; }
+.monthly-summary-value { font-size: 14px !important; font-weight: 750 !important; }
+.monthly-summary-value.balance { color: #F1F3F5 !important; }
+.monthly-summary-value.income { color: #3BB143 !important; }
+.monthly-summary-value.expense { color: #F43F5E !important; }
+.monthly-summary-value.deduction { color: #D97706 !important; }
+.monthly-summary-value.savings { color: #A3E635 !important; }
+.monthly-summary-mom { font-size: 9px !important; color: #9AA3B2 !important; }
+.monthly-summary-upcoming { font-size: 9px !important; color: #9AA3B2 !important; }
+.expense-type-summary {
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-radius: 16px !important; padding: 14px !important; margin-bottom: 12px !important;
+}
+.expense-chart, .annual-expense-trend-card {
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-radius: 16px !important; padding: 12px !important; box-shadow: none !important;
+}
+.top-spending-section { margin-top: 0 !important; padding-top: 0 !important; }
+.top-spending-list {
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-radius: 16px !important; padding: 4px 13px !important;
+}
+.top-spending-item { min-height: 58px !important; border-bottom: 1px solid rgba(52,60,73,.6) !important; }
+.top-spending-rank { color: #A3E635 !important; font-size: 12px !important; font-weight: 750 !important; }
+.top-spending-name { color: #F1F3F5 !important; font-size: 11px !important; font-weight: 600 !important; }
+.top-spending-amount { color: #F1F3F5 !important; font-size: 11px !important; font-weight: 700 !important; }
+.top-spending-view-all { width: 100% !important; justify-content: center !important; padding: 12px 0 !important; }
+.monthly-takeaway-card, .annual-takeaway-card { display: none !important; }
+.monthly-comparison-card { padding: 12px !important; }
+.monthly-comparison-controls { margin-bottom: 12px !important; }
+.monthly-comparison-native-picker, .monthly-comparison-dropdown {
+  background: #292F39 !important; border: 1px solid #343C49 !important; border-radius: 10px !important;
+}
+.monthly-comparison-select { color: #F1F3F5 !important; }
+.monthly-comparison-table-wrap, .annual-comparison-table-wrap { scrollbar-width: thin; scrollbar-color: #4B5563 transparent; }
+.monthly-comparison-header, .annual-comparison-header { background: #292F39 !important; }
+.monthly-comparison-item-header, .annual-comparison-item-header,
+.monthly-comparison-month, .monthly-comparison-total, .annual-comparison-year, .annual-comparison-total {
+  color: #C6CDD7 !important;
+}
+.monthly-comparison-body { color: #F1F3F5 !important; }
+.monthly-comparison-row, .annual-comparison-row { border-color: #343C49 !important; }
+
+/* Bottom navigation */
+.floating-actions-group { bottom: calc(env(safe-area-inset-bottom) + 13px) !important; gap: 9px !important; }
+.floating-tab-bar {
+  height: 62px !important; width: min(72vw, 350px) !important; padding: 5px !important;
+  background: rgba(27,31,39,.96) !important; border: 1px solid #343C49 !important;
+  border-radius: 20px !important; box-shadow: 0 10px 30px rgba(0,0,0,.34) !important;
+  backdrop-filter: blur(22px) !important; -webkit-backdrop-filter: blur(22px) !important;
+}
+.floating-tab { height: 50px !important; border-radius: 13px !important; color: #9AA3B2 !important; gap: 3px !important; font-size: 10px !important; }
+.floating-tab.active { color: #A3E635 !important; background: rgba(163,230,53,.10) !important; }
+.floating-tab svg { width: 21px !important; height: 21px !important; }
+.floating-add-button {
+  width: 60px !important; height: 60px !important; flex-basis: 60px !important;
+  background: #A3E635 !important; color: #18200D !important; border: 0 !important;
+  box-shadow: 0 7px 20px rgba(0,0,0,.3) !important;
+}
+.floating-add-button svg { stroke-width: 2.6 !important; }
+
+/* Modals */
+.modal-content {
+  background: #1B1F27 !important; border: 1px solid #343C49 !important;
+  border-bottom: 0 !important; border-radius: 24px 24px 0 0 !important;
+  box-shadow: 0 -12px 40px rgba(0,0,0,.45) !important;
+  padding: 23px 20px calc(22px + env(safe-area-inset-bottom)) !important;
+  backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+}
+.modal-title { color: #F1F3F5 !important; }
+.close-btn { background: #292F39 !important; border-color: #343C49 !important; color: #9AA3B2 !important; }
+.form-control, .type-btn, .custom-icon-preview {
+  background: #292F39 !important; border-color: #343C49 !important; color: #F1F3F5 !important;
+}
+.form-label { color: #9AA3B2 !important; }
+.type-btn.active { background: rgba(163,230,53,.14) !important; color: #A3E635 !important; border-color: #A3E635 !important; }
+.modal-actions.single-action .submit-btn { background: #A3E635 !important; color: #18200D !important; }
+.submit-btn { background: #A3E635 !important; color: #18200D !important; }
+.delete-btn { background: rgba(244,63,94,.16) !important; color: #F43F5E !important; }
+.add-new-item-cancel { background: #292F39 !important; color: #F1F3F5 !important; }
+.add-new-item-submit { background: #A3E635 !important; color: #18200D !important; }
+
+/* Copy / scan / refresh details */
+.copy-previous-month-btn:active, .floating-tab:active, .floating-add-button:active { transform: scale(.97); }
+.pull-refresh-indicator { color: #A3E635 !important; }
+.safari-loader span { background: #A3E635 !important; }
+.scan-entries-control, #scanEntriesControl { background: transparent !important; }
+@media (max-width: 370px) {
+  .container { padding-left: 14px !important; padding-right: 14px !important; }
+  .balance-card { padding: 19px 15px 15px !important; }
+  .balance-card .stat-card { padding-left: 5px !important; padding-right: 5px !important; }
+  .balance-card .stat-value { font-size: 10px !important; }
+  .floating-tab-bar { width: calc(100vw - 102px) !important; }
+}
+
 </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -5589,10 +5889,7 @@ svg.lucide {
     );
   
   // Fixed single theme: Cool Grey — Modern Minimal
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', 'light');
-  document.body.setAttribute('data-theme', 'light');
-}
+function applyTheme() { document.documentElement.setAttribute('data-theme', 'dark'); document.body.setAttribute('data-theme', 'dark'); }
 
   function populateYearPickers() {
   const minYear = 2025;
@@ -16851,5 +17148,140 @@ async function confirmDeductionReview() {
   </script>
   <script> lucide.createIcons();
 </script>
+
+<script>
+/* Redesign presentation adapter. Existing app functions, IDs and Supabase flows remain intact. */
+(function () {
+  const phosphorMap = {
+    'house':'house','list-todo':'list-bullets','chart-no-axes-combined':'chart-line-up',
+    'plus':'plus','chevron-left':'caret-left','chevron-right':'caret-right',
+    'history':'clock-counter-clockwise','wallet':'wallet','circle-arrow-down':'arrow-circle-down',
+    'circle-arrow-up':'arrow-circle-up','receipt-text':'receipt','copy':'copy',
+    'x':'x','check':'check','briefcase-business':'briefcase','music':'music-notes',
+    'trending-up':'trend-up','ellipsis':'dots-three','wifi':'wifi-high',
+    'user-round':'user-circle','smartphone':'device-mobile','motorbike':'motorcycle',
+    'plug':'plug','repeat-2':'arrows-clockwise','shopping-basket':'basket',
+    'credit-card':'credit-card','shopping-cart':'shopping-cart','clock-8':'clock',
+    'scan-line':'scan','clock-alert':'clock-countdown','clock-arrow-right':'clock-clockwise',
+    'fingerprint':'fingerprint','circle-alert':'warning-circle','pill':'pill',
+    'landmark':'bank','scan-barcode':'barcode','chevron-down':'caret-down',
+    'calendar':'calendar','edit':'pencil-simple','trash-2':'trash',
+    'arrow-left':'arrow-left','filter':'funnel','search':'magnifying-glass',
+    'more-horizontal':'dots-three','settings':'gear','circle':'circle'
+  };
+
+  function convertIcons(root) {
+    if (!root || !root.querySelectorAll) return;
+    root.querySelectorAll('i[data-lucide]').forEach(function (oldIcon) {
+      const name = oldIcon.getAttribute('data-lucide');
+      const phosphor = phosphorMap[name];
+      if (!phosphor) return; // Unknown/custom stored icon names keep Lucide fallback.
+      const replacement = document.createElement('i');
+      replacement.className = 'ph-fill ph-' + phosphor;
+      replacement.setAttribute('aria-hidden', 'true');
+      oldIcon.getAttributeNames().forEach(function (attr) {
+        if (attr === 'data-lucide' || attr === 'class') return;
+        replacement.setAttribute(attr, oldIcon.getAttribute(attr));
+      });
+      oldIcon.replaceWith(replacement);
+    });
+  }
+
+  function arrangeOverview() {
+    const balance = document.querySelector('.balance-card');
+    const stats = document.querySelector('.hero-section .stats-grid');
+    if (balance && stats && !balance.contains(stats)) balance.appendChild(stats);
+  }
+
+  function arrangeInsights() {
+    const view = document.getElementById('insightsView');
+    if (!view || view.dataset.redesignArranged === '1') return;
+    const sections = Array.from(view.querySelectorAll(':scope > main > .insights-section'));
+    const monthlySection = sections.find(section => section.querySelector('#topSpendingSection'));
+    const annualSection = view.querySelector('#annualExpenseTrendSection');
+    const monthlyComparison = sections.find(section => section.querySelector('#monthlyComparisonCard'));
+    const annualComparison = sections.find(section => section.querySelector('#annualComparisonCard'));
+
+    const summary = view.querySelector('#insightsMonthlySummaryCard');
+    if (summary) {
+      const rows = Array.from(summary.querySelectorAll(':scope > .monthly-summary-row'));
+      const balanceRow = rows.find(row => row.querySelector('#insightsBalance'));
+      if (balanceRow) summary.insertBefore(balanceRow, summary.firstElementChild);
+    }
+
+    if (monthlySection) {
+      const top = monthlySection.querySelector('#topSpendingSection');
+      if (top) {
+        const topSection = document.createElement('section');
+        topSection.className = 'insights-section redesigned-top-spending';
+        topSection.dataset.insightsMode = 'month';
+        topSection.appendChild(top);
+        if (monthlyComparison) monthlyComparison.after(topSection);
+        else monthlySection.after(topSection);
+      }
+      const bubble = monthlySection.querySelector('#expenseBreakdownList');
+      if (bubble && !bubble.previousElementSibling?.classList.contains('redesigned-chart-title')) {
+        const heading = document.createElement('div');
+        heading.className = 'insights-section-title redesigned-chart-title';
+        heading.textContent = 'Monthly Spending';
+        bubble.parentNode.insertBefore(heading, bubble);
+      }
+    }
+
+    if (annualSection) {
+      const top = annualSection.querySelector('#annualTopSpendingSection');
+      if (top) {
+        const topSection = document.createElement('section');
+        topSection.className = 'insights-section redesigned-annual-top-spending';
+        topSection.dataset.insightsMode = 'year';
+        topSection.appendChild(top);
+        if (annualComparison) annualComparison.after(topSection);
+        else annualSection.after(topSection);
+      }
+      const chart = annualSection.querySelector('#annualExpenseTrendChart');
+      if (chart && !chart.previousElementSibling?.classList.contains('redesigned-chart-title')) {
+        const heading = document.createElement('div');
+        heading.className = 'insights-section-title redesigned-chart-title';
+        heading.textContent = 'Yearly Spending Trend';
+        chart.parentNode.parentNode.insertBefore(heading, chart.parentNode);
+      }
+    }
+
+    view.querySelectorAll('.monthly-takeaway-card, .annual-takeaway-card').forEach(el => {
+      el.setAttribute('aria-hidden', 'true');
+    });
+    view.dataset.redesignArranged = '1';
+  }
+
+  function applyPresentation() {
+    arrangeOverview();
+    arrangeInsights();
+    convertIcons(document);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyPresentation, { once: true });
+  } else {
+    applyPresentation();
+  }
+
+  const observer = new MutationObserver(function (records) {
+    records.forEach(record => record.addedNodes.forEach(node => {
+      if (node.nodeType === 1) {
+        convertIcons(node);
+      }
+    }));
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  // Keep the approved theme active even if legacy code calls its theme initializer.
+  window.addEventListener('pageshow', function () {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.body.setAttribute('data-theme', 'dark');
+    applyPresentation();
+  });
+})();
+</script>
+
 </body>
 </html>

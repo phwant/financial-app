@@ -14,48 +14,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
    
-:root {
-  color-scheme: dark;
 
-  /* Black × Lime — Premium Finance */
-  --morning-butter: #F3D98F;
-  --blue-grey: #7298C7;
-  --lime-400: #A3E635;
-
-  /* Base Surfaces */
-  
-  --bg-color: #CAE6EF;
-  --glass-bg: #ACD5E8;
-  --glass-card: #EAF4F7;
-  --glass-border: #B8D3DE;
-  --glass-shadow: 0 4px 16px rgba(11, 13, 14, 0.05);
-  --balance-bg: #ACD5E8;
-
-
-  /* Typography */
-  --text-main: #F1F3F5;
-  --text-sub: #9AA3B2;
-  --balance-bg: #1B1F27;
-
-  /* Icon & Interactive Elements */
-  --icon-box-bg: #292F39;
-  --icon-box-color: #9AA3B2;
-  --btn-pill-bg: #292F39;
-  --btn-pill-border: #343C49;
-
-  /* Functional Colors */
-  --income-color: #3BB143;
-  --income-bg: rgba(59, 177, 67, 0.16);
-
-  --expense-color: #F43F5E;
-  --expense-bg: rgba(244, 63, 94, 0.16);
-
-  --deduction-color: #D97706;
-  --deduction-bg: rgba(217, 119, 6, 0.16);
-
-  /* Modal */
-  --modal-bg: rgba(0, 0, 0, 0.72);
-}
+    :root {
+      color-scheme: light;
+    
+      /* Soft Blue Teal — Canva Reference */
+      --morning-butter: #ACD5E8;
+      --blue-grey: #719BB2;
+      --lime-400: #719BB2;
+    
+      --bg-color: #CAE6EF;
+      --glass-bg: #ACD5E8;
+      --glass-card: #EAF4F7;
+      --glass-border: rgba(45, 86, 105, 0.12);
+      --glass-shadow: 0 12px 32px rgba(42, 89, 108, 0.075);
+    
+      --text-main: #0B0D0E;
+      --text-sub: #0B0D0E;
+      --balance-bg: #ACD5E8;
+    
+      --icon-box-bg: #ACD5E8;
+      --icon-box-color: #0B0D0E;
+      --btn-pill-bg: #EAF4F7;
+      --btn-pill-border: rgba(45, 86, 105, 0.12);
+    
+      /* All financial text and numbers are black */
+      --income-color: #0B0D0E;
+      --income-bg: rgba(113, 155, 178, 0.16);
+      --expense-color: #0B0D0E;
+      --expense-bg: rgba(113, 155, 178, 0.16);
+      --deduction-color: #0B0D0E;
+      --deduction-bg: rgba(113, 155, 178, 0.16);
+    
+      --modal-bg: rgba(11, 13, 14, 0.34);
+    }
 
     * { 
       box-sizing: border-box; margin: 0; padding: 0; 
@@ -198,11 +190,14 @@
 
     body{
     background-color: #CAE6EF;
-    background-image: linear-gradient(
+    background-image:
+    radial-gradient(circle at 12% 2%, #DFF2E9 0, transparent 31%),
+    radial-gradient(circle at 95% 18%, #B8DBE9 0, transparent 36%),
+    linear-gradient(
       145deg,
-      #CAE6EF 0%,
-      #ACD5E8 48%,
-      #8CB2C7 100%
+      #D8EDF0 0%,
+      #CAE6EF 47%,
+      #D8EBE8 100%
     );
     background-repeat: no-repeat;
     background-size: cover;

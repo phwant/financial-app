@@ -3990,6 +3990,134 @@ svg.lucide {
   font-size: 14px;
   font-weight: 700;
 }
+
+/* =====================================
+   NEW DESIGN SYSTEM — SAGE & GOLD
+   Phase 1: Global color foundation
+===================================== */
+
+:root {
+  color-scheme: light;
+
+  --morning-butter: #D9C77F;
+  --blue-grey: #789B78;
+  --lime-400: #789B78;
+
+  --bg-color: #F7F5E9;
+  --glass-bg: #F0F2E5;
+  --glass-card: #FFFDF6;
+  --glass-border: #DCE5CF;
+  --glass-shadow: 0 5px 18px rgba(87, 104, 68, 0.06);
+
+  --text-main: #26362C;
+  --text-sub: #788174;
+  --balance-bg: #F5E9B9;
+
+  --icon-box-bg: #E2EDCF;
+  --icon-box-color: #789B78;
+  --btn-pill-bg: #FFFDF5;
+  --btn-pill-border: #D4DFC5;
+
+  /* Keep functional colors distinct */
+  --income-color: #3BB143;
+  --income-bg: rgba(59, 177, 67, 0.20);
+  --expense-color: #F43F5E;
+  --expense-bg: rgba(244, 63, 94, 0.20);
+  --deduction-color: #D97706;
+  --deduction-bg: rgba(217, 119, 6, 0.20);
+
+  --modal-bg: rgba(48, 64, 44, 0.34);
+}
+
+/* Global background and typography */
+html {
+  color-scheme: light;
+}
+
+body {
+  color: #26362C;
+  background-color: #F7F5E9;
+  background-image:
+    radial-gradient(
+      circle at 8% 0%,
+      rgba(244, 226, 166, 0.55),
+      transparent 46%
+    ),
+    radial-gradient(
+      circle at 95% 32%,
+      rgba(198, 225, 190, 0.55),
+      transparent 47%
+    );
+}
+
+/* Text and form controls */
+button,
+input,
+select,
+textarea {
+  color: #26362C;
+  font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+}
+
+/* Main surfaces */
+.balance-card {
+  background: linear-gradient(
+    135deg,
+    #F5E9B9,
+    #EBDFaa 52%,
+    #DCEAC5
+  );
+  border-color: #D5C78F;
+  box-shadow: 0 12px 30px rgba(137, 122, 69, 0.13);
+}
+
+.stat-card,
+.highlight-card {
+  background: #FFFDF6;
+  border-color: #DCE5CF;
+  box-shadow: var(--glass-shadow);
+}
+
+/* Main accent elements */
+.home-icon-box {
+  background: #E2EDCF;
+  color: #789B78;
+  border-color: #D4DFC5;
+  box-shadow: 0 4px 12px rgba(87, 104, 68, 0.06);
+}
+
+.floating-add-button {
+  background: #D9C77F;
+  border-color: #B5A262;
+  color: #26362C;
+}
+
+.floating-add-button:hover {
+  background: #E7D797;
+}
+
+/* Modal surfaces */
+.modal-content {
+  background: #FAF9ED;
+  border-color: #C9D9B8;
+  box-shadow: 0 -14px 45px rgba(47, 73, 44, 0.17);
+}
+
+.field input,
+.field select {
+  background: #FFFEF8;
+  border-color: #BDCFB1;
+}
+
+.modal-backdrop {
+  background: rgba(48, 64, 44, 0.34);
+}
+
+/* Keep the application light-only */
+[data-theme="dark"] {
+  color-scheme: light;
+}
+
 </style>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
